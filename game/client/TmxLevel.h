@@ -49,6 +49,7 @@ class TmxLevel
     float GetTilemapWidth() const;
     float GetTilemapHeight() const;
     sf::Vector2f GetTilemapSize() const;
+    std::string &GetMapName();
 
     // Рисует все слои тайлов один за другим,
     //  но не рисует объекты (рисованием которых должна заниматься игра).
@@ -64,4 +65,5 @@ class TmxLevel
     sf::Texture m_tilesetImage;
     std::vector<TmxObject> m_objects;
     std::vector<TmxLayer> m_layers;
+    std::string map_name;
 };

@@ -12,6 +12,7 @@
 #include "messages/ServerToUserMessage.h"
 #include "common/User.h"
 #include "Object.h"
+#include "TmxLevel.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -23,7 +24,7 @@ class Client {
 public:
     Client(const std::string& host, unsigned short port, const std::string& username);
 
-    void create_session();
+    void create_session(std::string map_name);
 
     void join_to(sf::Uint64 session_id);
 
@@ -34,6 +35,7 @@ private:
     sf::RenderWindow m_window;
     Objects m_objects;
     Direction m_direction;
+    TmxLevel m_level;
 
     void process_events();
 

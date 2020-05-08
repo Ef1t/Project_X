@@ -4,7 +4,7 @@
 #include "UserInitMessage.h"
 
 sf::Packet& operator<<(sf::Packet& packet, const UserInitMessage& message) {
-    return packet << message.action << message.username << message.session_id;
+    return packet << message.action << message.username << message.session_id << message.map_name;
 }
 
 sf::Packet& operator>>(sf::Packet& packet, UserInitMessage& message) {
@@ -12,5 +12,5 @@ sf::Packet& operator>>(sf::Packet& packet, UserInitMessage& message) {
     packet >> action;
     message.action = static_cast<UserInitMessage::Action>(action);
 
-    return packet >> message.username >> message.session_id;
+    return packet >> message.username >> message.session_id >> message.map_name;
 }

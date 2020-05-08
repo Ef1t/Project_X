@@ -20,6 +20,7 @@ struct UserInitMessage {
     Action action;
     std::string username;
     sf::Uint64 session_id;
+    std::string map_name;
 };
 
 sf::Packet& operator<<(sf::Packet& packet, const UserInitMessage& message);

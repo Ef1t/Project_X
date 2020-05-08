@@ -5,6 +5,7 @@
 #include "Client.h"
 #include "Object.h"
 #include "Player.h"
+#include "TmxLevel.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -24,11 +25,15 @@ Client::Client(const std::string& host, unsigned short port, const std::string& 
     m_user = std::make_shared<User>(username, std::move(socket));
 }
 
-void Client::create_session() {
+void Client::create_session(std::string map_name) {
     sf::Packet packet;
 
+    //инициализация карты
+    this->m_level.GetMapName() = map_name;
+    this->m_level.LoadFromFile("../../client/maps/" + map_name);
+
     {
-        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0};
+        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0, m_level.GetMapName()};
         packet << message;
 
         m_user->send_packet(packet);
@@ -52,7 +57,7 @@ void Client::join_to(sf::Uint64  session_id) {
     sf::Packet packet;
 
     {
-        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id};
+        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id, nullptr};
         packet << message;
 
         m_user->send_packet(packet);
@@ -119,10 +124,10 @@ void Client::receive_from_server() {
 void Client::render() {
     m_window.clear();
 
+    m_level.Draw(m_window);
     for (auto& obj: m_objects) {
         obj->draw(m_window);
     }
-
     m_window.display();
 }
 

@@ -405,3 +405,7 @@ void TmxLevel::Draw(sf::RenderTarget &target) const
         }
     }
 }
+
+std::string &TmxLevel::GetMapName() {
+    return map_name;
+}

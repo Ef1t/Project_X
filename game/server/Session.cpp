@@ -73,7 +73,7 @@ void Session::add_user(UserPtr user) {
 
 
     NewPlayerMessage new_player_message = {
-            player->get_id(), user->get_username(), player->get_position().x, player->get_position().y
+            player->get_id(), user->get_username(), player->get_position().x, player->get_position().y, this->map_name
     };
 
     ServerToUserMessage server_message = {.type=ServerToUserMessage::NewPlayer};
@@ -103,5 +103,9 @@ void Session::notify_all() {
     }
     m_messages.messages.clear();
     // TODO: check user connection: if sending fails -> remove that user from m_users + add send DeletePlayerMessage to all
+}
+
+std::string &Session::get_map() {
+    return map_name;
 }
 

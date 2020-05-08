@@ -27,10 +27,14 @@ public:
 
     void add_user(UserPtr user);
 
+    std::string& get_map();
+
 private:
     static sf::Uint64 next_id;
     sf::Uint64 m_id;
     Users m_users;
+    std::string map_name;
+
     ServerToUserVectorMessage m_messages;
 
     void notify_all();

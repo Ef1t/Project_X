@@ -57,7 +57,7 @@ void Client::join_to(sf::Uint64  session_id) {
     sf::Packet packet;
 
     {
-        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id, nullptr};
+        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id};
         packet << message;
 
         m_user->send_packet(packet);
@@ -146,6 +146,8 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
         if (message.type == ServerToUserMessage::NewPlayer) {
             NewPlayerMessage message_new = std::get<NewPlayerMessage>(message.value);
             m_objects.push_back(std::make_shared<Player>(message_new.id, message_new.username, sf::Vector2f(message_new.x, message_new.y)));
+            this->m_level.GetMapName() = message_new.map_name;
+            this->m_level.LoadFromFile("../../client/maps/" + message_new.map_name);
         }
         else if (message.type == ServerToUserMessage::UpdatePlayer) {
             UpdatePlayerMessage message_upd = std::get<UpdatePlayerMessage>(message.value);

@@ -67,6 +67,7 @@ void Server::accept_new_user() {
         switch (message.action) {
             case UserInitMessage::Create: {
                 SessionPtr session = std::make_shared<Session>();
+                session->get_map() = message.map_name;
                 session->add_user(user);
 
                 m_sessions.push_back(session);

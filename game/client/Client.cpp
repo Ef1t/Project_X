@@ -13,6 +13,9 @@
 #include <iostream>
 #include <cstring>
 
+short ID = 5;
+
+
 Client::Client(const std::string& host, unsigned short port, const std::string& username)
         : m_window(sf::VideoMode(800, 600), "JOIN")
         , m_objects() {
@@ -20,7 +23,7 @@ Client::Client(const std::string& host, unsigned short port, const std::string& 
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
         throw std::runtime_error(std::strerror(errno));
     }
-
+    std::cout << ID << '\n';
     m_user = std::make_shared<User>(username, std::move(socket));
 }
 
@@ -44,6 +47,7 @@ void Client::create_session() {
         packet >> message;
 
         std::cout << "New session created. Session ID: " << message.session_id << std::endl;
+
     }
 
 }
@@ -65,16 +69,20 @@ int Client::run() {
     sf::Time TimeSinceUpdate = sf::Time::Zero;
     sf:: Time TimePerFrame = sf::seconds(1.f / 90.f);
     sf::Clock clock;
+    float current_frame = 0;  //хранит текущий кадр
+    float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
     while (m_window.isOpen()) {
-        process_events();
+       // process_events();
         TimeSinceUpdate += clock.restart();
+        time = TimePerFrame.asSeconds();
         while (TimeSinceUpdate > TimePerFrame) {
             receive_from_server();
             process_events();
-            render();
+            render(time,current_frame);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
+
         }
     }
 
@@ -97,17 +105,20 @@ void Client::process_events() {
         }
     }
 
-    m_direction.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W) && m_window.hasFocus();
+    m_direction.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W) && m_window.hasFocus(); //добавить в поле direction
     m_direction.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A) && m_window.hasFocus();
     m_direction.right = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && m_window.hasFocus())
         m_direction.right = true;
     m_direction.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S) && m_window.hasFocus();
+
+
+
 }
 
 void Client::receive_from_server() {
     ServerToUserVectorMessage message;
-
+    std::cout << ID << " ID PLAYERA \n";
     sf::Packet packet;
     packet.clear();
     while (m_user->receive_packet(packet) != sf::Socket::Done) {;}
@@ -116,23 +127,27 @@ void Client::receive_from_server() {
     apply_messages(message);
 }
 
-void Client::render() {
+void Client::render(float time, float& dir) {
     m_window.clear();
 
+
+
+
     for (auto& obj: m_objects) {
-        obj->draw(m_window);
-    }
+        obj->draw(m_window, time, dir);
+   }
+
+
 
     m_window.display();
 }
 
 void Client::send_to_server() {
-    UserToServerMessage message = {.type=UserToServerMessage::Move};
+    UserToServerMessage message {.type=UserToServerMessage::Move};
     message.direction = m_direction;
-
     sf::Packet packet;
-    packet << message;
 
+    packet << message;
     m_user->send_packet(packet);
 }
 
@@ -151,13 +166,19 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
                     is_in = true;
                     std::cout << "ID " << obj->get_id() << " X " <<message_upd.x << " Y " << message_upd.y << "\n";
                     obj->set_position(sf::Vector2f(message_upd.x, message_upd.y));
+                    obj->set_direction(message_upd.route);
                 }
             }
             if (!is_in) {
                 m_objects.push_back(std::make_shared<Player>(message_upd.id, " ", sf::Vector2f(message_upd.x, message_upd.y)));
+
             }
+
 
         }
     }
+
 }
+
+
 

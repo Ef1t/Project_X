@@ -31,3 +31,4 @@ sf::Packet& operator>>(sf::Packet& packet, UserToServerMessage& message) {
             return packet >> message.direction;
     }
 }
+

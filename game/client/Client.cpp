@@ -5,7 +5,6 @@
 #include "Client.h"
 #include "Object.h"
 #include "Player.h"
-#include "TmxLevel.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>

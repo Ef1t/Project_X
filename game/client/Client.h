@@ -28,6 +28,8 @@ public:
 
     void join_to(sf::Uint64 session_id);
 
+    //void add_objects(std::vector<TmxObject> all_objects);
+
     int run();
 
 private:
@@ -36,6 +38,7 @@ private:
     Objects m_objects;
     Direction m_direction;
     TmxLevel m_level;
+    bool is_map;
 
     void process_events();
 

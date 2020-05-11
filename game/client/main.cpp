@@ -5,9 +5,8 @@
 #include "Client.h"
 
 #include <iostream>
-
 void usage() {
-    std::cerr << "Usage: ./client <username> <host> <port> (create | join <lobby_num>)" << std::endl;
+    std::cerr << "Usage: ./client <username> <host> <port> (create <map_name> | join <lobby_num>)" << std::endl;
 }
 
 int main(int ac, const char* av[]) {
@@ -24,9 +23,10 @@ int main(int ac, const char* av[]) {
     auto cmd = std::string(av[4]);
 
     if (cmd == "create") {
-        client.create_session();
+        auto map_name = std::string(av[5]);
+        client.create_session(map_name);
     } else if (cmd == "join") {
-        auto session_id = static_cast<uint>(std::stoul(std::string(av[5])));
+        auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
         client.join_to(session_id);
     } else {
         usage();

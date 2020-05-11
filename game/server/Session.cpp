@@ -38,7 +38,8 @@ void Session::update(float dt) {
                     if (message.direction.right) {
                         dir.x++;
                     }
-                    player->apply(dir);
+                    player->apply(dir, message.direction); // добавил хранение направления
+                    std::cout<<player->get_route().up<<" up \n";
             }
 //            std::cout << message.direction.up << message.direction.down << message.direction.left
 //                      << message.direction.right << "\n";
@@ -49,8 +50,8 @@ void Session::update(float dt) {
         auto& player = item.second;
         player->update(dt * 10);
 
-        UpdatePlayerMessage update_player_message = {player->get_id(), player->get_position().x, player->get_position().y};
-
+        UpdatePlayerMessage update_player_message = {player->get_id(), player->get_position().x, player->get_position().y, player->get_route()}; //запихнуть направление сюда
+        std::cout<<player->get_route().up<<" UP message \n"; //добавил get_route
         ServerToUserMessage server_message = {ServerToUserMessage::UpdatePlayer, update_player_message};
         m_messages.messages.push_back(server_message);
     }
@@ -73,9 +74,9 @@ void Session::add_user(UserPtr user) {
 
 
     NewPlayerMessage new_player_message = {
-            player->get_id(), user->get_username(), player->get_position().x, player->get_position().y
+            player->get_id(), user->get_username(), player->get_position().x, player->get_position().y, this->map_name, player->get_route() //добавил get_route
     };
-
+    std::cout<<player->get_route().up<<" UP message NEW \n";
     ServerToUserMessage server_message = {.type=ServerToUserMessage::NewPlayer};
     server_message.value = new_player_message;
 
@@ -103,5 +104,9 @@ void Session::notify_all() {
     }
     m_messages.messages.clear();
     // TODO: check user connection: if sending fails -> remove that user from m_users + add send DeletePlayerMessage to all
+}
+
+std::string &Session::get_map() {
+    return map_name;
 }
 

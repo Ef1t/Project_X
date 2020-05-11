@@ -24,3 +24,11 @@ float Object::get_x() const {
 float Object::get_y() const {
     m_position.y;
 }
+
+void Object::set_direction(Direction dir) {
+    m_dir = dir;
+}
+
+Direction Object::get_direction() {
+    return m_dir;
+}

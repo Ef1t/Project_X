@@ -12,22 +12,22 @@
 
 // NewPlayerMessage
 sf::Packet& operator<<(sf::Packet& packet, const NewPlayerMessage& message) {
-    return packet << message.id << message.username << message.x << message.y;
+    return packet << message.id << message.username << message.x << message.y << message.map_name;
 }
 
 sf::Packet& operator>>(sf::Packet& packet, NewPlayerMessage& message) {
-    return packet >> message.id >> message.username >> message.x >> message.y;
+    return packet >> message.id >> message.username >> message.x >> message.y >> message.map_name;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // UpdatePlayerMessage
 sf::Packet& operator<<(sf::Packet& packet, const UpdatePlayerMessage& message) {
-    return packet << message.id << message.x << message.y;
+    return packet << message.id << message.x << message.y << message.route;
 }
 
 sf::Packet& operator>>(sf::Packet& packet, UpdatePlayerMessage& message) {
 
-    return packet >> message.id >> message.x >> message.y;
+    return packet >> message.id >> message.x >> message.y >> message.route;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -7,6 +7,7 @@
 
 
 #include "Object.h"
+#include "TmxLevel.h"
 
 #include "Skin.h"
 

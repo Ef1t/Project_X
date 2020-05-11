@@ -18,7 +18,8 @@ short ID = 5;
 
 Client::Client(const std::string& host, unsigned short port, const std::string& username)
         : m_window(sf::VideoMode(800, 600), "JOIN")
-        , m_objects() {
+        , m_objects()
+        , is_map(false) {
     auto socket = std::make_unique<sf::TcpSocket>();
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
         throw std::runtime_error(std::strerror(errno));
@@ -27,11 +28,11 @@ Client::Client(const std::string& host, unsigned short port, const std::string& 
     m_user = std::make_shared<User>(username, std::move(socket));
 }
 
-void Client::create_session() {
+void Client::create_session(std::string map_name) {
     sf::Packet packet;
 
     {
-        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0};
+        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0, map_name};
         packet << message;
 
         m_user->send_packet(packet);
@@ -130,14 +131,10 @@ void Client::receive_from_server() {
 void Client::render(float time, float& dir) {
     m_window.clear();
 
-
-
-
+    m_level.Draw(m_window);
     for (auto& obj: m_objects) {
         obj->draw(m_window, time, dir);
-   }
-
-
+    }
 
     m_window.display();
 }
@@ -156,6 +153,16 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
         if (message.type == ServerToUserMessage::NewPlayer) {
             NewPlayerMessage message_new = std::get<NewPlayerMessage>(message.value);
             m_objects.push_back(std::make_shared<Player>(message_new.id, message_new.username, sf::Vector2f(message_new.x, message_new.y)));
+            //инициализация карты
+            if (!is_map) {
+                this->m_level.GetMapName() = message_new.map_name;
+                this->m_level.LoadFromFile("../../client/maps/" + message_new.map_name);
+                //инициализация объектов из структуры
+                //TODO: добавлять сюда новые объекты
+                //add_objects(m_level.GetAllObjects("Wall"));
+
+                is_map = true;
+            }
         }
         else if (message.type == ServerToUserMessage::UpdatePlayer) {
             UpdatePlayerMessage message_upd = std::get<UpdatePlayerMessage>(message.value);
@@ -180,5 +187,12 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
 
 }
 
+//void Client::add_objects(std::vector<TmxObject> all_objects) {
+//    for (auto obj: all_objects) {
+//        if (obj.name == "Wall") {
+//            m_objects.push_back(std::maked_shared<Wall>());
+//        }
+//    }
+//}
 
 

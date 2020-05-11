@@ -19,6 +19,7 @@ struct NewPlayerMessage {
     std::string username;
     float x;
     float y;
+    std::string map_name;
     Direction route;
     //sf::Vector2f position;
 };

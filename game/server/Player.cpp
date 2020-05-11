@@ -20,7 +20,12 @@ const sf::Vector2f Player::get_position() const {
     return m_position;
 }
 
-void Player::apply(sf::Vector2f diretcion) {
-    m_direction = diretcion;
+const Direction Player::get_route() {
+    return m_route;
+}
+
+void Player::apply(sf::Vector2f diretcion, Direction dir) {
+    m_direction = diretcion; // сделать вектор игроков
+    m_route = dir;
 }
 

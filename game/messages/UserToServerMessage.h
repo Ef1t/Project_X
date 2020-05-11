@@ -6,6 +6,7 @@
 #define GAME_USERTOSERVERMESSAGE_H
 
 #include <SFML/Network/Packet.hpp>
+#include <memory>
 
 struct Direction {
     bool up;
@@ -31,8 +32,14 @@ struct UserToServerMessage {
     };
 };
 
+
+
 sf::Packet& operator<<(sf::Packet& packet, const UserToServerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, UserToServerMessage& message);
+
+//std::vector<UserToServerMessage> UTSM_vector;
+//using UTSM_PTR = std::shared_ptr<UserToServerMessage>;
+using UTSM_vector = std::vector<UserToServerMessage>;
 
 #endif //GAME_USERTOSERVERMESSAGE_H

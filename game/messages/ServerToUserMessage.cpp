@@ -22,12 +22,12 @@ sf::Packet& operator>>(sf::Packet& packet, NewPlayerMessage& message) {
 
 // UpdatePlayerMessage
 sf::Packet& operator<<(sf::Packet& packet, const UpdatePlayerMessage& message) {
-    return packet << message.id << message.x << message.y;
+    return packet << message.id << message.x << message.y << message.route;
 }
 
 sf::Packet& operator>>(sf::Packet& packet, UpdatePlayerMessage& message) {
 
-    return packet >> message.id >> message.x >> message.y;
+    return packet >> message.id >> message.x >> message.y >> message.route;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

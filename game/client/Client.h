@@ -29,6 +29,8 @@ public:
 
     int run();
 
+
+
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
@@ -39,11 +41,13 @@ private:
 
     void receive_from_server();
 
-    void render();
+    void render(float time, float& dir);
 
     void send_to_server();
 
     void apply_messages(const ServerToUserVectorMessage& messages);
+
+
 };
 
 

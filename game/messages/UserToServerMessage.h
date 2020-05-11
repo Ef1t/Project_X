@@ -6,6 +6,7 @@
 #define GAME_USERTOSERVERMESSAGE_H
 
 #include <SFML/Network/Packet.hpp>
+#include "transition.pb.h"
 
 struct Direction {
     bool up;
@@ -34,5 +35,9 @@ struct UserToServerMessage {
 sf::Packet& operator<<(sf::Packet& packet, const UserToServerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, UserToServerMessage& message);
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerMessage& message);
 
 #endif //GAME_USERTOSERVERMESSAGE_H

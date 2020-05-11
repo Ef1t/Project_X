@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iostream>
 #include <messages/SessionCreatedMessage.h>
+#include "transition.pb.h"
 
 Server::Server(unsigned short port)
         : m_port(port)
@@ -56,15 +57,17 @@ void Server::accept_new_user() {
         socket->receive(packet);
         // FIXME: if user stuck - server stuck too
 
-        UserInitMessage message;
+        trans::UserInitMessage message;
         packet >> message;
+        //UserInitMessage message;
+        //packet >> message;
 
-        std::cout << "New user: " << message.username << " " << static_cast<int>(message.action) << " "
-                  << message.session_id << std::endl;
+        std::cout << "New user: " << message.username() << " " << static_cast<int>(message.action()) << " "
+                  << message.session_id() << std::endl;
 
-        UserPtr user = std::make_shared<User>(message.username, std::move(socket));
+        UserPtr user = std::make_shared<User>(message.username(), std::move(socket));
 
-        switch (message.action) {
+        switch (message.action()) {
             case UserInitMessage::Create: {
                 SessionPtr session = std::make_shared<Session>();
                 session->add_user(user);
@@ -84,7 +87,7 @@ void Server::accept_new_user() {
                 auto session = std::find_if(
                         m_sessions.begin(), m_sessions.end(),
                         [&message = std::as_const(message)](const SessionPtr& session) -> bool {
-                            return session->get_id() == message.session_id;
+                            return session->get_id() == message.session_id();
                         }
                 );
                 

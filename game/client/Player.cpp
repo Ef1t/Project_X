@@ -12,7 +12,7 @@ Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& p
 }
 
 void Player::draw(sf::RenderWindow& window) {
-    std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
+    //std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
     window.draw(m_actor);
 }
 

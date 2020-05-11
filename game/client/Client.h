@@ -43,7 +43,7 @@ private:
 
     void send_to_server();
 
-    void apply_messages(const ServerToUserVectorMessage& messages);
+    void apply_messages(const trans::ServerToUserVectorMessage& messages);
 };
 
 

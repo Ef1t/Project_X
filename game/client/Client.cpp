@@ -13,8 +13,10 @@
 #include <iostream>
 #include <cstring>
 
+#include "transition.pb.h"
+
 Client::Client(const std::string& host, unsigned short port, const std::string& username)
-        : m_window(sf::VideoMode(800, 600), "JOIN")
+        : m_window(sf::VideoMode(800, 600), "game")
         , m_objects() {
     auto socket = std::make_unique<sf::TcpSocket>();
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
@@ -27,8 +29,12 @@ Client::Client(const std::string& host, unsigned short port, const std::string& 
 void Client::create_session() {
     sf::Packet packet;
 
+    trans::UserInitMessage message;
     {
-        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0};
+        message.set_action(trans::UserInitMessage::Create);
+        message.set_username(m_user->get_username());
+        message.set_session_id(0);
+        //UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0};
         packet << message;
 
         m_user->send_packet(packet);
@@ -52,7 +58,11 @@ void Client::join_to(sf::Uint64  session_id) {
     sf::Packet packet;
 
     {
-        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id};
+        trans::UserInitMessage message;
+        //UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id};
+        message.set_action(trans::UserInitMessage::Join);
+        message.set_username(m_user->get_username());
+        message.set_session_id(session_id);
         packet << message;
 
         m_user->send_packet(packet);
@@ -84,7 +94,6 @@ int Client::run() {
 void Client::process_events() {
     sf::Event event{};
     while (m_window.pollEvent(event)) {
-
         switch (event.type) {
             case sf::Event::Closed: {
                 m_window.close();
@@ -106,7 +115,7 @@ void Client::process_events() {
 }
 
 void Client::receive_from_server() {
-    ServerToUserVectorMessage message;
+    trans::ServerToUserVectorMessage message;
 
     sf::Packet packet;
     packet.clear();
@@ -127,8 +136,17 @@ void Client::render() {
 }
 
 void Client::send_to_server() {
-    UserToServerMessage message = {.type=UserToServerMessage::Move};
-    message.direction = m_direction;
+    trans::UserToServerMessage message;
+    trans::UserToServerMessage_Direction *direction = new trans::UserToServerMessage_Direction;
+    direction->set_up(m_direction.up);
+    direction->set_down(m_direction.down);
+    direction->set_left(m_direction.left);
+    direction->set_right(m_direction.right);
+
+    message.set_type(trans::UserToServerMessage::Move);
+    message.set_allocated_direction(direction);
+    //UserToServerMessage message = {.type=UserToServerMessage::Move};
+    //message.direction = m_direction;
 
     sf::Packet packet;
     packet << message;
@@ -136,25 +154,24 @@ void Client::send_to_server() {
     m_user->send_packet(packet);
 }
 
-void Client::apply_messages(const ServerToUserVectorMessage& messages) {
-    for (const ServerToUserMessage& message: messages.messages) {
-        if (message.type == ServerToUserMessage::NewPlayer) {
-            NewPlayerMessage message_new = std::get<NewPlayerMessage>(message.value);
-            m_objects.push_back(std::make_shared<Player>(message_new.id, message_new.username, sf::Vector2f(message_new.x, message_new.y)));
+void Client::apply_messages(const trans::ServerToUserVectorMessage& messages) {
+    for (const trans::ServerToUserMessage& message: messages.vec_messages()) {
+        if (message.type() == trans::ServerToUserMessage::NewPlayer) {
+            m_objects.push_back(std::make_shared<Player>(message.np_msg().id(), message.np_msg().username(),
+                                sf::Vector2f(message.np_msg().x(), message.np_msg().y())));
         }
-        else if (message.type == ServerToUserMessage::UpdatePlayer) {
-            UpdatePlayerMessage message_upd = std::get<UpdatePlayerMessage>(message.value);
-            //std::cout << message_upd.id << "\n";
+        else if (message.type() == ServerToUserMessage::UpdatePlayer) {
             bool is_in = false;
             for (const auto obj: m_objects) {
-                if (obj.get()->get_id() == message_upd.id) {
+                if (obj.get()->get_id() == message.upd_msg().id()) {
                     is_in = true;
-                    std::cout << "ID " << obj->get_id() << " X " <<message_upd.x << " Y " << message_upd.y << "\n";
-                    obj->set_position(sf::Vector2f(message_upd.x, message_upd.y));
+                    //std::cout << "ID " << obj->get_id() << " X " <<message_upd.x << " Y " << message_upd.y << "\n";
+                    obj->set_position(sf::Vector2f(message.upd_msg().x(), message.upd_msg().y()));
                 }
             }
             if (!is_in) {
-                m_objects.push_back(std::make_shared<Player>(message_upd.id, " ", sf::Vector2f(message_upd.x, message_upd.y)));
+                m_objects.push_back(std::make_shared<Player>(message.upd_msg().id(), " ",
+                        sf::Vector2f(message.upd_msg().x(), message.upd_msg().y())));
             }
 
         }

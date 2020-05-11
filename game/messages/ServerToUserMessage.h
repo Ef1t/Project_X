@@ -13,6 +13,8 @@
 #include <vector>
 #include <variant>
 
+#include "transition.pb.h"
+
 struct NewPlayerMessage {
     sf::Uint64 id;
     std::string username;
@@ -25,6 +27,10 @@ sf::Packet& operator<<(sf::Packet& packet, const NewPlayerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, NewPlayerMessage& message);
 
+sf::Packet& operator<<(sf::Packet& packet, const trans::NewPlayerMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::NewPlayerMessage& message);
+
 
 struct UpdatePlayerMessage {
     sf::Uint64 id;
@@ -36,6 +42,10 @@ struct UpdatePlayerMessage {
 sf::Packet& operator<<(sf::Packet& packet, const UpdatePlayerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, UpdatePlayerMessage& message);
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::UpdatePlayerMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::UpdatePlayerMessage& message);
 
 
 struct ServerToUserMessage {
@@ -52,6 +62,10 @@ sf::Packet& operator<<(sf::Packet& packet, const ServerToUserMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, ServerToUserMessage& message);
 
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserMessage& message);
+
 
 struct ServerToUserVectorMessage {
     std::vector<ServerToUserMessage> messages;
@@ -60,6 +74,10 @@ struct ServerToUserVectorMessage {
 sf::Packet& operator<<(sf::Packet& packet, const ServerToUserVectorMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, ServerToUserVectorMessage& message);
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserVectorMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserVectorMessage& message);
 
 
 #endif //GAME_SERVERTOUSERMESSAGE_H

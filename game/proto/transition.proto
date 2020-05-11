@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package trans;
+
+// Start User to Server message
+message UserToServerMessage {
+    enum MessageType {
+        Standby = 0;
+        Move = 1;
+    };
+
+    MessageType type = 1;
+
+    message Direction{
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+    };
+
+    Direction direction = 2;
+};
+// End User to Server message
+
+
+// Start Session Created message
+message SessionCreatedMessage {
+    int32 session_id = 1;
+};
+// End Session Created message
+
+// Start user init message
+message UserInitMessage {
+    enum Action {
+        Create = 0;
+        Join = 1;
+    };
+
+    Action action = 1;
+    string username = 2;
+    int32 session_id = 3;
+};
+// End user init message
+
+
+// Start Server to User message
+message NewPlayerMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+};
+
+message UpdatePlayerMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+};
+
+message ServerToUserMessage {
+    enum MessageType {
+        NewPlayer = 0;
+        UpdatePlayer = 1;
+    };
+
+    MessageType type = 1;
+    NewPlayerMessage np_msg = 2;
+    UpdatePlayerMessage upd_msg = 3;
+};
+
+message ServerToUserVectorMessage {
+    repeated ServerToUserMessage vec_messages = 1;
+};

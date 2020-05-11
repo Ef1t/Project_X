@@ -31,3 +31,18 @@ sf::Packet& operator>>(sf::Packet& packet, UserToServerMessage& message) {
             return packet >> message.direction;
     }
 }
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& message) {
+    std::string code;
+    message.SerializeToString(&code);
+    return packet << code;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerMessage& message) {
+    std::string code;
+    packet >> code;
+
+    message.ParseFromString(code);
+    
+    return packet;
+}

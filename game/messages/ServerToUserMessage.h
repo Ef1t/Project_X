@@ -8,6 +8,7 @@
 
 #include <SFML/Network/Packet.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "messages/UserToServerMessage.h"
 
 #include <string>
 #include <vector>
@@ -19,6 +20,7 @@ struct NewPlayerMessage {
     float x;
     float y;
     std::string map_name;
+    Direction route;
     //sf::Vector2f position;
 };
 
@@ -31,6 +33,7 @@ struct UpdatePlayerMessage {
     sf::Uint64 id;
     float x;
     float y;
+    Direction route;
     //sf::Vector2f position;
 };
 

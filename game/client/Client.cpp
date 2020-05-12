@@ -17,15 +17,19 @@ short ID = 5;
 
 
 Client::Client(const std::string& host, unsigned short port, const std::string& username)
-        : m_window(sf::VideoMode(800, 600), "JOIN")
+        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3")
         , m_objects()
-        , is_map(false) {
+        , is_map(false)
+        , this_player_id(0) {
     auto socket = std::make_unique<sf::TcpSocket>();
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
         throw std::runtime_error(std::strerror(errno));
     }
     std::cout << ID << '\n';
     m_user = std::make_shared<User>(username, std::move(socket));
+    //тут меняется область видимости камера
+    //NOTE отношение строном области видимости должно совпадать с отшонешием сторон окна
+    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
 }
 
 void Client::create_session(std::string map_name) {
@@ -112,14 +116,11 @@ void Client::process_events() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && m_window.hasFocus())
         m_direction.right = true;
     m_direction.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S) && m_window.hasFocus();
-
-
-
 }
 
 void Client::receive_from_server() {
     ServerToUserVectorMessage message;
-    std::cout << ID << " ID PLAYERA \n";
+    //std::cout << ID << " ID PLAYERA \n";
     sf::Packet packet;
     packet.clear();
     while (m_user->receive_packet(packet) != sf::Socket::Done) {;}
@@ -130,12 +131,12 @@ void Client::receive_from_server() {
 
 void Client::render(float time, float& dir) {
     m_window.clear();
+    m_window.setView(view.get_view());
 
     m_level.Draw(m_window);
     for (auto& obj: m_objects) {
         obj->draw(m_window, time, dir);
     }
-
     m_window.display();
 }
 
@@ -160,8 +161,10 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
                 //инициализация объектов из структуры
                 //TODO: добавлять сюда новые объекты
                 //add_objects(m_level.GetAllObjects("Wall"));
-
                 is_map = true;
+            }
+            if (!this_player_id) {
+                this_player_id = message_new.id;
             }
         }
         else if (message.type == ServerToUserMessage::UpdatePlayer) {
@@ -171,20 +174,19 @@ void Client::apply_messages(const ServerToUserVectorMessage& messages) {
             for (const auto obj: m_objects) {
                 if (obj.get()->get_id() == message_upd.id) {
                     is_in = true;
-                    std::cout << "ID " << obj->get_id() << " X " <<message_upd.x << " Y " << message_upd.y << "\n";
+                    //std::cout << "ID " << obj->get_id() << " X " << message_upd.x << " Y " << message_upd.y << "\n";
                     obj->set_position(sf::Vector2f(message_upd.x, message_upd.y));
                     obj->set_direction(message_upd.route);
+                    if (this_player_id == message_upd.id) {
+                        view.set_view(message_upd.x, message_upd.y, m_level.GetTilemapWidth(), m_level.GetTilemapHeight());
+                    }
                 }
             }
             if (!is_in) {
                 m_objects.push_back(std::make_shared<Player>(message_upd.id, " ", sf::Vector2f(message_upd.x, message_upd.y)));
-
             }
-
-
         }
     }
-
 }
 
 //void Client::add_objects(std::vector<TmxObject> all_objects) {

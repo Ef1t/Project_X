@@ -6,6 +6,7 @@
 #include "Skin.h"
 
 
+
     Skin::Skin() {
     heroimage.loadFromFile("../../images/pigcop_vest.png");
     herotexture.loadFromImage((heroimage));
@@ -13,8 +14,6 @@
     herosprite.setTextureRect(sf::IntRect(0,192,96,96));
     //herosprite.setTextureRect(IntRect(0,192,96,96));
     herosprite.setPosition(250, 250);
-
-
 }
 
 

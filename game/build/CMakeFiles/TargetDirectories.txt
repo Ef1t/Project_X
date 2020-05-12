@@ -1,8 +1,0 @@
-/home/yaroslav/X/Project_X/game/build/CMakeFiles/rebuild_cache.dir
-/home/yaroslav/X/Project_X/game/build/CMakeFiles/edit_cache.dir
-/home/yaroslav/X/Project_X/game/build/server/CMakeFiles/rebuild_cache.dir
-/home/yaroslav/X/Project_X/game/build/server/CMakeFiles/edit_cache.dir
-/home/yaroslav/X/Project_X/game/build/server/CMakeFiles/server.dir
-/home/yaroslav/X/Project_X/game/build/client/CMakeFiles/rebuild_cache.dir
-/home/yaroslav/X/Project_X/game/build/client/CMakeFiles/edit_cache.dir
-/home/yaroslav/X/Project_X/game/build/client/CMakeFiles/client.dir

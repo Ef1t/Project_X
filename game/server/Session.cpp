@@ -48,7 +48,7 @@ void Session::update(float dt) {
     }
     for (auto& item: m_users) {
         auto& player = item.second;
-        player->update(dt * 10);
+        player->update(dt * 20);
 
         UpdatePlayerMessage update_player_message = {player->get_id(), player->get_position().x, player->get_position().y, player->get_route()}; //запихнуть направление сюда
         std::cout<<player->get_route().up<<" UP message \n"; //добавил get_route

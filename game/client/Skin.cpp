@@ -6,15 +6,13 @@
 #include "Skin.h"
 
 
-    Skin::Skin() {
-    heroimage.loadFromFile("/home/yaroslav/X/Project_X/game/images/hero.png");
+Skin::Skin() {
+    heroimage.loadFromFile("../../images/hero.png");
     herotexture.loadFromImage((heroimage));
     herosprite.setTexture(herotexture);
     herosprite.setTextureRect(sf::IntRect(0,192,96,96));
     //herosprite.setTextureRect(IntRect(0,192,96,96));
     herosprite.setPosition(250, 250);
-
-
 }
 
 

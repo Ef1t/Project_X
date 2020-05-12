@@ -13,6 +13,7 @@
 #include "common/User.h"
 #include "Object.h"
 #include "TmxLevel.h"
+#include "View.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -41,6 +42,8 @@ private:
     Direction m_direction;
     TmxLevel m_level;
     bool is_map;
+    View view;
+    int this_player_id;
 
     void process_events();
 

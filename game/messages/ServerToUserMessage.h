@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <variant>
+#include "transition.pb.h"
 
 struct NewPlayerMessage {
     sf::Uint64 id;
@@ -21,7 +22,6 @@ struct NewPlayerMessage {
     float y;
     std::string map_name;
     Direction route;
-    //sf::Vector2f position;
 };
 
 sf::Packet& operator<<(sf::Packet& packet, const NewPlayerMessage& message);
@@ -34,7 +34,6 @@ struct UpdatePlayerMessage {
     float x;
     float y;
     Direction route;
-    //sf::Vector2f position;
 };
 
 sf::Packet& operator<<(sf::Packet& packet, const UpdatePlayerMessage& message);
@@ -56,6 +55,10 @@ sf::Packet& operator<<(sf::Packet& packet, const ServerToUserMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, ServerToUserMessage& message);
 
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserMessage& message);
+
 
 struct ServerToUserVectorMessage {
     std::vector<ServerToUserMessage> messages;
@@ -64,6 +67,10 @@ struct ServerToUserVectorMessage {
 sf::Packet& operator<<(sf::Packet& packet, const ServerToUserVectorMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, ServerToUserVectorMessage& message);
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserVectorMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserVectorMessage& message);
 
 
 #endif //GAME_SERVERTOUSERMESSAGE_H

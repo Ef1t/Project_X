@@ -10,6 +10,8 @@
 #include "messages/SessionCreatedMessage.h"
 #include "messages/UserInitMessage.h"
 #include "messages/ServerToUserMessage.h"
+
+#include "transition.pb.h"
 #include "common/User.h"
 #include "Object.h"
 #include "TmxLevel.h"
@@ -18,6 +20,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <string>
+#include "transition.pb.h"
 
 using Objects = std::vector<ObjectPtr>;
 
@@ -53,7 +56,7 @@ private:
 
     void send_to_server();
 
-    void apply_messages(const ServerToUserVectorMessage& messages);
+    void apply_messages(const trans::ServerToUserVectorMessage& messages);
 
 
 };

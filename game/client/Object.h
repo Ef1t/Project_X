@@ -10,6 +10,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "messages/UserToServerMessage.h"
+#include "transition.pb.h"
 
 #include <memory>
 

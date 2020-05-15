@@ -28,7 +28,7 @@ private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
     float m_velocity;
-    Direction m_route; //направление игрока
+    Direction m_route; // Players route
 
 };
 

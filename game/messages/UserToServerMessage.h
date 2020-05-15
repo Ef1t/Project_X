@@ -7,6 +7,7 @@
 
 #include <SFML/Network/Packet.hpp>
 #include <memory>
+#include "transition.pb.h"
 
 struct Direction {
     bool up;
@@ -15,10 +16,9 @@ struct Direction {
     bool down;
 };
 
-sf::Packet& operator<<(sf::Packet& packet, const Direction& direction);
+sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& message);
 
-sf::Packet& operator>>(sf::Packet& packet, Direction& direction);
-
+sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerMessage& message);
 
 struct UserToServerMessage {
     enum MessageType {
@@ -32,14 +32,6 @@ struct UserToServerMessage {
     };
 };
 
-
-
-sf::Packet& operator<<(sf::Packet& packet, const UserToServerMessage& message);
-
-sf::Packet& operator>>(sf::Packet& packet, UserToServerMessage& message);
-
-//std::vector<UserToServerMessage> UTSM_vector;
-//using UTSM_PTR = std::shared_ptr<UserToServerMessage>;
 using UTSM_vector = std::vector<UserToServerMessage>;
 
 #endif //GAME_USERTOSERVERMESSAGE_H

@@ -36,7 +36,11 @@ void Client::create_session(std::string map_name) {
     sf::Packet packet;
 
     {
-        UserInitMessage message = {UserInitMessage::Create, m_user->get_username(), 0, map_name};
+        trans::UserInitMessage message;
+        message.set_action(trans::UserInitMessage::Create);
+        message.set_username(m_user->get_username());
+        message.set_session_id(0);
+        message.set_map_name(map_name);
         packet << message;
 
         m_user->send_packet(packet);
@@ -48,10 +52,10 @@ void Client::create_session(std::string map_name) {
         while (m_user->receive_packet(packet) != sf::Socket::Done) {
         }
 
-        SessionCreatedMessage message{};
+        trans::SessionCreatedMessage message;
         packet >> message;
 
-        std::cout << "New session created. Session ID: " << message.session_id << std::endl;
+        std::cout << "New session created. Session ID: " << message.session_id() << std::endl;
 
     }
 
@@ -59,9 +63,11 @@ void Client::create_session(std::string map_name) {
 
 void Client::join_to(sf::Uint64  session_id) {
     sf::Packet packet;
-
     {
-        UserInitMessage message = {UserInitMessage::Join, m_user->get_username(), session_id};
+        trans::UserInitMessage message;
+        message.set_action(trans::UserInitMessage::Join);
+        message.set_username(m_user->get_username());
+        message.set_session_id(session_id);
         packet << message;
 
         m_user->send_packet(packet);
@@ -87,7 +93,6 @@ int Client::run() {
             render(time,current_frame);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
-
         }
     }
 
@@ -119,10 +124,8 @@ void Client::process_events() {
 }
 
 void Client::receive_from_server() {
-    ServerToUserVectorMessage message;
-    //std::cout << ID << " ID PLAYERA \n";
+    trans::ServerToUserVectorMessage message;
     sf::Packet packet;
-    packet.clear();
     while (m_user->receive_packet(packet) != sf::Socket::Done) {;}
     packet >> message;
 
@@ -141,49 +144,59 @@ void Client::render(float time, float& dir) {
 }
 
 void Client::send_to_server() {
-    UserToServerMessage message {.type=UserToServerMessage::Move};
-    message.direction = m_direction;
-    sf::Packet packet;
+    trans::UserToServerMessage message;
+    trans::UserToServerMessage_Direction *direction = new trans::UserToServerMessage_Direction;
+    direction->set_up(m_direction.up);
+    direction->set_down(m_direction.down);
+    direction->set_left(m_direction.left);
+    direction->set_right(m_direction.right);
 
+    message.set_type(trans::UserToServerMessage::Move);
+    message.set_allocated_direction(direction);
+    //UserToServerMessage message = {.type=UserToServerMessage::Move};
+    //message.direction = m_direction;
+
+    sf::Packet packet;
     packet << message;
+
     m_user->send_packet(packet);
 }
 
-void Client::apply_messages(const ServerToUserVectorMessage& messages) {
-    for (const ServerToUserMessage& message: messages.messages) {
-        if (message.type == ServerToUserMessage::NewPlayer) {
-            NewPlayerMessage message_new = std::get<NewPlayerMessage>(message.value);
-            m_objects.push_back(std::make_shared<Player>(message_new.id, message_new.username, sf::Vector2f(message_new.x, message_new.y)));
-            //инициализация карты
+void Client::apply_messages(const trans::ServerToUserVectorMessage& messages) {
+    for (const trans::ServerToUserMessage& message: messages.vec_messages()) {
+        if (message.type() == trans::ServerToUserMessage::NewPlayer) {
+            m_objects.push_back(std::make_shared<Player>(message.np_msg().id(), message.np_msg().username(),
+                                                         sf::Vector2f(message.np_msg().x(), message.np_msg().y())));
+
             if (!is_map) {
-                this->m_level.GetMapName() = message_new.map_name;
-                this->m_level.LoadFromFile("../../client/maps/" + message_new.map_name);
-                //инициализация объектов из структуры
-                //TODO: добавлять сюда новые объекты
-                //add_objects(m_level.GetAllObjects("Wall"));
+                std::cout << message.np_msg().map_name();
+                this->m_level.GetMapName() = message.np_msg().map_name();
+                this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
+
                 is_map = true;
             }
-            if (!this_player_id) {
-                this_player_id = message_new.id;
+            if(!this_player_id) {
+                this_player_id = message.np_msg().id();
             }
         }
-        else if (message.type == ServerToUserMessage::UpdatePlayer) {
-            UpdatePlayerMessage message_upd = std::get<UpdatePlayerMessage>(message.value);
-            //std::cout << message_upd.id << "\n";
+        else if (message.type() == trans::ServerToUserMessage::UpdatePlayer) {
             bool is_in = false;
             for (const auto obj: m_objects) {
-                if (obj.get()->get_id() == message_upd.id) {
+                if (obj.get()->get_id() == message.upd_msg().id()) {
                     is_in = true;
-                    //std::cout << "ID " << obj->get_id() << " X " << message_upd.x << " Y " << message_upd.y << "\n";
-                    obj->set_position(sf::Vector2f(message_upd.x, message_upd.y));
-                    obj->set_direction(message_upd.route);
-                    if (this_player_id == message_upd.id) {
-                        view.set_view(message_upd.x, message_upd.y, m_level.GetTilemapWidth(), m_level.GetTilemapHeight());
+                    obj->set_position(sf::Vector2f(message.upd_msg().x(), message.upd_msg().y()));
+                    Direction direction = {message.upd_msg().direction().up(), message.upd_msg().direction().left(),
+                                           message.upd_msg().direction().right(), message.upd_msg().direction().down()};
+                    obj->set_direction(direction);
+                    if (this_player_id == message.upd_msg().id()) {
+                        view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
+                                      m_level.GetTilemapHeight());
                     }
                 }
             }
             if (!is_in) {
-                m_objects.push_back(std::make_shared<Player>(message_upd.id, " ", sf::Vector2f(message_upd.x, message_upd.y)));
+                m_objects.push_back(
+                        std::make_shared<Player>(message.upd_msg().id(), " ", sf::Vector2f(message.upd_msg().x(), message.upd_msg().y())));
             }
         }
     }

@@ -12,6 +12,7 @@
 #include <map>
 #include <memory>
 #include "common/User.h"
+#include "transition.pb.h"
 
 using Users = std::map<UserPtr, PlayerPtr>;
 
@@ -34,8 +35,7 @@ private:
     sf::Uint64 m_id;
     Users m_users;
     std::string map_name;
-
-    ServerToUserVectorMessage m_messages;
+    trans::ServerToUserVectorMessage m_messages;
 
     void notify_all();
 };

@@ -16,7 +16,6 @@ void Player::update(float dt) {
 }
 
 const sf::Vector2f Player::get_position() const {
-    //std::cout << m_position.x << " " << m_position.y << "\n";
     return m_position;
 }
 

@@ -5,12 +5,14 @@
 #ifndef GAME_SESSION_H
 #define GAME_SESSION_H
 
-#include "Player.h"
-#include "messages/ServerToUserMessage.h"
-#include "messages/UserToServerMessage.h"
-
 #include <map>
 #include <memory>
+
+#include "Wall.h"
+#include "Player.h"
+#include "GameObject.h"
+#include "messages/ServerToUserMessage.h"
+#include "messages/UserToServerMessage.h"
 #include "common/User.h"
 #include "transition.pb.h"
 
@@ -35,6 +37,7 @@ private:
     sf::Uint64 m_id;
     Users m_users;
     std::string map_name;
+    std::vector<std::shared_ptr<GameObject>> m_objects;
     trans::ServerToUserVectorMessage m_messages;
 
     void notify_all();

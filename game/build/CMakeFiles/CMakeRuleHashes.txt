@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+d6237eda43d2af0e9da3920f2fd49fe0 client/transition.pb.h
+782b63bce4899bb8d3047fcea1ca77eb server/transition.pb.h

@@ -11,7 +11,9 @@ sf::Packet& operator>>(sf::Packet& packet, SessionCreatedMessage& message) {
     return packet >> message.session_id;
 }
 
-sf::Packet& operator<<(sf::Packet& packet, const trans::SessionCreatedMessage& message) {
+sf::Packet& operator<<(sf::Packet& packet, const trans::SessionCreatedMessage& message);
+
+sf::Packet &operator<<(sf::Packet &packet, const trans::SessionCreatedMessage &message) {
     std::string code;
     message.SerializeToString(&code);
     return packet << code;

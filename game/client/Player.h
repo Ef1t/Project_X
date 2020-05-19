@@ -21,14 +21,12 @@ public:
 
     void draw(sf::RenderWindow& window, float time, float& current_frame) override;
 
+    void draw_stat(sf::RenderWindow& window) override ;
+
     void set_position(const sf::Vector2f& position) override;
 
     void set_direction(Direction dir) override;
 
-    //virtual void go_texure(Direction dir, float time, float& current_frame) = 0;
-
-   // void go_texure1(Direction dir, float time, float& current_frame);
-   //Direction get_direction();
 
 private:
     std::string m_username;

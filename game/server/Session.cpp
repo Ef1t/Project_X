@@ -8,21 +8,25 @@
 
 sf::Uint64 Session::next_id = 10;
 
+
 Session::Session()
-        : m_id(next_id++)
-        , m_users()
-        , m_messages() {
+        : m_id(next_id++), m_users(), m_messages() {
 }
 
 void Session::update(float dt) {
-    for (auto & m_user : m_users) {
+    for (auto &m_user : m_users) {
         sf::Packet packet;
-        auto& user = m_user.first;
-        auto& player = m_user.second;
+        auto &user = m_user.first;
+        auto &player = m_user.second;
         UserSocket socket = user->get_socket();
         if (socket->receive(packet) == sf::Socket::Done) {
             trans::UserToServerMessage message;
             packet >> message;
+            // std:: cout << message.b_direction().up() << " Bullet UP\n";
+            //std:: cout << message.b_direction().down() << " Bullet D\n";
+            // std:: cout << message.b_direction().right() << " Bullet R\n";
+            // std:: cout << message.b_direction().left() << " Bullet L\n";
+            // std::cout << '\n';
             if (message.type() == trans::UserToServerMessage::Move) {
                 sf::Vector2f dir;
                 if (message.direction().up()) {
@@ -37,33 +41,132 @@ void Session::update(float dt) {
                 if (message.direction().right()) {
                     dir.x++;
                 }
-                Direction direction = {message.direction().up(), message.direction().left(), message.direction().right(), message.direction().down()};
+                //std::cout << player->get_route().fire << " Firesdasadasdsaadsds\n";
+                Direction direction = {message.direction().up(), message.direction().left(),
+                                       message.direction().right(),
+                                       message.direction().down(), message.direction().fire()};
                 player->apply(dir, direction);
+
+                Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
+                                         message.b_direction().right(), message.b_direction().down()};
+
+                if (player->get_route().fire == 1) { //если нажата клавижа space, создаем пулю
+                    add_bullet(user, player->get_position().x, player->get_position().y, b_direction);
+
+                    //add_bullet(player->get_id(), 500, 500);
+
+                }
+
+
             }
+            //стрельба
         }
         user->receive_socket(socket);
     }
-    for (auto& item: m_users) {
-        auto& player = item.second;
-        player->update(dt * 10);
+    for (auto &item: m_users) {
+        auto &player = item.second;
 
-        auto *direction = new trans::UpdatePlayerMessage::Direction;
-        direction->set_up(player->get_route().up);
-        direction->set_down(player->get_route().down);
-        direction->set_left(player->get_route().left);
-        direction->set_right(player->get_route().right);
+        if (player->m_name == n_player) {
+            player->update(dt * 10);
+            //std::cout << player->get_route().fire << " Fire\n";
+            //std::cout << player->get_route().up << " W\n";
 
-        auto *update_message = new trans::UpdatePlayerMessage;
-        update_message->set_id(player->get_id());
-        update_message->set_x(player->get_position().x);
-        update_message->set_y(player->get_position().y);
-        update_message->set_allocated_direction(direction);
+            // std::cout << player->m_name << " Name object\n";
 
-        auto server_message = m_messages.add_vec_messages();
-        server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
-        server_message->set_allocated_upd_msg(update_message);
+            auto *direction = new trans::UpdatePlayerMessage::Direction;
+            direction->set_up(player->get_route().up);
+            direction->set_down(player->get_route().down); //почему не зануляются??
+            direction->set_left(player->get_route().left);
+            direction->set_right(player->get_route().right);
+
+            auto *update_message = new trans::UpdatePlayerMessage;
+            update_message->set_id(player->get_id());
+            update_message->set_x(player->get_position().x);
+            update_message->set_y(player->get_position().y);
+            update_message->set_allocated_direction(direction);
+
+
+            auto server_message = m_messages.add_vec_messages();
+            server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
+            server_message->set_allocated_upd_msg(update_message);
+        }
+
+
+
+        // if(player->m_name == n_bullet) {
+        //   std:: cout << "Hello< Bullet!)\n";
+        //  }
+
+        //if (player->get_route().fire == 1) { //если нажата клавижа space, создаем пулю
+        // add_bullet(item.first,player->get_id(), player->get_position().x, player->get_position().y);
+        //add_bullet(player->get_id(), 500, 500);
+
+        // }
+
+
+
 
     }
+    int i = 0;
+    //std::cout << m_bullets.size() << "= SIZE\n";
+    for (auto &bullet: m_bullets) {
+
+
+        ++i;
+        bullet->update(dt);
+
+
+        if ((bullet->get_position().x > 1000) || (bullet->get_position().y > 1000) || (bullet->get_position().x < 0) ||
+            (bullet->get_position().y < 0)) {
+            std::cout << " JOE\n";
+            BulletPtr temp;
+            temp = bullet;
+//            m_bullets[i] = m_bullets[m_bullets.size() - 1];
+//            m_bullets[m_bullets.size() - 1] = temp;
+//            m_bullets.pop_back();
+//            m_bullets.resize(m_bullets.size()-1);
+            auto *update_message_bul = new trans::UpdateBulletMessage;
+            update_message_bul->set_state(0);
+            update_message_bul->set_name(n_bullet);
+            update_message_bul->set_id(bullet->get_id());
+            auto server_message = m_messages.add_vec_messages();
+            server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
+            server_message->set_allocated_ub_msg(update_message_bul);
+            std::cout << "DELETE\n";
+            //m_bullets.erase();
+        } else {
+
+            auto *update_message_bul = new trans::UpdateBulletMessage;
+            update_message_bul->set_id(bullet->get_id());
+            update_message_bul->set_state(1);
+            update_message_bul->set_x(bullet->get_position().x);
+            update_message_bul->set_y(bullet->get_position().y);
+            update_message_bul->set_name(n_bullet);
+            //update_message->set_allocated_direction(direction);
+            std::cout << bullet->get_position().x << " x\n";
+            std::cout << bullet->get_position().y << " y\n";
+
+//
+
+            auto server_message = m_messages.add_vec_messages();
+            server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
+            server_message->set_allocated_ub_msg(update_message_bul);
+        }
+//
+//
+//
+//
+    }
+
+    /* for (auto& item: m_bullets) {
+         auto& bullet = item.second;
+         bullet->update(dt);
+         auto *update_bullet_message = new trans::UpdateBulletMessage;
+         update_bullet_message->set_x(bullet->get_position().x);
+         update_bullet_message->set_y(bullet->get_position().y);
+         std::cout << bullet->get_position().x << " X\n";
+         std::cout << bullet->get_position().y << " Y\n";
+     } */
 
     notify_all();
 }
@@ -82,7 +185,7 @@ void Session::add_user(UserPtr user) {
     m_users[user] = player;
 
 
-    auto new_player_message = new trans::NewPlayerMessage ;
+    auto new_player_message = new trans::NewPlayerMessage;
     new_player_message->set_id(player->get_id());
     new_player_message->set_username(user->get_username());
     new_player_message->set_x(player->get_position().x);
@@ -91,16 +194,50 @@ void Session::add_user(UserPtr user) {
 
     auto server_message = m_messages.add_vec_messages();
     server_message->set_allocated_np_msg(new_player_message);
+    server_message->set_type(trans::ServerToUserMessage::NewPlayer);
 
+}
+
+void Session::add_bullet(UserPtr user, float x, float y, Direction b_dir) {
+    auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir);
+
+    m_bullets.push_back(bullet);
+
+
+    auto new_bullet_message = new trans::NewBulletMessage;
+
+    std::cout << bullet->get_id() << " m_id bullet\n";
+    new_bullet_message->set_id(bullet->get_id());            //ХЗ ПОЧЕМУ НЕ РАБОТАЕТ
+    new_bullet_message->set_x(x);
+    new_bullet_message->set_y(y);
+    new_bullet_message->set_name(n_bullet);
+
+
+    auto server_message = m_messages.add_vec_messages();
+    server_message->set_allocated_nb_msg(new_bullet_message);
+    server_message->set_type(trans::ServerToUserMessage::NewBullet);
+
+
+    std::cout << "BOOM BOOM :)\n";
 }
 
 void Session::notify_all() {
     sf::Packet packet;
     packet << m_messages;
 
-    for (auto & m_user: m_users) {
+    for (auto &m_user: m_users) {
+        // std::cout << "X = " << m_user.second->get_position().x << "\n";
+        // std::cout << "y = " << m_user.second->get_position().y << "\n";
         m_user.first->send_packet(packet);
+
+
     }
+
+    //for (auto & m_bullet: m_bullets) {
+    //   std:: cout << "Update BOOM BOOM :)\n";
+    //   m_bullet.first->send_packet(packet);
+    // }
+
     m_messages.clear_vec_messages();
     // TODO: check user connection: if sending fails -> remove that user from m_users + add send DeletePlayerMessage to all
 }

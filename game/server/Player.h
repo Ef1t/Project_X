@@ -18,11 +18,11 @@ public:
 
     void update(float dt) override;
 
-    void apply(sf::Vector2f diretcion, Direction dir);
+    void apply(sf::Vector2f diretcion, Direction dir) override ;
 
-    const sf::Vector2f get_position() const;
+    const sf::Vector2f get_position() const override ;
 
-    const Direction get_route();
+    const Direction get_route() override ;
 
 private:
     sf::Vector2f m_position;

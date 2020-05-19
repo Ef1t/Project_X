@@ -15,6 +15,32 @@
 #include <variant>
 #include "transition.pb.h"
 
+struct NewBulletMessage {
+    sf::Uint64 id_player;
+    float x;
+    float y;
+   // std::string map_name;
+   // Direction route;
+};
+
+sf::Packet& operator<<(sf::Packet& packet, const NewBulletMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, NewBulletMessage& message);
+
+
+struct UpdateBulletMessage {
+    float x;
+    float y;
+    Direction route;
+};
+
+sf::Packet& operator<<(sf::Packet& packet, const UpdateBulletMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, UpdateBulletMessage& message);
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct NewPlayerMessage {
     sf::Uint64 id;
     std::string username;
@@ -40,15 +66,17 @@ sf::Packet& operator<<(sf::Packet& packet, const UpdatePlayerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, UpdatePlayerMessage& message);
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ServerToUserMessage {
     enum MessageType {
         NewPlayer = 0,
         UpdatePlayer,
+        NewBullet,
+        UpdateBullet,
     };
 
     MessageType type;
-    std::variant<NewPlayerMessage, UpdatePlayerMessage> value;
+    std::variant<NewPlayerMessage, UpdatePlayerMessage, NewBulletMessage, UpdateBulletMessage> value;
 };
 
 sf::Packet& operator<<(sf::Packet& packet, const ServerToUserMessage& message);

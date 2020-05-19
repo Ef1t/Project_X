@@ -14,6 +14,7 @@ struct Direction {
     bool left;
     bool right;
     bool down;
+    bool fire;
 };
 
 sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& message);

@@ -5,7 +5,9 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-
+#include <string>
+#include <vector>
+#include <variant>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -14,9 +16,14 @@
 
 #include <memory>
 
+#define n_player 0
+#define n_bullet 1
+
 class Object {
 public:
-    explicit Object(sf::Uint64 id, const sf::Vector2f& position);
+    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name);
+
+    //explicit Object( const sf::Vector2f& position);
 
     virtual
     void set_position(const sf::Vector2f& position);
@@ -25,15 +32,14 @@ public:
     void set_direction(const Direction dir);
 
     virtual
-    void draw(sf::RenderWindow& window,  float time, float& current_frame) = 0;
+    void draw(sf::RenderWindow& window,  float time, float& current_frame) = 0; //вопрос, почему нельзя переопределить ее
 
-    //virtual void go_texure1(Direction dir, float time, float& current_frame) = 0;
+    virtual
+    void draw_stat(sf::RenderWindow& window) = 0;
 
-    //virtual
-    //void go_texure(Direction dir, float time, float& current_frame) = 0;
+   // virtual
+   // void draw(sf::RenderWindow& window) = 0;
 
-
-    //void set_direction(Direction dir);
 
     Direction get_direction();
 
@@ -42,10 +48,16 @@ public:
     float get_x() const;
     float get_y() const;
 
+
+
+    short object_name;
+    //short o_type;
+
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;
     Direction m_dir;
+    std::string m_name;
 
 };
 

@@ -16,6 +16,7 @@
 #include "Object.h"
 #include "TmxLevel.h"
 #include "View.h"
+#include "Bullet.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -36,6 +37,10 @@ public:
 
     int run();
 
+    void apply_dir_b();
+
+
+
 
 
 private:
@@ -43,6 +48,7 @@ private:
     sf::RenderWindow m_window;
     Objects m_objects;
     Direction m_direction;
+    Direction m_direction_bullet;
     TmxLevel m_level;
     bool is_map;
     View view;

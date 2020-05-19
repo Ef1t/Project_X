@@ -23,8 +23,8 @@ const Direction Player::get_route() {
     return m_route;
 }
 
-void Player::apply(sf::Vector2f diretcion, Direction dir) {
-    m_direction = diretcion; // сделать вектор игроков
+void Player::apply(sf::Vector2f direction, Direction dir) {
+    m_direction = direction; // сделать вектор игроков
     m_route = dir;
 }
 

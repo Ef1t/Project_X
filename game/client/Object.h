@@ -14,9 +14,12 @@
 
 #include <memory>
 
+#define n_player 0
+#define n_bot 1
+
 class Object {
 public:
-    explicit Object(sf::Uint64 id, const sf::Vector2f& position);
+    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name);
 
     virtual
     void set_position(const sf::Vector2f& position);
@@ -31,7 +34,8 @@ public:
 
     //virtual
     //void go_texure(Direction dir, float time, float& current_frame) = 0;
-
+    virtual
+    void draw_stat(sf::RenderWindow& window) = 0;
 
     //void set_direction(Direction dir);
 
@@ -41,6 +45,8 @@ public:
 
     float get_x() const;
     float get_y() const;
+
+    short object_name;
 
 protected:
     sf::Uint64 m_id;

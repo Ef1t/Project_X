@@ -13,6 +13,7 @@
 #include <memory>
 #include "common/User.h"
 #include "transition.pb.h"
+#include "Enemy.h"
 
 using Users = std::map<UserPtr, PlayerPtr>;
 
@@ -27,6 +28,7 @@ public:
     sf::Uint64 get_id() const;
 
     void add_user(UserPtr user);
+    void add_enemy();
 
     std::string& get_map();
 
@@ -36,6 +38,7 @@ private:
     Users m_users;
     std::string map_name;
     trans::ServerToUserVectorMessage m_messages;
+    std::vector<EnemyPtr> m_enemies;
 
     void notify_all();
 };

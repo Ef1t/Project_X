@@ -5,6 +5,7 @@
 #include "Client.h"
 #include "Object.h"
 #include "Player.h"
+#include "Enemy.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -138,8 +139,15 @@ void Client::render(float time, float& dir) {
 
     m_level.Draw(m_window);
     for (auto& obj: m_objects) {
-        obj->draw(m_window, time, dir);
+        if (obj->object_name == 0) {
+            obj->draw(m_window, time, dir);
+        }
+        else if (obj->object_name == 1) {
+            obj->draw_stat(m_window);
+        }
+
     }
+
     m_window.display();
 }
 
@@ -198,7 +206,24 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage& messages) {
                 m_objects.push_back(
                         std::make_shared<Player>(message.upd_msg().id(), " ", sf::Vector2f(message.upd_msg().x(), message.upd_msg().y())));
             }
+       }
+       else if (message.type() == trans::ServerToUserMessage::NewBot) {
+            m_objects.push_back(
+                    std::make_shared<Enemy>(message.nb_msg().id(), sf::Vector2f(message.nb_msg().x(), message.nb_msg().y())));
+
         }
+       else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
+            for (const auto obj: m_objects) {
+                if (obj.get()->get_id() == message.ub_msg().id()) {
+                    puts("lol3");
+                    obj->set_position(sf::Vector2f(message.ub_msg().x(), message.ub_msg().y()));
+                    puts("KEK");
+                    std::cout<<message.ub_msg().x();
+                    std::cout<<message.ub_msg().y();
+                    puts("KEK");
+                }
+            }
+       }
     }
 }
 

@@ -25,6 +25,8 @@ public:
 
     void set_direction(Direction dir) override;
 
+    void draw_stat(sf::RenderWindow& window) override;
+
     //virtual void go_texure(Direction dir, float time, float& current_frame) = 0;
 
    // void go_texure1(Direction dir, float time, float& current_frame);

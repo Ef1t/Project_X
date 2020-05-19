@@ -2,22 +2,24 @@
 // Created by tsv on 18.04.19.
 //
 
+#include <iostream>
+
 #include "Session.h"
 #include "messages/ServerToUserMessage.h"
 #include "iostream"
 #include "Enemy.h"
 
+
 sf::Uint64 Session::next_id = 10;
 
 Session::Session()
-        : m_id(next_id++)
-        , m_users()
-        , m_messages() {
+        : m_id(next_id++), m_users(), m_messages() {
 }
 
 void Session::update(float dt) {
-    for (auto & m_user : m_users) {
+    for (auto &m_user : m_users) {
         sf::Packet packet;
+      
         auto& user = m_user.first;
         auto& player = m_user.second;
 
@@ -39,8 +41,16 @@ void Session::update(float dt) {
                 if (message.direction().right()) {
                     dir.x++;
                 }
-                Direction direction = {message.direction().up(), message.direction().left(), message.direction().right(), message.direction().down()};
+                Direction direction = {message.direction().up(), message.direction().left(),
+                                       message.direction().right(), message.direction().down()};
                 player->apply(dir, direction);
+            }
+            if (message.type() == trans::UserToServerMessage::Wall) {
+                m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
+                                                           message.rect().top(),
+                                                           message.rect().width(),
+                                                           message.rect().height(),
+                                                           "Wall"));
             }
         }
         user->receive_socket(socket);
@@ -65,9 +75,9 @@ void Session::update(float dt) {
         }
 
     }
-    for (auto& item: m_users) {
-        auto& player = item.second;
-        player->update(dt * 10);
+    for (auto &item: m_users) {
+        auto &player = item.second;
+        player->update(dt * 10, m_objects);
 
         auto *direction = new trans::UpdatePlayerMessage::Direction;
         direction->set_up(player->get_route().up);
@@ -120,8 +130,7 @@ void Session::add_user(UserPtr user) {
     auto player = std::make_shared<Player>();
     m_users[user] = player;
 
-
-    auto new_player_message = new trans::NewPlayerMessage ;
+    auto new_player_message = new trans::NewPlayerMessage;
     new_player_message->set_id(player->get_id());
     new_player_message->set_username(user->get_username());
     new_player_message->set_x(player->get_position().x);
@@ -137,7 +146,7 @@ void Session::notify_all() {
     sf::Packet packet;
     packet << m_messages;
 
-    for (auto & m_user: m_users) {
+    for (auto &m_user: m_users) {
         m_user.first->send_packet(packet);
     }
     m_messages.clear_vec_messages();

@@ -25,8 +25,12 @@ void Enemy::movement(float dt, float tempX, float tempY) {
     std::cout<<m_position.y;
 }
 
-void Enemy::update(float dt){
+void Enemy::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects){
 
+}
+
+sf::FloatRect Enemy::get_rect() {
+    //return sf::FloatRect();
 }
 
 

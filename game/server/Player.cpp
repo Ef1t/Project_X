@@ -33,17 +33,17 @@ void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
             while (obj->get_rect().intersects(new_rect)) {
                 new_rect.left -= last_non_zero_dir.x;
                 new_rect.top -= last_non_zero_dir.y;
-                std::cout << obj->get_id() << " dicrease " << last_non_zero_dir.x << " " << last_non_zero_dir.y
-                          << std::endl;
+//                std::cout << obj->get_id() << " dicrease " << last_non_zero_dir.x << " " << last_non_zero_dir.y
+//                          << std::endl;
             }
             step.x = new_rect.left - get_rect().left - last_non_zero_dir.x;
             step.y = new_rect.top - get_rect().top - last_non_zero_dir.y;
-            std::cout << obj->get_id() << " true ";
+//            std::cout << obj->get_id() << " true ";
         } else {
-            std::cout << obj->get_id() << " false ";
+//            std::cout << obj->get_id() << " false ";
         }
     }
-    std::cout << std::endl;
+//    std::cout << std::endl;
     m_position += step;
 }
 

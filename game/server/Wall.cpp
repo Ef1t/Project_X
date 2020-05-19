@@ -4,9 +4,9 @@
 
 #include "Wall.h"
 
-Wall::Wall(uint64_t x_1, uint64_t y_1, uint64_t x_2, uint64_t y_2, std::string_view name)
+Wall::Wall(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth, std::string_view name)
         : GameObject()
-        , rect(x_1, y_1, x_2, y_2) {
+        , rect(left, top, width, heigth) {
     this->name = name;
 }
 

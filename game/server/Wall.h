@@ -13,7 +13,7 @@
 
 class Wall : public GameObject {
  public:
-    Wall(uint64_t x_1, uint64_t y_1, uint64_t x_2, uint64_t y_2, std::string_view name);
+    Wall(uint64_t x_1, uint64_t y_1, uint64_t width, uint64_t heigth, std::string_view name);
 
     void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
 

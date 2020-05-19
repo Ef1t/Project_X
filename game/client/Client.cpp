@@ -208,10 +208,10 @@ void Client::send_obj_to_server(std::vector<TmxObject> all_objects) {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
             auto *rect = new trans::UserToServerMessage_Rect;
-            rect->set_x_1(obj.rect.left);
-            rect->set_y_1(obj.rect.top);
-            rect->set_x_2(obj.rect.width);
-            rect->set_y_2(obj.rect.height);
+            rect->set_left(obj.rect.left);
+            rect->set_top(obj.rect.top);
+            rect->set_width(obj.rect.width);
+            rect->set_height(obj.rect.height);
 
             message.set_type(trans::UserToServerMessage::Wall);
             message.set_allocated_rect(rect);

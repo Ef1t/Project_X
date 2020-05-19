@@ -41,10 +41,10 @@ void Session::update(float dt) {
                 player->apply(dir, direction);
             }
             if (message.type() == trans::UserToServerMessage::Wall) {
-                m_objects.push_back(std::make_shared<Wall>(message.rect().x_1(),
-                                                           message.rect().y_1(),
-                                                           message.rect().x_2(),
-                                                           message.rect().y_2(),
+                m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
+                                                           message.rect().top(),
+                                                           message.rect().width(),
+                                                           message.rect().height(),
                                                            "Wall"));
             }
         }

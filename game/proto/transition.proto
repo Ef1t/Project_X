@@ -7,6 +7,7 @@ message UserToServerMessage {
     enum MessageType {
         Standby = 0;
         Move = 1;
+        Wall = 2;
     };
 
     MessageType type = 1;
@@ -19,6 +20,15 @@ message UserToServerMessage {
     };
 
     Direction direction = 2;
+
+    message Rect {
+        uint64 x_1 = 1;
+        uint64 y_1 = 2;
+        uint64 x_2 = 3;
+        uint64 y_2 = 4;
+    }
+
+    Rect rect = 3;
 };
 // End User to Server message
 
@@ -82,3 +92,7 @@ message ServerToUserMessage {
 message ServerToUserVectorMessage {
     repeated ServerToUserMessage vec_messages = 1;
 };
+
+//message UserToServerVectorMessage {
+//    repeated UserToServerMessage vec_messages = 1;
+//};

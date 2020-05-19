@@ -3,7 +3,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ../proto/transition.proto)
 
 add_executable(client main.cpp ${PROTO_SRCS} ${PROTO_HDRS} Client.cpp ../common/User.cpp Player.cpp Object.cpp ../messages/SessionCreatedMessage.cpp
         ../messages/UserInitMessage.cpp ../messages/UserToServerMessage.cpp ../messages/ServerToUserMessage.cpp
-        tinyxml2.cpp tinyxml2.h TmxLevel.cpp TmxLevel.h Skin.cpp Skin.h View.cpp View.h)
+        tinyxml2.cpp tinyxml2.h TmxLevel.cpp TmxLevel.h Skin.cpp Skin.h View.cpp View.h Enemy.cpp Enemy.h)
 
 target_include_directories(client
         PUBLIC

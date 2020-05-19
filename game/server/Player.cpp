@@ -58,6 +58,7 @@ const Direction Player::get_route() {
 void Player::apply(sf::Vector2f direction, Direction dir) {
     m_direction = direction; // для перемещения
     m_route = dir; // для анимации
+
 }
 
 sf::FloatRect Player::get_rect() {

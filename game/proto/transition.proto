@@ -78,15 +78,39 @@ message UpdatePlayerMessage {
     Direction direction = 4;
 };
 
+message NewBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
+message UpdateBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
 message ServerToUserMessage {
     enum MessageType {
         NewPlayer = 0;
         UpdatePlayer = 1;
+        NewBot = 2;
+        UpdateBot = 3;
     };
 
     MessageType type = 1;
     NewPlayerMessage np_msg = 2;
     UpdatePlayerMessage upd_msg = 3;
+    NewBotMessage nb_msg = 4;
+    UpdateBotMessage ub_msg = 5;
 };
 
 message ServerToUserVectorMessage {

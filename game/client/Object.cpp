@@ -4,9 +4,10 @@
 
 #include "Object.h"
 
-Object::Object(sf::Uint64 id, const sf::Vector2f& position)
+Object::Object(sf::Uint64 id, const sf::Vector2f& position, short object_name)
         : m_id(id)
-        , m_position(position) {
+        , m_position(position) ,
+        object_name(object_name){
 }
 
 void Object::set_position(const sf::Vector2f& position) {

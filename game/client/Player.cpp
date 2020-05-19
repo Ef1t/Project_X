@@ -6,11 +6,10 @@
 #include "Player.h"
 
 Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position)
-        : Object(id, position)
+        : Object(id, position, n_player)
         , m_username(username)
         , m_actor() {
 }
-
 
 void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
@@ -26,6 +25,10 @@ void Player::set_position(const sf::Vector2f& position) {
 
 void Player::set_direction(const Direction dir) {
     m_dir = dir;
+
+}
+
+void Player::draw_stat(RenderWindow &window) {
 
 }
 

@@ -136,11 +136,10 @@ void Client::render(float time, float &dir) {
 
     m_level.Draw(m_window);
 
-    for (auto& obj: m_objects) {
+    for (auto &obj: m_objects) {
         if (obj->object_name == 0) {
             obj->draw(m_window, time, dir);
-        }
-        else if (obj->object_name == 1) {
+        } else if (obj->object_name == 1) {
             obj->draw_stat(m_window);
         }
     }
@@ -203,28 +202,29 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 }
             }
             if (!is_in) {
-                m_objects.push_back(
-                        std::make_shared<Player>(message.upd_msg().id(), " ",
-                                                 sf::Vector2f(message.upd_msg().x(), message.upd_msg().y())));
+                m_objects.push_back(std::make_shared<Player>(message.upd_msg().id(), " ",
+                                                             sf::Vector2f(message.upd_msg().x(),
+                                                                          message.upd_msg().y())));
             }
-       }
-       else if (message.type() == trans::ServerToUserMessage::NewBot) {
+        } else if (message.type() == trans::ServerToUserMessage::NewBot) {
             m_objects.push_back(
-                    std::make_shared<Enemy>(message.nb_msg().id(), sf::Vector2f(message.nb_msg().x(), message.nb_msg().y())));
+                    std::make_shared<Enemy>(message.nb_msg().id(),
+                                            sf::Vector2f(message.nb_msg().x(), message.nb_msg().y())));
 
-        }
-       else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
+        } else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
+            bool is_in = false;
             for (const auto obj: m_objects) {
                 if (obj.get()->get_id() == message.ub_msg().id()) {
-                    puts("lol3");
+                    is_in = true;
                     obj->set_position(sf::Vector2f(message.ub_msg().x(), message.ub_msg().y()));
-                    puts("KEK");
-                    std::cout<<message.ub_msg().x();
-                    std::cout<<message.ub_msg().y();
-                    puts("KEK");
                 }
             }
-       }
+            if (!is_in) {
+                m_objects.push_back(std::make_shared<Enemy>(message.ub_msg().id(),
+                                                            sf::Vector2f(message.ub_msg().x(),
+                                                                         message.ub_msg().y())));
+            }
+        }
     }
 }
 

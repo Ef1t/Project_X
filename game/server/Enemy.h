@@ -10,7 +10,7 @@
 #include "messages/UserToServerMessage.h"
 #include <math.h>
 
-const float ENEMY_VELOCITY = 5.0f;
+const float ENEMY_VELOCITY = 30.0f;
 
 class Enemy : public GameObject {
 public:

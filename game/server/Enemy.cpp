@@ -19,10 +19,10 @@ void Enemy::movement(float dt, float tempX, float tempY) {
         m_position.x += m_velocity * dt * (tempX - m_position.x) / dist;
         m_position.y += m_velocity * dt * (tempY - m_position.y) / dist;
     }
-    puts("x");
-    std::cout<<m_position.x;
-    puts("y");
-    std::cout<<m_position.y;
+//    puts("x");
+//    std::cout<<m_position.x;
+//    puts("y");
+//    std::cout<<m_position.y;
 }
 
 void Enemy::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects){
@@ -30,7 +30,7 @@ void Enemy::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects){
 }
 
 sf::FloatRect Enemy::get_rect() {
-    //return sf::FloatRect();
+    return sf::FloatRect();
 }
 
 

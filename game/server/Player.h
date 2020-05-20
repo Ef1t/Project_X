@@ -11,10 +11,11 @@
 
 #include "GameObject.h"
 #include "messages/UserToServerMessage.h"
+#include "Collision.h"
 
 const float PLAYER_VELOCITY = 20.0f;
 
-class Player : public GameObject {
+class Player : public GameObject, public Collision {
 public:
     explicit Player(const sf::Vector2f& position = sf::Vector2f{100.0f, 100.0f});
 

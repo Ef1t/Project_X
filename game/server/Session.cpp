@@ -56,7 +56,7 @@ void Session::update(float dt) {
         user->receive_socket(socket);
 
         for (auto& m_enemy : m_enemies) {
-            m_enemy->movement(dt, player->get_position().x, player->get_position().y);
+            m_enemy->movement(dt, player->get_position().x, player->get_position().y, m_objects);
 
             auto *update_message = new trans::UpdateBotMessage;
             update_message->set_id(m_enemy->get_id());
@@ -66,11 +66,6 @@ void Session::update(float dt) {
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBot);
             server_message->set_allocated_ub_msg(update_message);
-            puts("x change");
-            std::cout<<m_enemy->get_position().x;
-
-            puts("y change");
-            std::cout<<m_enemy->get_position().y;
 
         }
 
@@ -115,6 +110,7 @@ void Session::add_enemy() {
     std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
     m_enemies.push_back(bot);
+    m_objects.push_back(bot);
     auto new_bot_message = new trans::NewBotMessage;
     new_bot_message->set_id(bot->get_id());
     new_bot_message->set_x(bot->get_position().x);
@@ -129,6 +125,8 @@ void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
     m_users[user] = player;
+
+    m_objects.push_back(player);
 
     auto new_player_message = new trans::NewPlayerMessage;
     new_player_message->set_id(player->get_id());

@@ -17,9 +17,20 @@ message UserToServerMessage {
         bool left = 2;
         bool right = 3;
         bool down = 4;
+        bool fire = 5;
+
+    };
+
+    message BulletDirection {
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
     };
 
     Direction direction = 2;
+
+    BulletDirection b_direction = 3;
 
     message Rect {
         uint64 left = 1;
@@ -28,7 +39,8 @@ message UserToServerMessage {
         uint64 height = 4;
     }
 
-    Rect rect = 3;
+    Rect rect = 4;
+
 };
 // End User to Server message
 
@@ -61,6 +73,9 @@ message NewPlayerMessage {
     float x = 3;
     float y = 4;
     string map_name = 5;
+    int32 name = 6;
+    int32 state = 7;
+
 };
 
 message UpdatePlayerMessage {
@@ -73,9 +88,42 @@ message UpdatePlayerMessage {
         bool left = 2;
         bool right = 3;
         bool down = 4;
+        bool fire = 5;
     };
 
     Direction direction = 4;
+    int32 name = 5;
+    int32 state = 6;
+};
+
+//Bullet message
+
+message NewBulletMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+    string map_name = 4;
+    int32 name = 5;
+    int32 state = 6;
+    int32 p_id = 7;
+
+};
+
+message UpdateBulletMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+    int32 name = 4;
+    int32 state = 5;
+    int32 p_id = 6;
+
+    message Direction{
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+    };
+
 };
 
 message NewBotMessage {
@@ -102,15 +150,20 @@ message ServerToUserMessage {
     enum MessageType {
         NewPlayer = 0;
         UpdatePlayer = 1;
-        NewBot = 2;
-        UpdateBot = 3;
+        NewBullet = 2;
+        UpdateBullet = 3;
+        NewBot = 4;
+        UpdateBot = 5;
+
     };
 
     MessageType type = 1;
     NewPlayerMessage np_msg = 2;
     UpdatePlayerMessage upd_msg = 3;
-    NewBotMessage nb_msg = 4;
-    UpdateBotMessage ub_msg = 5;
+    NewBulletMessage nb_msg = 4;
+    UpdateBulletMessage ub_msg = 5;
+    NewBotMessage n_bot_msg = 6;
+    UpdateBotMessage u_bot_msg = 7;
 };
 
 message ServerToUserVectorMessage {

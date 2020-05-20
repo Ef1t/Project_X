@@ -7,6 +7,7 @@
 
 #include <SFML/Network/TcpSocket.hpp>
 #include <SFML/Network/Packet.hpp>
+//#include "server/Bullet.h"
 
 #include <memory>
 
@@ -26,9 +27,12 @@ public:
 
     void receive_socket(UserSocket &socket);
 
+   // std::vector<Bullet> bullets;
+
 private:
     std::string m_username;
     UserSocket m_socket;
+
 };
 
 using UserPtr = std::shared_ptr<User>;

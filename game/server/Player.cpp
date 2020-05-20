@@ -8,7 +8,7 @@
 #include "Player.h"
 
 Player::Player(const sf::Vector2f &position)
-        : m_position(position), m_direction{0.0f, 0.0f}, m_velocity(PLAYER_VELOCITY) {}
+        : m_position(position), m_direction{0.0f, 0.0f}, m_velocity(PLAYER_VELOCITY), GameObject(n_player) {}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 

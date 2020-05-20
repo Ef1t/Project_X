@@ -5,7 +5,7 @@
 #include "Wall.h"
 
 Wall::Wall(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth, std::string_view name)
-        : GameObject()
+        : GameObject(n_wall)
         , rect(left, top, width, heigth) {
     this->name = name;
 }
@@ -15,5 +15,17 @@ Wall::Wall(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth, std::st
 }
 
 void Wall::update(float dt,  std::vector<std::shared_ptr<GameObject>> &objects) {
+
+}
+
+const sf::Vector2f Wall::get_position() const {
+    return sf::Vector2f();
+}
+
+const Direction Wall::get_route() {
+    return Direction();
+}
+
+void Wall::apply(sf::Vector2f diretcion, Direction dir) {
 
 }

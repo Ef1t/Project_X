@@ -6,6 +6,7 @@
 
 Enemy::Enemy(const sf::Vector2f& position)
         : m_position(position)
+        , GameObject(n_enemy)
         , m_velocity(ENEMY_VELOCITY) {
 }
 
@@ -56,5 +57,13 @@ sf::FloatRect Enemy::get_rect() {
 
     return rect;
 }
+
+const Direction Enemy::get_route() {
+}
+
+void Enemy::apply(sf::Vector2f diretcion, Direction dir) {
+    
+}
+
 
 

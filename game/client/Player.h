@@ -27,7 +27,8 @@ public:
 
     void set_direction(Direction dir) override;
 
-    void set_state(bool state) override ;
+    void set_state(bool state) override;
+
 private:
     std::string m_username;
     Skin m_actor;

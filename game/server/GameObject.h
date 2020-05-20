@@ -15,6 +15,7 @@
 #define n_player 0
 #define n_bullet 1
 #define n_enemy 2
+#define n_wall 3
 
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -32,7 +33,6 @@ public:
 
     virtual
     sf::FloatRect get_rect() = 0;
-
 
     virtual
     void apply(sf::Vector2f diretcion, Direction dir) = 0;

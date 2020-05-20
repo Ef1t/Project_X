@@ -228,11 +228,11 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             if (!is_in) {
                 m_objects.push_back(std::make_shared<Player>(message.upd_msg().id(), " ",
                                                              sf::Vector2f(message.upd_msg().x(),
-                                                                          message.upd_msg().y())));
+                                                                          message.upd_msg().y()),
+                                                                          message.upd_msg().state()));
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBot) {
-            m_objects.push_back(
-                    std::make_shared<Enemy>(message.n_bot_msg().id(),
+            m_objects.push_back(std::make_shared<Enemy>(message.n_bot_msg().id(),
                                             sf::Vector2f(message.n_bot_msg().x(), message.n_bot_msg().y())));
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBot) {

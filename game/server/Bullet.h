@@ -14,14 +14,15 @@ public:
 
    explicit Bullet(short name);
 
-    void update(float dt) override;
+    void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
 
     const sf::Vector2f get_position() const override ;
 
     void apply(sf::Vector2f diretcion, Direction dir) override ;
 
-
     const Direction get_route() override ;
+
+    sf::FloatRect get_rect() override;
 
     //void add_bullet();
 

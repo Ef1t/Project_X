@@ -86,7 +86,7 @@ void Session::update(float dt) {
 
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-            server_message->set_allocated_ub_msg(update_message);
+            server_message->set_allocated_u_bot_msg(update_message);
 
         }
 
@@ -124,7 +124,7 @@ void Session::update(float dt) {
         if (!((bullet->get_position().x > 1000) || (bullet->get_position().y > 1000) ||
               (bullet->get_position().x < 0) ||
               (bullet->get_position().y < 0))) { //условие "исчесновения пули", пока что только для координат.
-            bullet->update(dt);
+            bullet->update(dt, m_objects);
             std::cout << " JOE\n";
 
             auto *update_message_bul = new trans::UpdateBulletMessage;
@@ -182,7 +182,7 @@ void Session::add_enemy() {
     new_bot_message->set_y(bot->get_position().y);
     new_bot_message->set_map_name(this->map_name);
     auto server_message = m_messages.add_vec_messages();
-    server_message->set_allocated_nb_msg(new_bot_message);
+    server_message->set_allocated_n_bot_msg(new_bot_message);
     server_message->set_type(trans::ServerToUserMessage::NewBot);
 }
 

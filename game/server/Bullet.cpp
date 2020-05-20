@@ -13,7 +13,7 @@ Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
 }
 
 
-void Bullet::update(float dt) {
+void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
 //    std:: cout << b_dir.up << " Up B-_dir in update\n";
 //    std:: cout << b_dir.down << " Do B-_dir in update\n";
@@ -53,6 +53,10 @@ const sf::Vector2f Bullet::get_position() const {
 }
 
 Bullet::Bullet(short name) : GameObject(name) {
+
+}
+
+sf::FloatRect Bullet::get_rect() {
 
 }
 

@@ -18,9 +18,16 @@ public:
     explicit Enemy(const sf::Vector2f& position = sf::Vector2f{50.0f, 50.0f});
 
     void movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects);
+
     void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
-    const sf::Vector2f get_position() const;
+
+    void apply(sf::Vector2f diretcion, Direction dir) override;
+
+    const sf::Vector2f get_position() const override;
+
     sf::FloatRect get_rect() override;
+
+    const Direction get_route() override;
 
 private:
     sf::Vector2f m_position;

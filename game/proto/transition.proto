@@ -62,6 +62,7 @@ message NewPlayerMessage {
     float y = 4;
     string map_name = 5;
     int32 name = 6;
+    int32 state = 7;
 
 };
 
@@ -80,6 +81,7 @@ message UpdatePlayerMessage {
 
     Direction direction = 4;
     int32 name = 5;
+    int32 state = 6;
 };
 
 //Bullet message
@@ -90,6 +92,8 @@ message NewBulletMessage {
     float y = 3;
     string map_name = 4;
     int32 name = 5;
+    int32 state = 6;
+    int32 p_id = 7;
 
 };
 
@@ -99,6 +103,7 @@ message UpdateBulletMessage {
     float y = 3;
     int32 name = 4;
     int32 state = 5;
+    int32 p_id = 6;
 
     message Direction{
         bool up = 1;

@@ -5,8 +5,8 @@
 #include <iostream>
 #include "Player.h"
 
-Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position)
-        : Object(id, position, n_player)
+Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position, bool state)
+        : Object(id, position, n_player, state)
         , m_username(username)
         , m_actor()
         {
@@ -32,4 +32,8 @@ void Player::set_position(const sf::Vector2f& position) {
 void Player::set_direction(const Direction dir) {
     m_dir = dir;
 
+}
+
+void Player::set_state(bool state) {
+    m_state = state;
 }

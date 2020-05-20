@@ -18,7 +18,7 @@
 //using Users = std::map<UserPtr, PlayerPtr>;
 //using Bullets = std::map<UserPtr, BulletPtr>;
 
-using Users = std::map<UserPtr, GameObjectPtr>;
+using Users = std::map<UserPtr, PlayerPtr>;
 
 class Session {
 public:
@@ -32,7 +32,7 @@ public:
 
     void add_user(UserPtr user);
 
-    void add_bullet(UserPtr user, float x, float y, Direction b_dir);
+    void add_bullet(PlayerPtr player, float x, float y, Direction b_dir);
 
     std::string& get_map();
 

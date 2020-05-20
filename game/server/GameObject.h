@@ -11,6 +11,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "messages/UserToServerMessage.h"
 
+//названия объектов
 #define n_player 0
 #define n_bullet 1
 
@@ -24,15 +25,6 @@ public:
     virtual
     void update(float dt) = 0;
 
-    //проверка
-    /*virtual
-    const sf::Vector2f get_position() const;
-
-    virtual
-    const Direction get_route();
-
-    virtual
-    void apply(sf::Vector2f diretcion, Direction dir); */
 
     virtual
     void apply(sf::Vector2f diretcion, Direction dir) = 0;

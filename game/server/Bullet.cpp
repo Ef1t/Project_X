@@ -4,11 +4,12 @@
 
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f positon, Direction dir) :
+Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
         m_position(positon),
         m_velocity(bullet_velocity),
         GameObject(n_bullet),
-        b_dir(dir) {
+        b_dir(dir),
+        player_id(p_id){
 }
 
 

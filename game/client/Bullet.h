@@ -16,7 +16,7 @@
 class Bullet : public Object {
 public:
 
-    Bullet(sf::Uint64 id, const sf::Vector2f& position);
+    Bullet(sf::Uint64 id, const sf::Vector2f& position, bool state);
 
     void set_position(const sf::Vector2f& position) override ;
 
@@ -25,6 +25,8 @@ public:
     void draw_stat(sf::RenderWindow& window) override;
 
     void draw(sf::RenderWindow& window,  float time, float& current_frame) override ;
+
+    void set_state(bool state) override ;
 
 private:
     sf::CircleShape shape;

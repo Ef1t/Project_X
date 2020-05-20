@@ -10,7 +10,7 @@
 
 class Bullet: public GameObject {
 public:
-    Bullet(sf::Vector2f position, Direction dir);
+    Bullet(sf::Vector2f position, Direction dir, short p_id);
 
    explicit Bullet(short name);
 
@@ -30,6 +30,7 @@ private:
     sf::Vector2f m_direction;
     float m_velocity;
     Direction b_dir;  // траектория пули
+    short player_id;
 
 };
 

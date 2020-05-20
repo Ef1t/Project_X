@@ -21,9 +21,8 @@
 
 class Object {
 public:
-    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name);
+    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, bool state);
 
-    //explicit Object( const sf::Vector2f& position);
 
     virtual
     void set_position(const sf::Vector2f& position);
@@ -32,13 +31,15 @@ public:
     void set_direction(const Direction dir);
 
     virtual
+    void set_state(bool state) = 0;
+
+    virtual
     void draw(sf::RenderWindow& window,  float time, float& current_frame) = 0; //вопрос, почему нельзя переопределить ее
 
     virtual
     void draw_stat(sf::RenderWindow& window) = 0;
 
-   // virtual
-   // void draw(sf::RenderWindow& window) = 0;
+
 
 
     Direction get_direction();
@@ -48,16 +49,19 @@ public:
     float get_x() const;
     float get_y() const;
 
+    bool get_state() const;
+
 
 
     short object_name;
-    //short o_type;
+
 
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;
     Direction m_dir;
     std::string m_name;
+    bool m_state;
 
 };
 

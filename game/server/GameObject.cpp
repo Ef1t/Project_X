@@ -14,3 +14,7 @@ GameObject::GameObject(short name)
 sf::Uint64 GameObject::get_id() const {
     return m_id;
 }
+
+std::string &GameObject::get_name() {
+    return name;
+}

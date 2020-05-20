@@ -7,6 +7,7 @@ message UserToServerMessage {
     enum MessageType {
         Standby = 0;
         Move = 1;
+        Wall = 2;
     };
 
     MessageType type = 1;
@@ -28,7 +29,18 @@ message UserToServerMessage {
     };
 
     Direction direction = 2;
+
     BulletDirection b_direction = 3;
+
+    message Rect {
+        uint64 left = 1;
+        uint64 top = 2;
+        uint64 width = 3;
+        uint64 height = 4;
+    }
+
+    Rect rect = 4;
+
 };
 // End User to Server message
 
@@ -114,12 +126,35 @@ message UpdateBulletMessage {
 
 };
 
+message NewBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
+message UpdateBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
 message ServerToUserMessage {
     enum MessageType {
         NewPlayer = 0;
         UpdatePlayer = 1;
         NewBullet = 2;
         UpdateBullet = 3;
+        NewBot = 4;
+        UpdateBot = 5;
+
     };
 
     MessageType type = 1;
@@ -127,8 +162,14 @@ message ServerToUserMessage {
     UpdatePlayerMessage upd_msg = 3;
     NewBulletMessage nb_msg = 4;
     UpdateBulletMessage ub_msg = 5;
+    NewBotMessage n_bot_msg = 6;
+    UpdateBotMessage u_bot_msg = 7;
 };
 
 message ServerToUserVectorMessage {
     repeated ServerToUserMessage vec_messages = 1;
 };
+
+//message UserToServerVectorMessage {
+//    repeated UserToServerMessage vec_messages = 1;
+//};

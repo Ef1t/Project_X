@@ -18,12 +18,12 @@
 
 #define n_player 0
 #define n_bullet 1
+#define n_enemy 2
 
 class Object {
 public:
     explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, bool state);
-
-
+    
     virtual
     void set_position(const sf::Vector2f& position);
 
@@ -39,9 +39,6 @@ public:
     virtual
     void draw_stat(sf::RenderWindow& window) = 0;
 
-
-
-
     Direction get_direction();
 
     sf::Uint64 get_id() const;
@@ -50,12 +47,7 @@ public:
     float get_y() const;
 
     bool get_state() const;
-
-
-
     short object_name;
-
-
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;

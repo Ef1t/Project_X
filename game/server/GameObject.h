@@ -14,7 +14,10 @@
 //названия объектов
 #define n_player 0
 #define n_bullet 1
+#define n_enemy 2
 
+#include <SFML/Graphics.hpp>
+#include <string>
 
 class GameObject {
 public:
@@ -22,8 +25,13 @@ public:
 
     sf::Uint64 get_id() const;
 
+    std::string &get_name();
+
     virtual
-    void update(float dt) = 0;
+    void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) = 0;
+
+    virtual
+    sf::FloatRect get_rect() = 0;
 
 
     virtual
@@ -39,6 +47,7 @@ public:
 
 protected:
     uint64_t m_id;
+    std::string name;
 
 private:
     static sf::Uint64 next_id;

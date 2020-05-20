@@ -21,7 +21,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <string>
-#include "transition.pb.h"
 
 using Objects = std::vector<ObjectPtr>;
 
@@ -33,15 +32,9 @@ public:
 
     void join_to(sf::Uint64 session_id);
 
-    //void add_objects(std::vector<TmxObject> all_objects);
-
     int run();
 
     void apply_dir_b();
-
-
-
-
 
 private:
     UserPtr m_user;
@@ -53,6 +46,7 @@ private:
     bool is_map;
     View view;
     int this_player_id;
+    bool is_creator;
 
     void process_events();
 
@@ -64,6 +58,7 @@ private:
 
     void apply_messages(const trans::ServerToUserVectorMessage& messages);
 
+    void send_obj_to_server(std::vector<TmxObject> all_objects);
 
 };
 

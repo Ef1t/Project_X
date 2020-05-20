@@ -12,7 +12,6 @@ Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& p
         {
 }
 
-
 void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
     this->go_texture(m_dir,time,current_frame,this->m_actor);
@@ -37,3 +36,5 @@ void Player::set_direction(const Direction dir) {
 void Player::set_state(bool state) {
     m_state = state;
 }
+
+

@@ -35,4 +35,12 @@ struct UserToServerMessage {
 
 using UTSM_vector = std::vector<UserToServerMessage>;
 
+//struct UserToServerVectorMessage {
+//    UTSM_vector messages;
+//};
+//
+//sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerVectorMessage& message);
+//
+//sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerVectorMessage& message);
+
 #endif //GAME_USERTOSERVERMESSAGE_H

@@ -7,7 +7,7 @@
 
 Enemy::Enemy(sf::Uint64 id, const sf::Vector2f& position)
         : Object(id, position, n_enemy, 1) //TODO: добавить state
-        , shape(30) {
+        , shape(15) {
 }
 
 void Enemy::draw(sf::RenderWindow& window, float time, float& current_frame) {

@@ -14,6 +14,11 @@ const sf::Vector2f Enemy::get_position() const {
     return m_position;
 }
 
+void Enemy::set_position(float new_x, float new_y) {
+    m_position.x = new_x;
+    m_position.y = new_y;
+}
+
 void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects) {
     float dist = sqrt((tempX - m_position.x) * (tempX - m_position.x) + (tempY - m_position.y) * (tempY - m_position.y));
 

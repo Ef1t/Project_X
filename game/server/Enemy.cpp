@@ -36,15 +36,10 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
 
     step = real_step(step, dir, get_rect(), objects, get_id());
 
-
     if (dist > 2) {
-        m_position.x +=step.x;
+        m_position.x += step.x;
         m_position.y += step.y;
     }
-//    puts("x");
-//    std::cout<<m_position.x;
-//    puts("y");
-//    std::cout<<m_position.y;
 }
 
 void Enemy::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects){

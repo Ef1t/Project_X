@@ -18,6 +18,11 @@ class Collision {
 
     bool collide_and_dmg(std::vector<std::shared_ptr<GameObject>> &objects, int state, sf::FloatRect this_obj_rect, int dmg);
 
+//    bool not_collide(sf::FloatRect &collide_obj_rect,
+//                     sf::Vector2f dir,
+//                     sf::FloatRect this_obj_rect,
+//                     std::vector<std::shared_ptr<GameObject>> &objects,
+//                     uint64_t id);
  private:
     sf::Vector2f last_non_zero_dir;
 };

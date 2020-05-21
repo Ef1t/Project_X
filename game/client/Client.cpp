@@ -234,7 +234,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBot) {
             m_objects.push_back(std::make_shared<Enemy>(message.n_bot_msg().id(),
-                                            sf::Vector2f(message.n_bot_msg().x(), message.n_bot_msg().y())));
+                                            sf::Vector2f(message.n_bot_msg().x(), message.n_bot_msg().y()), message.n_bot_msg().state()));
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
             bool is_in = false;
@@ -242,12 +242,14 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 if (obj->get_id() == message.u_bot_msg().id()) {
                     is_in = true;
                     obj->set_position(sf::Vector2f(message.u_bot_msg().x(), message.u_bot_msg().y()));
+                    obj->set_state(message.u_bot_msg().state());
                 }
             }
-            if (!is_in) {
+            if (!is_in && message.u_bot_msg().state()) {
                 m_objects.push_back(std::make_shared<Enemy>(message.u_bot_msg().id(),
                                                             sf::Vector2f(message.u_bot_msg().x(),
-                                                                         message.u_bot_msg().y())));
+                                                                         message.u_bot_msg().y()),
+                                                                         message.u_bot_msg().state()));
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),

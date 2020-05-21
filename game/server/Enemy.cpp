@@ -6,7 +6,7 @@
 
 Enemy::Enemy(const sf::Vector2f& position)
         : m_position(position)
-        , GameObject(n_enemy)
+        , GameObject(n_enemy, n_enemy_hp, n_enemy_dmg)
         , m_velocity(ENEMY_VELOCITY) {
 }
 
@@ -20,6 +20,12 @@ void Enemy::set_position(float new_x, float new_y) {
 }
 
 void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects) {
+
+    if (hp <= 0) {
+        is_alive() = false;
+        return;
+    }
+
     float dist = sqrt((tempX - m_position.x) * (tempX - m_position.x) + (tempY - m_position.y) * (tempY - m_position.y));
 
     sf::Vector2f step;
@@ -30,15 +36,10 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
 
     step = real_step(step, dir, get_rect(), objects, get_id());
 
-
     if (dist > 2) {
-        m_position.x +=step.x;
+        m_position.x += step.x;
         m_position.y += step.y;
     }
-//    puts("x");
-//    std::cout<<m_position.x;
-//    puts("y");
-//    std::cout<<m_position.y;
 }
 
 void Enemy::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects){

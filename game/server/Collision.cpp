@@ -8,8 +8,11 @@
 
 //оч сложна нипонятна ниясна но работает
 //по всем вопросам к Олегу Реуцкому ака бох стен
-sf::Vector2f Collision::real_step(sf::Vector2f desired_step, sf::Vector2f direction, sf::FloatRect obj_rect,
-                                  std::vector<std::shared_ptr<GameObject>> &objects, uint64_t id) {
+sf::Vector2f Collision::real_step(sf::Vector2f desired_step,
+                                  sf::Vector2f direction,
+                                  sf::FloatRect obj_rect,
+                                  std::vector<std::shared_ptr<GameObject>> &objects,
+                                  uint64_t id) {
 
     for (auto obj : objects) {
         if (obj->get_id() != id) {
@@ -30,4 +33,28 @@ sf::Vector2f Collision::real_step(sf::Vector2f desired_step, sf::Vector2f direct
     }
     return desired_step;
 }
+
+bool Collision::collide_and_dmg(std::vector<std::shared_ptr<GameObject>> &objects, int obj_num_name, sf::FloatRect this_obj_rect, int dmg) {
+    for (auto obj : objects) {
+        if ((obj->m_name == obj_num_name) && obj->get_rect().intersects(this_obj_rect)) {
+            obj->get_hp() -= dmg;
+            return true;
+        }
+    }
+    return false;
+}
+
+//bool Collision::not_collide(sf::FloatRect &collide_obj_rect, sf::Vector2f dir, sf::FloatRect this_obj_rect,
+//                            std::vector<std::shared_ptr<GameObject>> &objects, uint64_t id) {
+//    for (auto obj : objects) {
+//        if (obj->get_id() != id) {
+//            if (obj->get_rect().intersects(this_obj_rect)) {
+//                collide_obj_rect = obj->get_rect();
+//                return false;
+//            }
+//        }
+//    }
+//    return true;
+//}
+
 

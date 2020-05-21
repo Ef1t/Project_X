@@ -1,14 +1,17 @@
 //
 // Created by yaroslav on 16.05.2020.
 //
-#include <SFML/System/Vector2.hpp>
-#include "GameObject.h"
 #ifndef GAME_BULLET_H
 #define GAME_BULLET_H
 
+#include <SFML/System/Vector2.hpp>
+#include "GameObject.h"
+#include "Collision.h"
+
+
 #define bullet_velocity 10.0
 
-class Bullet: public GameObject {
+class Bullet: public GameObject, public Collision {
 public:
     Bullet(sf::Vector2f position, Direction dir, short p_id);
 

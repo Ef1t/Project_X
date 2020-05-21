@@ -34,7 +34,6 @@ private:
     sf::Vector2f m_direction;
     float m_velocity;
     Direction m_route; // Players route
-    sf::Vector2f last_non_zero_dir;
 };
 
 using PlayerPtr = std::shared_ptr<Player>;

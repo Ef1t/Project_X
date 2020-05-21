@@ -125,7 +125,6 @@ void Session::update(float dt) {
             update_message->set_allocated_direction(direction);
             update_message->set_state(1);
 
-
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
             server_message->set_allocated_upd_msg(update_message);

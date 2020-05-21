@@ -16,7 +16,7 @@
 #include "Object.h"
 #include "TmxLevel.h"
 #include "View.h"
-#include "Bullet.h"
+#include "Menus.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -26,7 +26,12 @@ using Objects = std::vector<ObjectPtr>;
 
 class Client {
 public:
-    Client(const std::string& host, unsigned short port, const std::string& username);
+    Client();
+
+    void set_config(const std::string& host, unsigned short port, const std::string& username);
+    Client(const std::string& host, unsigned short port, const std::string& username, sf::RenderWindow &window);
+
+    sf::RenderWindow& get_window();
 
     void create_session(std::string map_name);
 
@@ -34,14 +39,11 @@ public:
 
     int run();
 
-    void apply_dir_b();
-
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
     Objects m_objects;
     Direction m_direction;
-    Direction m_direction_bullet;
     TmxLevel m_level;
     bool is_map;
     View view;

@@ -23,12 +23,8 @@ public:
         void set_position(const sf::Vector2f& position) override;
 
         void draw_stat(sf::RenderWindow& window) override;
-
-        void set_direction(const Direction dir) override;
-
-        void set_state(bool state) override ;
-
-
+//
+//    void set_direction(Direction dir) override;
 
 private:
     //Skin m_actor;

@@ -9,24 +9,43 @@ void usage() {
     std::cerr << "Usage: ./client <username> <host> <port> (create <map_name> | join <lobby_num>)" << std::endl;
 }
 
+std::string username_str;
+std::string host_str;
+std::string port_str;
+std::string command_str;
+std::string map_str;
+std::string lobby_str;
+
+
+
+
 int main(int ac, const char* av[]) {
-    if (ac < 5) {
-        usage();
-        return -1;
-    }
+//    if (ac < 5) {
+//        usage();
+//        return -1;
+//    }
 
-    auto username = std::string(av[1]);
-    auto host = std::string(av[2]);
-    auto port = static_cast<unsigned short>(std::stoul(std::string(av[3])));
-    Client client(host, port, username);
 
-    auto cmd = std::string(av[4]);
+    Client client;
+    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    //menuDeath(client.get_window());
 
-    if (cmd == "create") {
-        auto map_name = std::string(av[5]);
+    std::cout << "username: " << username_str << std::endl;
+
+    auto username = std::string(username_str);
+    auto host = std::string(host_str);
+    auto port = static_cast<unsigned short>(std::stoul(port_str));
+
+    client.set_config(host, port, username);
+
+
+    if (command_str == "create") {
+        //auto map_name = std::string(av[5]);
+        auto map_name = std::string("map.tmx");
         client.create_session(map_name);
-    } else if (cmd == "join") {
-        auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
+    } else if (command_str == "join") {
+        //auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
+        auto session_id = static_cast<sf::Uint64>(std::stoul(lobby_str));
         client.join_to(session_id);
     } else {
         usage();

@@ -6,9 +6,9 @@
 
 sf::Uint64 GameObject::next_id = 1;
 
-GameObject::GameObject(short name)
-        : m_id(next_id++),
-        m_name(name) {}
+GameObject::GameObject()
+        : m_id(next_id++) {
+}
 
 sf::Uint64 GameObject::get_id() const {
     return m_id;

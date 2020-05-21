@@ -8,11 +8,11 @@
 #include "Player.h"
 
 Player::Player(const sf::Vector2f &position)
-        : m_position(position), m_direction{0.0f, 0.0f}, m_velocity(PLAYER_VELOCITY), GameObject(n_player) {}
+        : m_position(position), m_direction{0.0f, 0.0f}, m_velocity(PLAYER_VELOCITY) {}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
-    // делаем нормальную скорость по диагонали
+    // делаем нормальную скорость по диагонале
     float lenght = sqrt(m_direction.x * m_direction.x + m_direction.y * m_direction.y);
     if (lenght > 1) {
         m_direction.x /= sqrt(2);
@@ -21,11 +21,29 @@ void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
 
     //оч сложна нипонятна ниясна но работает
     //по всем вопросам к Олегу Реуцкому ака бох стен
+    //TODO: вынести коллизии в отдельный класс
     //NOTE: старайтесь избегать углов :)
     sf::Vector2f step = m_direction * (m_velocity * dt);
-
-    step = real_step(step, m_direction, get_rect(), objects, get_id());
-
+    for (auto obj : objects) {
+        sf::FloatRect new_rect(get_rect().left + step.x, get_rect().top + step.y, get_rect().width, get_rect().height);
+        if (obj->get_rect().intersects(new_rect)) {
+            if ((m_direction.x != 0) || (m_direction.y != 0)) {
+                last_non_zero_dir = m_direction;
+            }
+            while (obj->get_rect().intersects(new_rect)) {
+                new_rect.left -= last_non_zero_dir.x;
+                new_rect.top -= last_non_zero_dir.y;
+//                std::cout << obj->get_id() << " dicrease " << last_non_zero_dir.x << " " << last_non_zero_dir.y
+//                          << std::endl;
+            }
+            step.x = new_rect.left - get_rect().left - last_non_zero_dir.x;
+            step.y = new_rect.top - get_rect().top - last_non_zero_dir.y;
+//            std::cout << obj->get_id() << " true ";
+        } else {
+//            std::cout << obj->get_id() << " false ";
+        }
+    }
+//    std::cout << std::endl;
     m_position += step;
 }
 

@@ -6,8 +6,8 @@
 #include "Object.h"
 
 Enemy::Enemy(sf::Uint64 id, const sf::Vector2f& position)
-        : Object(id, position, n_enemy, 1) //TODO: добавить state
-        , shape(15) {
+        : Object(id, position, n_bot)
+        , shape(30) {
 }
 
 void Enemy::draw(sf::RenderWindow& window, float time, float& current_frame) {
@@ -25,12 +25,4 @@ void Enemy::set_position(const sf::Vector2f& position) {
 void Enemy::draw_stat(sf::RenderWindow& window) {
     shape.setPosition(m_position);
     window.draw(shape);
-}
-
-void Enemy::set_state(bool state) {
-
-}
-
-void Enemy::set_direction(const Direction dir) {
-
 }

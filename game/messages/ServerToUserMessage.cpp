@@ -7,29 +7,6 @@
 
 // NewPlayerMessage
 
-sf::Packet& operator<<(sf::Packet& packet, const trans::NewBulletMessage& message) {
-    std::string code;
-    message.SerializeToString(&code);
-
-    return packet << code;
-}
-
-sf::Packet& operator>>(sf::Packet& packet, trans::NewBulletMessage& message) {
-    std::string code;
-    packet >> code;
-    message.ParseFromString(code);
-
-    return packet;
-}
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class NewPlayerMessage;
-
 sf::Packet& operator<<(sf::Packet& packet, const trans::NewPlayerMessage& message) {
     std::string code;
     message.SerializeToString(&code);

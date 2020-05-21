@@ -19,12 +19,6 @@ class Wall : public GameObject {
 
     sf::FloatRect get_rect() override;
 
-    void apply(sf::Vector2f diretcion, Direction dir) override;
-
-    const Direction get_route() override;
-
-    const sf::Vector2f get_position() const override;
-
  private:
     sf::FloatRect rect;
 };

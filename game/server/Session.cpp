@@ -171,7 +171,6 @@ void Session::update(float dt) {
         add_enemy();
     }
 
-
     notify_all();
 }
 

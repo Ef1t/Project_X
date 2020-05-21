@@ -9,7 +9,6 @@
 #include "iostream"
 #include "Enemy.h"
 
-
 sf::Uint64 Session::next_id = 10;
 
 
@@ -167,7 +166,7 @@ void Session::update(float dt) {
         }
 
     }
-    while (m_enemies.size() < 1) {
+    while (m_enemies.size() < 10) {
         add_enemy();
     }
 
@@ -185,6 +184,9 @@ sf::Uint64 Session::get_id() const {
 void Session::add_enemy() {
     std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
+    float bot_x = rand() % 1000 + 10;
+    float bot_y = rand() % 500 + 10;
+    bot->set_position(bot_x, bot_y);
     m_enemies.push_back(bot);
     m_objects.push_back(bot);
     auto new_bot_message = new trans::NewBotMessage;

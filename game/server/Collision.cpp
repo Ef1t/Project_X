@@ -31,3 +31,13 @@ sf::Vector2f Collision::real_step(sf::Vector2f desired_step, sf::Vector2f direct
     return desired_step;
 }
 
+bool Collision::collide_and_dmg(std::vector<std::shared_ptr<GameObject>> &objects, int obj_num_name, sf::FloatRect this_obj_rect, int dmg) {
+    for (auto obj : objects) {
+        if ((obj->m_name == n_enemy) && obj->get_rect().intersects(this_obj_rect)) {
+            obj->get_hp() -= dmg;
+            return true;
+        }
+    }
+    return false;
+}
+

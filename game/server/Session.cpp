@@ -76,25 +76,43 @@ void Session::update(float dt) {
         }
         user->receive_socket(socket);
 
+        int i = 0;
         for (auto& m_enemy : m_enemies) {
-            m_enemy->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+            if (m_enemy->is_alive()) {
+                m_enemy->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+                auto *update_message = new trans::UpdateBotMessage;
+                update_message->set_id(m_enemy->get_id());
+                update_message->set_x(m_enemy->get_position().x);
+                update_message->set_y(m_enemy->get_position().y);
+                update_message->set_state(1);
 
-            auto *update_message = new trans::UpdateBotMessage;
-            update_message->set_id(m_enemy->get_id());
-            update_message->set_x(m_enemy->get_position().x);
-            update_message->set_y(m_enemy->get_position().y);
+                auto server_message = m_messages.add_vec_messages();
+                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
+                server_message->set_allocated_u_bot_msg(update_message);
+            } else {
+                auto *update_message = new trans::UpdateBotMessage;
+                update_message->set_id(m_enemy->get_id());
+                update_message->set_x(m_enemy->get_position().x);
+                update_message->set_y(m_enemy->get_position().y);
+                update_message->set_state(0);
 
-            auto server_message = m_messages.add_vec_messages();
-            server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-            server_message->set_allocated_u_bot_msg(update_message);
-
+                auto server_message = m_messages.add_vec_messages();
+                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
+                server_message->set_allocated_u_bot_msg(update_message);
+                for (size_t j = 0; j < m_objects.size(); ++j) {
+                    if (m_objects[j]->get_id() == m_enemy->get_id()) {
+                        m_objects.erase(m_objects.begin() + j);
+                    }
+                }
+                m_enemies.erase(m_enemies.begin() + i);
+            }
+            ++i;
         }
-
     }
     for (auto &item: m_users) {
         auto &player = item.second;
 
-        if (player->m_name == n_player) {
+        if (player->m_name == n_player && player->is_alive()) {
             player->update(dt * 10, m_objects);
 
             auto *direction = new trans::UpdatePlayerMessage::Direction;
@@ -119,13 +137,11 @@ void Session::update(float dt) {
     }
     // проходимся по вектору пуль и обновляем координаты
     for (auto &bullet: m_bullets) {
-
-
-        if (!((bullet->get_position().x > 1000) || (bullet->get_position().y > 1000) ||
+        if (!((bullet->get_position().x > 1280) || (bullet->get_position().y > 1280) ||
               (bullet->get_position().x < 0) ||
-              (bullet->get_position().y < 0))) { //условие "исчесновения пули", пока что только для координат.
+              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули", пока что только для координат.
             bullet->update(dt, m_objects);
-            std::cout << " JOE\n";
+            //std::cout << " JOE\n";
 
             auto *update_message_bul = new trans::UpdateBulletMessage;
             update_message_bul->set_id(bullet->get_id());
@@ -133,9 +149,6 @@ void Session::update(float dt) {
             update_message_bul->set_x(bullet->get_position().x);
             update_message_bul->set_y(bullet->get_position().y);
             update_message_bul->set_name(n_bullet); //название объекта
-
-
-
 
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
@@ -148,7 +161,6 @@ void Session::update(float dt) {
             update_message_bul->set_y(bullet->get_position().y);
             update_message_bul->set_name(n_bullet);
 
-
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
             server_message->set_allocated_ub_msg(update_message_bul);
@@ -158,7 +170,6 @@ void Session::update(float dt) {
     while (m_enemies.size() < 1) {
         add_enemy();
     }
-
 
     notify_all();
 }
@@ -180,6 +191,7 @@ void Session::add_enemy() {
     new_bot_message->set_id(bot->get_id());
     new_bot_message->set_x(bot->get_position().x);
     new_bot_message->set_y(bot->get_position().y);
+    new_bot_message->set_state(1);
     new_bot_message->set_map_name(this->map_name);
     auto server_message = m_messages.add_vec_messages();
     server_message->set_allocated_n_bot_msg(new_bot_message);
@@ -238,8 +250,6 @@ void Session::notify_all() {
 
     for (auto &m_user: m_users) {
         m_user.first->send_packet(packet);
-
-
     }
 
 

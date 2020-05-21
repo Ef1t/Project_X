@@ -16,6 +16,8 @@ class Collision {
     sf::Vector2f real_step(sf::Vector2f desired_step, sf::Vector2f direction, sf::FloatRect obj_rect,
                            std::vector<std::shared_ptr<GameObject>> &objects, uint64_t id);
 
+    bool collide_and_dmg(std::vector<std::shared_ptr<GameObject>> &objects, int state, sf::FloatRect this_obj_rect, int dmg);
+
  private:
     sf::Vector2f last_non_zero_dir;
 };

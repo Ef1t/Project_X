@@ -16,7 +16,7 @@
 
 class Enemy : public Object, Skin {
 public:
-        Enemy(sf::Uint64 id, const sf::Vector2f& position);
+        Enemy(sf::Uint64 id, const sf::Vector2f& position, bool state);
 
         void draw(sf::RenderWindow& window, float time, float& current_frame) override;
 

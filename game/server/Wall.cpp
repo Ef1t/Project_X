@@ -5,7 +5,7 @@
 #include "Wall.h"
 
 Wall::Wall(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth, std::string_view name)
-        : GameObject(n_wall)
+        : GameObject(n_wall, null_hp, null_dmg)
         , rect(left, top, width, heigth) {
     this->name = name;
 }

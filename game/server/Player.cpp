@@ -8,11 +8,19 @@
 #include "Player.h"
 
 Player::Player(const sf::Vector2f &position)
-        : m_position(position), m_direction{0.0f, 0.0f}, m_velocity(PLAYER_VELOCITY), GameObject(n_player) {}
+        : m_position(position)
+        , m_direction{0.0f, 0.0f}
+        , m_velocity(PLAYER_VELOCITY)
+        , GameObject(n_player, n_player_hp, n_player_dmg) {}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
-    // делаем нормальную скорость по диагонали
+    if (hp <= 0) {
+        is_alive() = false;
+        return;
+    }
+
+        // делаем нормальную скорость по диагонали
     float lenght = sqrt(m_direction.x * m_direction.x + m_direction.y * m_direction.y);
     if (lenght > 1) {
         m_direction.x /= sqrt(2);

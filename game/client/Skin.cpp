@@ -3,11 +3,13 @@
 //
 
 #include <iostream>
+#include <math.h>
+
 #include "Skin.h"
 
 
 
-    Skin::Skin() {
+Skin::Skin() {
     heroimage.loadFromFile("../../images/pigcop_vest.png");
     herotexture.loadFromImage((heroimage));
     herosprite.setTexture(herotexture);
@@ -18,6 +20,9 @@
 
 
 void Skin::go_texture(Direction dir, float time, float& current_frame, Skin& m_actor) {
+    if (sqrt(dir.left * dir.left + dir.up * dir.up + dir.right * dir.right + dir.down * dir.down) > 1) {
+        dir.down;
+    }
     if (dir.left) { //если нажата клавиша стрелка влево или англ буква А
         current_frame += 12*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
         if (current_frame > 2) current_frame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <messages/SessionCreatedMessage.h>
 
+
 Server::Server(unsigned short port)
         : m_port(port)
         , m_sessions()
@@ -56,23 +57,24 @@ void Server::accept_new_user() {
         socket->receive(packet);
         // FIXME: if user stuck - server stuck too
 
-        UserInitMessage message;
+        trans::UserInitMessage message;
         packet >> message;
 
-        std::cout << "New user: " << message.username << " " << static_cast<int>(message.action) << " "
-                  << message.session_id << std::endl;
+        std::cout << "New user: " << message.username() << " " << static_cast<int>(message.action()) << " "
+                  << message.session_id() << std::endl;
 
-        UserPtr user = std::make_shared<User>(message.username, std::move(socket));
+        UserPtr user = std::make_shared<User>(message.username(), std::move(socket));
 
-        switch (message.action) {
-            case UserInitMessage::Create: {
+        switch (message.action()) {
+            case trans::UserInitMessage::Create: {
                 SessionPtr session = std::make_shared<Session>();
-                session->get_map() = message.map_name;
+                session->get_map() = message.map_name();
                 session->add_user(user);
 
                 m_sessions.push_back(session);
 
-                SessionCreatedMessage response{session->get_id()};
+                trans::SessionCreatedMessage response;
+                response.set_session_id(session->get_id());
 
                 packet.clear();
                 packet << response;
@@ -81,14 +83,14 @@ void Server::accept_new_user() {
 
                 break;
             }
-            case UserInitMessage::Join: {
+            case trans::UserInitMessage::Join: {
                 auto session = std::find_if(
                         m_sessions.begin(), m_sessions.end(),
                         [&message = std::as_const(message)](const SessionPtr& session) -> bool {
-                            return session->get_id() == message.session_id;
+                            return session->get_id() == message.session_id();
                         }
                 );
-                
+
                 if (session == m_sessions.end()) {
                     // TODO: send error message
                     break;
@@ -96,9 +98,9 @@ void Server::accept_new_user() {
 
                 (*session)->add_user(user);
 
+
                 break;
             }
         }
     }
 }
-

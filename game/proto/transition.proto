@@ -1,0 +1,175 @@
+syntax = "proto3";
+
+package trans;
+
+// Start User to Server message
+message UserToServerMessage {
+    enum MessageType {
+        Standby = 0;
+        Move = 1;
+        Wall = 2;
+    };
+
+    MessageType type = 1;
+
+    message Direction{
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+        bool fire = 5;
+
+    };
+
+    message BulletDirection {
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+    };
+
+    Direction direction = 2;
+
+    BulletDirection b_direction = 3;
+
+    message Rect {
+        uint64 left = 1;
+        uint64 top = 2;
+        uint64 width = 3;
+        uint64 height = 4;
+    }
+
+    Rect rect = 4;
+
+};
+// End User to Server message
+
+
+// Start Session Created message
+message SessionCreatedMessage {
+    int32 session_id = 1;
+};
+// End Session Created message
+
+// Start user init message
+message UserInitMessage {
+    enum Action {
+        Create = 0;
+        Join = 1;
+    };
+
+    Action action = 1;
+    string username = 2;
+    int32 session_id = 3;
+    string map_name = 4;
+};
+// End user init message
+
+
+// Start Server to User message
+message NewPlayerMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    string map_name = 5;
+    int32 name = 6;
+    int32 state = 7;
+
+};
+
+message UpdatePlayerMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+
+    message Direction{
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+        bool fire = 5;
+    };
+
+    Direction direction = 4;
+    int32 name = 5;
+    int32 state = 6;
+};
+
+//Bullet message
+
+message NewBulletMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+    string map_name = 4;
+    int32 name = 5;
+    int32 state = 6;
+    int32 p_id = 7;
+
+};
+
+message UpdateBulletMessage {
+    int32 id = 1;
+    float x = 2;
+    float y = 3;
+    int32 name = 4;
+    int32 state = 5;
+    int32 p_id = 6;
+
+    message Direction{
+        bool up = 1;
+        bool left = 2;
+        bool right = 3;
+        bool down = 4;
+    };
+
+};
+
+message NewBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
+message UpdateBotMessage {
+    int32 id = 1;
+    string username = 2;
+    float x = 3;
+    float y = 4;
+    float p_x = 5;
+    float p_y = 6;
+    string map_name = 7;
+};
+
+message ServerToUserMessage {
+    enum MessageType {
+        NewPlayer = 0;
+        UpdatePlayer = 1;
+        NewBullet = 2;
+        UpdateBullet = 3;
+        NewBot = 4;
+        UpdateBot = 5;
+
+    };
+
+    MessageType type = 1;
+    NewPlayerMessage np_msg = 2;
+    UpdatePlayerMessage upd_msg = 3;
+    NewBulletMessage nb_msg = 4;
+    UpdateBulletMessage ub_msg = 5;
+    NewBotMessage n_bot_msg = 6;
+    UpdateBotMessage u_bot_msg = 7;
+};
+
+message ServerToUserVectorMessage {
+    repeated ServerToUserMessage vec_messages = 1;
+};
+
+//message UserToServerVectorMessage {
+//    repeated UserToServerMessage vec_messages = 1;
+//};

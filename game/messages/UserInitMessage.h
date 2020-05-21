@@ -9,6 +9,7 @@
 #include <SFML/Network/Packet.hpp>
 
 #include <string>
+#include "transition.pb.h"
 
 
 struct UserInitMessage {
@@ -23,8 +24,8 @@ struct UserInitMessage {
     std::string map_name;
 };
 
-sf::Packet& operator<<(sf::Packet& packet, const UserInitMessage& message);
+sf::Packet& operator<<(sf::Packet& packet, const trans::UserInitMessage& message);
 
-sf::Packet& operator>>(sf::Packet& packet, UserInitMessage& message);
+sf::Packet& operator>>(sf::Packet& packet, trans::UserInitMessage& message);
 
 #endif //GAME_USERINIT_H

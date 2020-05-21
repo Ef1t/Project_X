@@ -75,14 +75,13 @@ void Session::update(float dt) {
         }
         user->receive_socket(socket);
 
-        int i = 0;
-        for (auto& m_enemy : m_enemies) {
-            if (m_enemy->is_alive()) {
-                m_enemy->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+        for (int i = 0; i < m_enemies.size(); ++i) {
+            if (m_enemies[i]->is_alive()) {
+                m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
                 auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemy->get_id());
-                update_message->set_x(m_enemy->get_position().x);
-                update_message->set_y(m_enemy->get_position().y);
+                update_message->set_id(m_enemies[i]->get_id());
+                update_message->set_x(m_enemies[i]->get_position().x);
+                update_message->set_y(m_enemies[i]->get_position().y);
                 update_message->set_state(1);
 
                 auto server_message = m_messages.add_vec_messages();
@@ -90,22 +89,21 @@ void Session::update(float dt) {
                 server_message->set_allocated_u_bot_msg(update_message);
             } else {
                 auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemy->get_id());
-                update_message->set_x(m_enemy->get_position().x);
-                update_message->set_y(m_enemy->get_position().y);
+                update_message->set_id(m_enemies[i]->get_id());
+                update_message->set_x(m_enemies[i]->get_position().x);
+                update_message->set_y(m_enemies[i]->get_position().y);
                 update_message->set_state(0);
 
                 auto server_message = m_messages.add_vec_messages();
                 server_message->set_type(trans::ServerToUserMessage::UpdateBot);
                 server_message->set_allocated_u_bot_msg(update_message);
                 for (size_t j = 0; j < m_objects.size(); ++j) {
-                    if (m_objects[j]->get_id() == m_enemy->get_id()) {
+                    if (m_objects[j]->get_id() == m_enemies[i]->get_id()) {
                         m_objects.erase(m_objects.begin() + j);
                     }
                 }
                 m_enemies.erase(m_enemies.begin() + i);
             }
-            ++i;
         }
     }
     for (auto &item: m_users) {

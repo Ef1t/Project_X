@@ -28,7 +28,7 @@ void Enemy::draw_stat(sf::RenderWindow& window) {
 }
 
 void Enemy::set_state(bool state) {
-
+    m_state = state;
 }
 
 void Enemy::set_direction(const Direction dir) {

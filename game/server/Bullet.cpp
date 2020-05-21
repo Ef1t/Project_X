@@ -7,11 +7,10 @@
 Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
         m_position(positon),
         m_velocity(bullet_velocity),
-        GameObject(n_bullet),
+        GameObject(n_bullet, null_hp, n_player_dmg),
         b_dir(dir),
         player_id(p_id){
 }
-
 
 void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
@@ -33,9 +32,10 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
         m_direction.x++;
     }
 
-    //std::cout << m_position.x << " m_pos_x\n";
     m_position += m_direction * (m_velocity * dt);
-    //std::cout << m_position.x << " new m_pos_x\n";
+    if (collide_and_dmg(objects, n_enemy, get_rect(), get_dmg())) {
+        alive = false;
+    }
 }
 
 
@@ -52,12 +52,22 @@ const sf::Vector2f Bullet::get_position() const {
     return m_position;
 }
 
-Bullet::Bullet(short name) : GameObject(name) {
-
-}
-
 sf::FloatRect Bullet::get_rect() {
+    sf::FloatRect rect;
 
+    // смещение начала прямоугольника игрока от его позиции m_position
+    float delta = 0;
+
+    // размеры текстуры
+    float texture_heigh = 10;
+    float texture_width = 10;
+
+    rect.top = m_position.y + delta;
+    rect.left = m_position.x + delta;
+    rect.height = texture_heigh - delta;
+    rect.width = texture_width - delta;
+
+    return rect;
 }
 
 

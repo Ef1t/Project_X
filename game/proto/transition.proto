@@ -75,7 +75,6 @@ message NewPlayerMessage {
     string map_name = 5;
     int32 name = 6;
     int32 state = 7;
-
 };
 
 message UpdatePlayerMessage {
@@ -106,7 +105,6 @@ message NewBulletMessage {
     int32 name = 5;
     int32 state = 6;
     int32 p_id = 7;
-
 };
 
 message UpdateBulletMessage {
@@ -123,7 +121,6 @@ message UpdateBulletMessage {
         bool right = 3;
         bool down = 4;
     };
-
 };
 
 message NewBotMessage {
@@ -154,7 +151,6 @@ message ServerToUserMessage {
         UpdateBullet = 3;
         NewBot = 4;
         UpdateBot = 5;
-
     };
 
     MessageType type = 1;

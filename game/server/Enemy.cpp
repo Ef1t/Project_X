@@ -6,7 +6,7 @@
 
 Enemy::Enemy(const sf::Vector2f& position)
         : m_position(position)
-        , GameObject(n_enemy)
+        , GameObject(n_enemy, n_enemy_hp, n_enemy_dmg)
         , m_velocity(ENEMY_VELOCITY) {
 }
 
@@ -15,6 +15,12 @@ const sf::Vector2f Enemy::get_position() const {
 }
 
 void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects) {
+
+    if (hp <= 0) {
+        is_alive() = false;
+        return;
+    }
+
     float dist = sqrt((tempX - m_position.x) * (tempX - m_position.x) + (tempY - m_position.y) * (tempY - m_position.y));
 
     sf::Vector2f step;

@@ -78,7 +78,6 @@ void Session::update(float dt) {
 
         for (auto& m_enemy : m_enemies) {
             m_enemy->movement(dt, player->get_position().x, player->get_position().y, m_objects);
-
             auto *update_message = new trans::UpdateBotMessage;
             update_message->set_id(m_enemy->get_id());
             update_message->set_x(m_enemy->get_position().x);
@@ -87,14 +86,12 @@ void Session::update(float dt) {
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBot);
             server_message->set_allocated_u_bot_msg(update_message);
-
         }
-
     }
     for (auto &item: m_users) {
         auto &player = item.second;
 
-        if (player->m_name == n_player) {
+        if (player->m_name == n_player && player->is_alive()) {
             player->update(dt * 10, m_objects);
 
             auto *direction = new trans::UpdatePlayerMessage::Direction;
@@ -119,11 +116,9 @@ void Session::update(float dt) {
     }
     // проходимся по вектору пуль и обновляем координаты
     for (auto &bullet: m_bullets) {
-
-
-        if (!((bullet->get_position().x > 1000) || (bullet->get_position().y > 1000) ||
+        if (!((bullet->get_position().x > 1280) || (bullet->get_position().y > 1280) ||
               (bullet->get_position().x < 0) ||
-              (bullet->get_position().y < 0))) { //условие "исчесновения пули", пока что только для координат.
+              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули", пока что только для координат.
             bullet->update(dt, m_objects);
             std::cout << " JOE\n";
 

@@ -188,8 +188,9 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
         if (obj->get_state() > 0) {
-        temp_obj.push_back(obj);
-    }}
+            temp_obj.push_back(obj);
+        }
+    }
         m_objects = temp_obj;
     for (const trans::ServerToUserMessage &message: messages.vec_messages()) {
         if (message.type() == trans::ServerToUserMessage::NewPlayer) {
@@ -211,7 +212,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
         } else if (message.type() == trans::ServerToUserMessage::UpdatePlayer) {
             bool is_in = false;
             for (const auto obj: m_objects) {
-                if (obj.get()->get_id() == message.upd_msg().id()) {
+                if (obj->get_id() == message.upd_msg().id()) {
                     is_in = true;
                     obj->set_position(sf::Vector2f(message.upd_msg().x(), message.upd_msg().y()));
                     Direction direction = {message.upd_msg().direction().up(), message.upd_msg().direction().left(),
@@ -238,7 +239,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
         } else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
             bool is_in = false;
             for (const auto obj: m_objects) {
-                if (obj.get()->get_id() == message.u_bot_msg().id()) {
+                if (obj->get_id() == message.u_bot_msg().id()) {
                     is_in = true;
                     obj->set_position(sf::Vector2f(message.u_bot_msg().x(), message.u_bot_msg().y()));
                 }
@@ -257,12 +258,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 if (obj->get_id() == message.ub_msg().id()) {
                     obj->set_position(sf::Vector2f(message.ub_msg().x(), message.ub_msg().y()));
                     obj->set_state(message.ub_msg().state());
-
-
                 }
-
             }
-
         }
     }
 }

@@ -17,7 +17,7 @@ const float PLAYER_VELOCITY = 20.0f;
 
 class Player : public GameObject, public Collision {
 public:
-    explicit Player(const sf::Vector2f& position = sf::Vector2f{100.0f, 100.0f});
+    explicit Player(const sf::Vector2f& position = sf::Vector2f{600.0f, 600.0f});
 
     void update(float dt,std::vector<std::shared_ptr<GameObject>> &objects) override;
 

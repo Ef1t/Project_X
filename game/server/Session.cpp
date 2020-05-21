@@ -164,8 +164,33 @@ void Session::update(float dt) {
         }
 
     }
-    while (m_enemies.size() < 10) {
-        add_enemy();
+    int count_enemies = 2;
+    while (m_enemies.size() < count_enemies) {
+        float x = 50;
+        float y = 50;
+        float dist = win_lenght / count_enemies;
+        while (x < win_lenght) {
+            add_enemy(x, y);
+            x += dist;
+        }
+        x -= dist;
+        y += dist;
+        while (y < win_height) {
+            add_enemy(x, y);
+            y += dist;
+        }
+        y -= dist;
+        x -= dist;
+        while (x > 0) {
+            add_enemy(x, y);
+            x -= dist;
+        }
+        x += dist;
+        y -= dist;
+        while (y > 50) {
+            add_enemy(x, y);
+            y -= dist;
+        }
     }
 
     notify_all();
@@ -179,11 +204,9 @@ sf::Uint64 Session::get_id() const {
     return m_id;
 }
 
-void Session::add_enemy() {
+void Session::add_enemy(float bot_x, float bot_y) {
     std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
-    float bot_x = rand() % 1000 + 10;
-    float bot_y = rand() % 500 + 10;
     bot->set_position(bot_x, bot_y);
     m_enemies.push_back(bot);
     m_objects.push_back(bot);

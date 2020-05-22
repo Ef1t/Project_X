@@ -223,6 +223,11 @@ void Session::add_enemy(float bot_x, float bot_y) {
 void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
+
+    while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {
+        player->set_position({player->get_position().x + 10, player->get_position().y + 10});
+    }
+
     m_users[user] = player;
 
     m_objects.push_back(player);

@@ -29,6 +29,8 @@ public:
 
     sf::FloatRect get_rect() override;
 
+    void set_position(sf::Vector2f pos);
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;

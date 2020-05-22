@@ -78,3 +78,8 @@ sf::FloatRect Player::get_rect() {
     rect.width = texture_width - delta;
     return rect;
 }
+
+void Player::set_position(sf::Vector2f pos) {
+    m_position.x = pos.x;
+    m_position.y = pos.y;
+}

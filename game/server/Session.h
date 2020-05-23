@@ -9,6 +9,8 @@
 #include <memory>
 
 #include "Wall.h"
+#include "Lava.h"
+#include "Spike.h"
 #include "Player.h"
 #include "Bullet.h"
 #include "GameObject.h"
@@ -53,6 +55,7 @@ private:
     //Bullets m_bullets;
     std::string map_name;
     std::vector<std::shared_ptr<GameObject>> m_objects;
+    std::vector<std::shared_ptr<GameObject>> m_land_objects;
     trans::ServerToUserVectorMessage m_messages;
 
     std::vector<BulletPtr> m_bullets;

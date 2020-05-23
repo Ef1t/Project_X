@@ -16,12 +16,17 @@
 #define n_bullet 1
 #define n_enemy 2
 #define n_wall 3
+#define n_lava 4
+#define n_spike 5
 
-#define n_player_hp 20
+#define n_player_hp 100
 #define n_player_dmg 1
 
 #define n_enemy_hp 10
 #define n_enemy_dmg 1
+
+#define n_lava_dmg 2
+#define n_spike_dmg 1
 
 #define null_dmg 0
 #define null_hp 0

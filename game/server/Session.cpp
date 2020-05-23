@@ -67,11 +67,26 @@ void Session::update(float dt) {
 
                 }
                 if (message.type() == trans::UserToServerMessage::Wall) {
+                    std::cout << "WALL " << std::endl;
                     m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
                                                                message.rect().top(),
                                                                message.rect().width(),
                                                                message.rect().height(),
                                                                "Wall"));
+                }
+                if (message.type() == trans::UserToServerMessage::Lava) {
+                    std::cout << "LAVA " << std::endl;
+                    m_land_objects.push_back(std::make_shared<Lava>(message.rect().left(),
+                                                                    message.rect().top(),
+                                                                    message.rect().width(),
+                                                                    message.rect().height()));
+                }
+                if (message.type() == trans::UserToServerMessage::Spike) {
+                    std::cout << "SPIKE " << std::endl;
+                    m_land_objects.push_back(std::make_shared<Spike>(message.rect().left(),
+                                                                     message.rect().top(),
+                                                                     message.rect().width(),
+                                                                     message.rect().height()));
                 }
             }
             user->receive_socket(socket);
@@ -189,7 +204,7 @@ void Session::update(float dt) {
         }
 
     }
-    int count_enemies = 1;
+    int count_enemies = 0;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;

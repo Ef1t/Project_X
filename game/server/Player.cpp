@@ -47,7 +47,7 @@ void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
     }
 
 
-    std::cout << "HP :" << get_hp() << std::endl;
+    //std::cout << "HP :" << get_hp() << std::endl;
 
     m_position += step;
 

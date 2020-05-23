@@ -41,6 +41,14 @@ message UserToServerMessage {
 
     Rect rect = 4;
 
+    message Weapon {
+        bool pistol = 1;
+        bool automat = 2;
+        bool shotgun = 3;
+    };
+
+    Weapon weapon = 5;
+
 };
 // End User to Server message
 
@@ -93,6 +101,15 @@ message UpdatePlayerMessage {
     Direction direction = 4;
     int32 name = 5;
     int32 state = 6;
+
+    message FireDirection {
+        bool f_up = 1;
+        bool f_left = 2;
+        bool f_right = 3;
+        bool f_down = 4;
+    };
+
+
 };
 
 //Bullet message

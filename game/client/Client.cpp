@@ -122,7 +122,19 @@ void Client::process_events() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && m_window.hasFocus())
         m_direction.right = true;
     m_direction.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S) && m_window.hasFocus();
-    m_direction.fire = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_window.hasFocus(); //выстрел
+
+    m_weapon.pistol = sf::Keyboard::isKeyPressed(sf::Keyboard::Num1);
+
+    //управление стрелочками стрельбой пулями
+    m_fire_dir.f_up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && m_window.hasFocus();
+    m_fire_dir.f_left = sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && m_window.hasFocus();
+    m_fire_dir.f_right = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && m_window.hasFocus();
+    m_fire_dir.f_down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && m_window.hasFocus();
+
+    m_direction.fire = 0;
+    if (m_fire_dir.f_up || m_fire_dir.f_left || m_fire_dir.f_right || m_fire_dir.f_down){
+    m_direction.fire = 1;
+    }//выстрел
     apply_dir_b();
 }
 
@@ -171,6 +183,10 @@ void Client::send_to_server() {
     bulletDirection->set_left(m_direction_bullet.left);
     bulletDirection->set_right(m_direction_bullet.right);
 
+    trans::UserToServerMessage_Weapon *weap_choise = new trans::UserToServerMessage_Weapon;
+    weap_choise->set_pistol(choise_weapon.pistol);
+    weap_choise->set_automat(choise_weapon.automat);
+    weap_choise->set_shotgun(choise_weapon.shotgun);
 
     message.set_type(trans::UserToServerMessage::Move);
     message.set_allocated_direction(direction);
@@ -267,23 +283,23 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 }
 
 void Client::apply_dir_b() { // устанавливаем тракеторию пули (убираем неопределенность, когда нажато несколько клавиш)
-    if (m_direction.up) {
-        m_direction_bullet.up = m_direction.up;
+    if (m_fire_dir.f_up) {
+        m_direction_bullet.up = m_fire_dir.f_up;
         m_direction_bullet.down = 0;
         m_direction_bullet.right = 0;
         m_direction_bullet.left = 0;
-    } else if (m_direction.down) {
-        m_direction_bullet.down = m_direction.down;
+    } else if (m_fire_dir.f_down) {
+        m_direction_bullet.down = m_fire_dir.f_down;
         m_direction_bullet.right = 0;
         m_direction_bullet.left = 0;
         m_direction_bullet.up = 0;
-    } else if (m_direction.right) {
-        m_direction_bullet.right = m_direction.right;
+    } else if (m_fire_dir.f_right) {
+        m_direction_bullet.right = m_fire_dir.f_right;
         m_direction_bullet.left = 0;
         m_direction_bullet.up = 0;
         m_direction_bullet.down = 0;
-    } else if (m_direction.left) {
-        m_direction_bullet.left = m_direction.left;
+    } else if (m_fire_dir.f_left) {
+        m_direction_bullet.left = m_fire_dir.f_left;
         m_direction_bullet.up = 0;
         m_direction_bullet.down = 0;
         m_direction_bullet.right = 0;
@@ -309,4 +325,21 @@ void Client::send_obj_to_server(std::vector<TmxObject> all_objects) {
             m_user->send_packet(packet);
         }
     }
+}
+
+void Client::choise_of_weapon() {
+    if (m_weapon.pistol) {
+        choise_weapon.pistol = 1;
+        choise_weapon.automat = 0;
+        choise_weapon.shotgun = 0;
+    } else if (m_weapon.automat) {
+        choise_weapon.pistol = 0;
+        choise_weapon.automat = 1;
+        choise_weapon.shotgun = 0;
+    } else if (m_weapon.shotgun) {
+        choise_weapon.pistol = 0;
+        choise_weapon.automat = 0;
+        choise_weapon.shotgun = 1;
+    }
+
 }

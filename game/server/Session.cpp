@@ -52,6 +52,7 @@ void Session::update(float dt) {
 
                 Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
                                          message.b_direction().right(), message.b_direction().down()};
+                std::cout << message.b_direction().up() << " UP\n";
 
                 if (player->get_route().fire == 1) { //если нажата клавижа space, создаем пулю
                     if (time_per_fire++ > 10) {

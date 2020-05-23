@@ -20,19 +20,27 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
 //    std:: cout << b_dir.left << " Ri B-_dir in update\n";
 
     if (b_dir.up) {
-        m_direction.y--;
+        m_direction.y = -1;
     }
     if (b_dir.down) {
-        m_direction.y++;
+        m_direction.y = 1;
     }
     if (b_dir.left) {
-        m_direction.x--;
+        m_direction.x = -1;
     }
     if (b_dir.right) {
-        m_direction.x++;
+        m_direction.x = 1;
     }
 
     m_position += m_direction * (m_velocity * dt);
+    //m_position.x += m_direction.x;
+    //m_position.y += m_direction.y;
+    std::cout << m_direction.x<< " m_x\n";
+    std::cout << m_direction.y << " m_y\n";
+    std::cout << m_velocity << " velocity\n";
+    std::cout << m_position.x << " x\n";
+    std::cout << m_position.y << " y\n";
+    std::cout << dt << " dt\n";
     if (collide_and_dmg(objects, n_enemy, get_rect(), get_dmg())) {
         alive = false;
     }

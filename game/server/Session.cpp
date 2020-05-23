@@ -82,7 +82,7 @@ void Session::update(float dt) {
                 update_message->set_id(m_enemies[i]->get_id());
                 update_message->set_x(m_enemies[i]->get_position().x);
                 update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(1);
+                update_message->set_hp(m_enemies[i]->get_hp());
 
                 auto server_message = m_messages.add_vec_messages();
                 server_message->set_type(trans::ServerToUserMessage::UpdateBot);
@@ -92,7 +92,7 @@ void Session::update(float dt) {
                 update_message->set_id(m_enemies[i]->get_id());
                 update_message->set_x(m_enemies[i]->get_position().x);
                 update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(0);
+                update_message->set_hp(0);
 
                 auto server_message = m_messages.add_vec_messages();
                 server_message->set_type(trans::ServerToUserMessage::UpdateBot);
@@ -123,7 +123,7 @@ void Session::update(float dt) {
             update_message->set_x(player->get_position().x);
             update_message->set_y(player->get_position().y);
             update_message->set_allocated_direction(direction);
-            update_message->set_state(1);
+            update_message->set_hp(player->get_hp());
 
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
@@ -141,7 +141,7 @@ void Session::update(float dt) {
 
             auto *update_message_bul = new trans::UpdateBulletMessage;
             update_message_bul->set_id(bullet->get_id());
-            update_message_bul->set_state(1); //условие исчезновения
+            update_message_bul->set_hp(1); //условие исчезновения
             update_message_bul->set_x(bullet->get_position().x);
             update_message_bul->set_y(bullet->get_position().y);
             update_message_bul->set_name(n_bullet); //название объекта
@@ -152,7 +152,7 @@ void Session::update(float dt) {
         } else {
             auto *update_message_bul = new trans::UpdateBulletMessage;
             update_message_bul->set_id(bullet->get_id());
-            update_message_bul->set_state(0); //условие жизни
+            update_message_bul->set_hp(0); //условие жизни
             update_message_bul->set_x(bullet->get_position().x);
             update_message_bul->set_y(bullet->get_position().y);
             update_message_bul->set_name(n_bullet);
@@ -213,7 +213,7 @@ void Session::add_enemy(float bot_x, float bot_y) {
     new_bot_message->set_id(bot->get_id());
     new_bot_message->set_x(bot->get_position().x);
     new_bot_message->set_y(bot->get_position().y);
-    new_bot_message->set_state(1);
+    new_bot_message->set_hp(bot->get_hp());
     new_bot_message->set_map_name(this->map_name);
     auto server_message = m_messages.add_vec_messages();
     server_message->set_allocated_n_bot_msg(new_bot_message);
@@ -233,7 +233,7 @@ void Session::add_user(UserPtr user) {
     new_player_message->set_x(player->get_position().x);
     new_player_message->set_y(player->get_position().y);
     new_player_message->set_map_name(this->map_name);
-    new_player_message->set_state(1);
+    new_player_message->set_hp(n_player_hp);
 
     auto server_message = m_messages.add_vec_messages();
     server_message->set_allocated_np_msg(new_player_message);
@@ -255,7 +255,7 @@ void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir) {
     new_bullet_message->set_x(x);
     new_bullet_message->set_y(y);
     new_bullet_message->set_name(n_bullet);
-    new_bullet_message->set_state(1);
+    new_bullet_message->set_hp(1);
 
 
     auto server_message = m_messages.add_vec_messages();

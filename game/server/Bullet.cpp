@@ -10,14 +10,6 @@ Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
         GameObject(n_bullet, null_hp, n_player_dmg),
         b_dir(dir),
         player_id(p_id) {
-}
-
-void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
-
-//    std:: cout << b_dir.up << " Up B-_dir in update\n";
-//    std:: cout << b_dir.down << " Do B-_dir in update\n";
-//    std:: cout << b_dir.right << " Le B-_dir in update\n";
-//    std:: cout << b_dir.left << " Ri B-_dir in update\n";
 
     if (b_dir.up) {
         m_direction.y--;
@@ -32,7 +24,18 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
         m_direction.x++;
     }
 
-    m_position += m_direction * (m_velocity * dt);
+}
+
+void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
+
+//    std:: cout << b_dir.up << " Up B-_dir in update\n";
+//    std:: cout << b_dir.down << " Do B-_dir in update\n";
+//    std:: cout << b_dir.right << " Le B-_dir in update\n";
+//    std:: cout << b_dir.left << " Ri B-_dir in update\n";
+
+
+
+    m_position += m_direction * (m_velocity * dt * 20);
     if (collide_and_dmg(objects, n_enemy, get_rect(), get_dmg())) {
         alive = false;
     }

@@ -26,7 +26,7 @@ public:
 
         void set_direction(const Direction dir) override;
 
-        void set_state(bool state) override ;
+        void set_hp(int hp) override ;
 
 
 

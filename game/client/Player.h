@@ -27,7 +27,7 @@ public:
 
     void set_direction(Direction dir) override;
 
-    void set_state(bool state) override;
+    void set_hp(int hp) override;
 
 private:
     std::string m_username;

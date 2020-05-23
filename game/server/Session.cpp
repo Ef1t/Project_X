@@ -79,12 +79,13 @@ void Session::update(float dt) {
             if (m_enemies[i]->is_alive()) {
                 int lol = m_enemies[i]->get_target();
                 //int64_t kek = m_users[lol]->get_position().x;
+                int j = 0; // player ID
                 for (auto user : m_users) {
-                    std::cout<<user.second->get_id();
-                    std::cout<<m_enemies[i]->get_target();
-                    if ((user.second->get_id() - 1) == m_enemies[i]->get_target()) {
+                    //std::cout << "USER ID IS " << user.second->get_id() << "ENEMY ID IS " << m_enemies[i]->get_target() << std::endl;
+                    if (j == m_enemies[i]->get_target()) {
                         m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y, m_objects);
                     }
+                    j++;
                 }
                 //m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
                 auto *update_message = new trans::UpdateBotMessage;
@@ -220,6 +221,9 @@ void Session::add_enemy(float bot_x, float bot_y) {
 
     bot->set_position(bot_x, bot_y);
     bot->set_target(count);
+
+    //std::cout << "COUNT IS " << count << " SIZE IS " << m_users.size() << std::endl;
+
     m_enemies.push_back(bot);
     m_objects.push_back(bot);
     auto new_bot_message = new trans::NewBotMessage;

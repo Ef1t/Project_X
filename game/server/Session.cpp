@@ -74,10 +74,19 @@ void Session::update(float dt) {
             }
         }
         user->receive_socket(socket);
-
+        // bot's movement
         for (int i = 0; i < m_enemies.size(); ++i) {
             if (m_enemies[i]->is_alive()) {
-                m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+                int lol = m_enemies[i]->get_target();
+                //int64_t kek = m_users[lol]->get_position().x;
+                for (auto user : m_users) {
+                    std::cout<<user.second->get_id();
+                    std::cout<<m_enemies[i]->get_target();
+                    if ((user.second->get_id() - 1) == m_enemies[i]->get_target()) {
+                        m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y, m_objects);
+                    }
+                }
+                //m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
                 auto *update_message = new trans::UpdateBotMessage;
                 update_message->set_id(m_enemies[i]->get_id());
                 update_message->set_x(m_enemies[i]->get_position().x);
@@ -207,7 +216,10 @@ sf::Uint64 Session::get_id() const {
 void Session::add_enemy(float bot_x, float bot_y) {
     std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
+    int count = rand() % m_users.size();
+
     bot->set_position(bot_x, bot_y);
+    bot->set_target(count);
     m_enemies.push_back(bot);
     m_objects.push_back(bot);
     auto new_bot_message = new trans::NewBotMessage;

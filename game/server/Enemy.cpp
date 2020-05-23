@@ -4,10 +4,11 @@
 
 #include "Enemy.h"
 
-Enemy::Enemy(const sf::Vector2f& position)
+Enemy::Enemy(const sf::Vector2f& position, int target)
         : m_position(position)
         , GameObject(n_enemy, n_enemy_hp, n_enemy_dmg)
-        , m_velocity(ENEMY_VELOCITY) {
+        , m_velocity(ENEMY_VELOCITY)
+        , m_target(target) {
 }
 
 const sf::Vector2f Enemy::get_position() const {
@@ -17,6 +18,14 @@ const sf::Vector2f Enemy::get_position() const {
 void Enemy::set_position(float new_x, float new_y) {
     m_position.x = new_x;
     m_position.y = new_y;
+}
+
+void Enemy::set_target(int new_target) {
+    m_target = new_target;
+}
+
+sf::Uint64 Enemy::get_target() {
+    return m_target;
 }
 
 void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects) {

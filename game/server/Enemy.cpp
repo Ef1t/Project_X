@@ -21,8 +21,10 @@ void Enemy::set_position(float new_x, float new_y) {
 
 void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared_ptr<GameObject>> &objects) {
 
+    time_last_dmg += dt;
+
     if (hp <= 0) {
-        is_alive() = false;
+        alive = false;
         return;
     }
 
@@ -34,7 +36,19 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
 
     sf::Vector2f dir = {(tempX - m_position.x) / dist, (tempY - m_position.y) / dist};
 
-    step = real_step(step, dir, get_rect(), objects, get_id());
+    std::shared_ptr<GameObject> near_obj;
+
+    sf::Vector2f want_step = step;
+
+    step = real_step(step, dir, get_rect(), objects, get_id(), near_obj);
+
+    if (want_step != step &&  time_last_dmg > 0.1) {
+        if (near_obj->m_name == n_player) {
+            near_obj->get_hp() -= get_dmg();
+            std::cout << " damaga " << std::endl;
+            time_last_dmg = 0;
+        }
+    }
 
     if (dist > 2) {
         m_position.x += step.x;

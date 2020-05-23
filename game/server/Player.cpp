@@ -11,12 +11,15 @@ Player::Player(const sf::Vector2f &position)
         : m_position(position)
         , m_direction{0.0f, 0.0f}
         , m_velocity(PLAYER_VELOCITY)
-        , GameObject(n_player, n_player_hp, n_player_dmg) {}
+        , GameObject(n_player, n_player_hp, n_player_dmg)
+        , time_last_dgm(0) {}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
+    time_last_dgm += dt;
+
     if (hp <= 0) {
-        is_alive() = false;
+        alive = false;
         return;
     }
 
@@ -29,7 +32,22 @@ void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
 
     sf::Vector2f step = m_direction * (m_velocity * dt);
 
-    step = real_step(step, m_direction, get_rect(), objects, get_id());
+    std::shared_ptr<GameObject> near_obj;
+
+    sf::Vector2f want_step = step;
+
+    step = real_step(step, m_direction, get_rect(), objects, get_id(), near_obj);
+
+    if (want_step != step && time_last_dgm > 1) {
+        if (near_obj->m_name == n_enemy) {
+            get_hp() -= near_obj->get_dmg();
+            std::cout << " damaga 2" << std::endl;
+            time_last_dgm = 0;
+        }
+    }
+
+
+    std::cout << "HP :" << get_hp() << std::endl;
 
     m_position += step;
 

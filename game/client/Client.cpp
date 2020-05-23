@@ -218,12 +218,12 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     Direction direction = {message.upd_msg().direction().up(), message.upd_msg().direction().left(),
                                            message.upd_msg().direction().right(), message.upd_msg().direction().down()};
                     obj->set_direction(direction);
-                    obj->set_state(message.upd_msg().state());
+                    //obj->set_state(message.upd_msg().state());
                     if (this_player_id == message.upd_msg().id()) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
 
-                    } 
+                    }
                   }
             }
             if (!is_in) {

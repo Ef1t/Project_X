@@ -24,90 +24,94 @@ void Session::update(float dt) {
 
         auto &user = m_user.first;
         auto &player = m_user.second;
-      
-        UserSocket socket = user->get_socket();
-        if (socket->receive(packet) == sf::Socket::Done) {
-            trans::UserToServerMessage message;
-            packet >> message;
 
-            if (message.type() == trans::UserToServerMessage::Move) {
-                sf::Vector2f dir;
-                if (message.direction().up()) {
-                    dir.y--;
-                }
-                if (message.direction().down()) {
-                    dir.y++;
-                }
-                if (message.direction().left()) {
-                    dir.x--;
-                }
-                if (message.direction().right()) {
-                    dir.x++;
-                }
-                Direction direction = {message.direction().up(), message.direction().left(),
-                                       message.direction().right(),
-                                       message.direction().down(), message.direction().fire()};
+        if (player->is_alive()) {
+            UserSocket socket = user->get_socket();
+            if (socket->receive(packet) == sf::Socket::Done) {
+                trans::UserToServerMessage message;
+                packet >> message;
 
-                player->apply(dir, direction);
+                if (message.type() == trans::UserToServerMessage::Move) {
+                    sf::Vector2f dir;
+                    if (message.direction().up()) {
+                        dir.y--;
+                    }
+                    if (message.direction().down()) {
+                        dir.y++;
+                    }
+                    if (message.direction().left()) {
+                        dir.x--;
+                    }
+                    if (message.direction().right()) {
+                        dir.x++;
+                    }
+                    Direction direction = {message.direction().up(), message.direction().left(),
+                                           message.direction().right(),
+                                           message.direction().down(), message.direction().fire()};
 
-                Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
-                                         message.b_direction().right(), message.b_direction().down()};
+                    player->apply(dir, direction);
 
-                if (player->get_route().fire == 1) { //если нажата клавижа space, создаем пулю
-                    if (time_per_fire++ > 10) {
-                        add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
-                        time_per_fire = 0; //обнуляем счетчик после выстрела
+                    Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
+                                             message.b_direction().right(), message.b_direction().down()};
+
+                    //стрельба
+                    if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
+                        if (time_per_fire++ > 10) {
+                            add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
+                            time_per_fire = 0; //обнуляем счетчик после выстрела
+                        }
+
+
                     }
 
 
                 }
-
-
+                if (message.type() == trans::UserToServerMessage::Wall) {
+                    m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
+                                                               message.rect().top(),
+                                                               message.rect().width(),
+                                                               message.rect().height(),
+                                                               "Wall"));
+                }
             }
-            //стрельба
-            if (message.type() == trans::UserToServerMessage::Wall) {
-                m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
-                                                           message.rect().top(),
-                                                           message.rect().width(),
-                                                           message.rect().height(),
-                                                           "Wall"));
-            }
+            user->receive_socket(socket);
         }
-        user->receive_socket(socket);
+        if (player->is_alive()) {
+            for (int i = 0; i < m_enemies.size(); ++i) {
+                if (m_enemies[i]->is_alive()) {
+                    m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+                    auto *update_message = new trans::UpdateBotMessage;
+                    update_message->set_id(m_enemies[i]->get_id());
+                    update_message->set_x(m_enemies[i]->get_position().x);
+                    update_message->set_y(m_enemies[i]->get_position().y);
+                    update_message->set_state(1);
 
-        for (int i = 0; i < m_enemies.size(); ++i) {
-            if (m_enemies[i]->is_alive()) {
-                m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
-                auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemies[i]->get_id());
-                update_message->set_x(m_enemies[i]->get_position().x);
-                update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(1);
+                    auto server_message = m_messages.add_vec_messages();
+                    server_message->set_type(trans::ServerToUserMessage::UpdateBot);
+                    server_message->set_allocated_u_bot_msg(update_message);
+                } else {
+                    auto *update_message = new trans::UpdateBotMessage;
+                    update_message->set_id(m_enemies[i]->get_id());
+                    update_message->set_x(m_enemies[i]->get_position().x);
+                    update_message->set_y(m_enemies[i]->get_position().y);
+                    update_message->set_state(0);
 
-                auto server_message = m_messages.add_vec_messages();
-                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-                server_message->set_allocated_u_bot_msg(update_message);
-            } else {
-                auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemies[i]->get_id());
-                update_message->set_x(m_enemies[i]->get_position().x);
-                update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(0);
-
-                auto server_message = m_messages.add_vec_messages();
-                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-                server_message->set_allocated_u_bot_msg(update_message);
-                for (size_t j = 0; j < m_objects.size(); ++j) {
-                    if (m_objects[j]->get_id() == m_enemies[i]->get_id()) {
-                        m_objects.erase(m_objects.begin() + j);
+                    auto server_message = m_messages.add_vec_messages();
+                    server_message->set_type(trans::ServerToUserMessage::UpdateBot);
+                    server_message->set_allocated_u_bot_msg(update_message);
+                    for (size_t j = 0; j < m_objects.size(); ++j) {
+                        if (m_objects[j]->get_id() == m_enemies[i]->get_id()) {
+                            m_objects.erase(m_objects.begin() + j);
+                        }
                     }
+                    m_enemies.erase(m_enemies.begin() + i);
                 }
-                m_enemies.erase(m_enemies.begin() + i);
             }
         }
     }
-    for (auto &item: m_users) {
-        auto &player = item.second;
+    auto it = m_users.begin();
+    for (int i = 0; it != m_users.end(); ++it, ++i) {
+        auto &player = it->second;
 
         if (player->m_name == n_player && player->is_alive()) {
             player->update(dt * 10, m_objects);
@@ -128,14 +132,36 @@ void Session::update(float dt) {
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
             server_message->set_allocated_upd_msg(update_message);
-        }
+        } else {
+            auto *direction = new trans::UpdatePlayerMessage::Direction;
+            direction->set_up(player->get_route().up);
+            direction->set_down(player->get_route().down); //почему не зануляются??
+            direction->set_left(player->get_route().left);
+            direction->set_right(player->get_route().right);
 
+            auto *update_message = new trans::UpdatePlayerMessage;
+            update_message->set_id(player->get_id());
+            update_message->set_x(player->get_position().x);
+            update_message->set_y(player->get_position().y);
+            update_message->set_allocated_direction(direction);
+            update_message->set_state(1);
+
+            auto server_message = m_messages.add_vec_messages();
+            server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
+            server_message->set_allocated_upd_msg(update_message);
+
+            for (size_t j = 0; j < m_objects.size(); ++j) {
+                if (m_objects[j]->get_id() == player->get_id()) {
+                    m_objects.erase(m_objects.begin() + j);
+                }
+            }
+        }
     }
-    // проходимся по вектору пуль и обновляем координаты
+    // проходимся по вектору пуль и обновляем координатыa
     for (auto &bullet: m_bullets) {
         if (!((bullet->get_position().x > 1280) || (bullet->get_position().y > 1280) ||
               (bullet->get_position().x < 0) ||
-              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули", пока что только для координат.
+              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули"
             bullet->update(dt, m_objects);
             //std::cout << " JOE\n";
 
@@ -163,7 +189,7 @@ void Session::update(float dt) {
         }
 
     }
-    int count_enemies = 2;
+    int count_enemies = 1;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -224,6 +250,7 @@ void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
 
+    //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {
         player->set_position({player->get_position().x + 10, player->get_position().y + 10});
     }
@@ -278,7 +305,6 @@ void Session::notify_all() {
     for (auto &m_user: m_users) {
         m_user.first->send_packet(packet);
     }
-
 
     m_messages.clear_vec_messages();
     // TODO: check user connection: if sending fails -> remove that user from m_users + add send DeletePlayerMessage to all

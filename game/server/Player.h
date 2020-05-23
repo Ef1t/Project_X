@@ -36,6 +36,7 @@ private:
     sf::Vector2f m_direction;
     float m_velocity;
     Direction m_route; // Players route
+    float time_last_dgm;
 };
 
 using PlayerPtr = std::shared_ptr<Player>;

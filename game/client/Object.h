@@ -15,10 +15,13 @@
 #include "transition.pb.h"
 
 #include <memory>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #define n_player 0
 #define n_bullet 1
 #define n_enemy 2
+
+#define hp_bar_length 50
 
 class Object {
 public:
@@ -54,7 +57,10 @@ protected:
     Direction m_dir;
     std::string m_name;
     int m_hp;
+    int m_max_hp;
 
+    sf::RectangleShape hp_bar_green;
+    sf::RectangleShape hp_bar_red;
 };
 
 using ObjectPtr = std::shared_ptr<Object>;

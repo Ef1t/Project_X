@@ -223,7 +223,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
 
-                    } 
+                    }
                   }
             }
             if (!is_in) {

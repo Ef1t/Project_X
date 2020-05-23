@@ -17,7 +17,9 @@
 #define n_enemy 2
 #define n_wall 3
 
-#define n_player_hp 1
+
+#define n_player_hp 100
+
 #define n_player_dmg 1
 
 #define n_enemy_hp 10

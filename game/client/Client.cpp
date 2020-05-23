@@ -206,6 +206,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 if (is_creator) {
                     auto obj = m_level.GetAllObjects("VSE");
                     send_obj_to_server(obj);
+//                    auto clock = sf::Clock();
+//                    while()
 //                    send_obj_to_server(m_level.GetAllObjects("lava"));
 //                    send_obj_to_server(m_level.GetAllObjects("spike"));
                 }

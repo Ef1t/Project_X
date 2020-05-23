@@ -232,7 +232,6 @@ void Session::update(float dt) {
             y -= dist;
         }
     }
-
     notify_all();
 }
 

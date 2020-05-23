@@ -29,12 +29,14 @@ public:
 
     sf::FloatRect get_rect() override;
 
+    void set_position(sf::Vector2f pos);
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
     float m_velocity;
     Direction m_route; // Players route
-    sf::Vector2f last_non_zero_dir;
+    float time_last_dgm;
 };
 
 using PlayerPtr = std::shared_ptr<Player>;

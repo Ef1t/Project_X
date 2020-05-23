@@ -15,14 +15,17 @@
 #include "transition.pb.h"
 
 #include <memory>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #define n_player 0
 #define n_bullet 1
 #define n_enemy 2
 
+#define hp_bar_length 50
+
 class Object {
 public:
-    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, bool state);
+    explicit Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, int hp);
     
     virtual
     void set_position(const sf::Vector2f& position);
@@ -31,7 +34,7 @@ public:
     void set_direction(const Direction dir);
 
     virtual
-    void set_state(bool state) = 0;
+    void set_hp(int hp) = 0;
 
     virtual
     void draw(sf::RenderWindow& window,  float time, float& current_frame) = 0; //вопрос, почему нельзя переопределить ее
@@ -46,15 +49,18 @@ public:
     float get_x() const;
     float get_y() const;
 
-    bool get_state() const;
+    int get_hp() const;
     short object_name;
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;
     Direction m_dir;
     std::string m_name;
-    bool m_state;
+    int m_hp;
+    int m_max_hp;
 
+    sf::RectangleShape hp_bar_green;
+    sf::RectangleShape hp_bar_red;
 };
 
 using ObjectPtr = std::shared_ptr<Object>;

@@ -33,8 +33,8 @@ void Bullet::draw(sf::RenderWindow &window, float time, float &current_frame) {
 
 }
 
-void Bullet::set_state(bool state) {
-    m_state = state;
+void Bullet::set_hp(int hp) {
+    m_hp = hp;
 }
 
 

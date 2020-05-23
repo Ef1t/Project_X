@@ -33,6 +33,6 @@ void Player::set_direction(const Direction dir) {
 
 }
 
-void Player::set_state(bool state) {
-    m_state = state;
+void Player::set_hp(int hp) {
+    m_hp = hp;
 }

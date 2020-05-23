@@ -26,7 +26,7 @@ public:
 
     void draw(sf::RenderWindow& window,  float time, float& current_frame) override ;
 
-    void set_state(bool state) override ;
+    void set_hp(int hp) override ;
 
 private:
     sf::CircleShape shape;

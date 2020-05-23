@@ -187,7 +187,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
-        if (obj->get_state() > 0) {
+        if (obj->get_hp() > 0) {
             temp_obj.push_back(obj);
         }
     }
@@ -195,7 +195,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
     for (const trans::ServerToUserMessage &message: messages.vec_messages()) {
         if (message.type() == trans::ServerToUserMessage::NewPlayer) {
             m_objects.push_back(std::make_shared<Player>(message.np_msg().id(), message.np_msg().username(),
-                                                         sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().state()));
+                                                         sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
 
             if (!is_map) {
                 std::cout << message.np_msg().map_name();
@@ -230,11 +230,11 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 m_objects.push_back(std::make_shared<Player>(message.upd_msg().id(), " ",
                                                              sf::Vector2f(message.upd_msg().x(),
                                                                           message.upd_msg().y()),
-                                                                          message.upd_msg().state()));
+                                                                          message.upd_msg().hp()));
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBot) {
             m_objects.push_back(std::make_shared<Enemy>(message.n_bot_msg().id(),
-                                            sf::Vector2f(message.n_bot_msg().x(), message.n_bot_msg().y()), message.n_bot_msg().state()));
+                                            sf::Vector2f(message.n_bot_msg().x(), message.n_bot_msg().y()), message.n_bot_msg().hp()));
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBot) {
             bool is_in = false;
@@ -242,24 +242,24 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 if (obj->get_id() == message.u_bot_msg().id()) {
                     is_in = true;
                     obj->set_position(sf::Vector2f(message.u_bot_msg().x(), message.u_bot_msg().y()));
-                    obj->set_state(message.u_bot_msg().state());
+                    obj->set_hp(message.u_bot_msg().hp());
                 }
             }
-            if (!is_in && message.u_bot_msg().state()) {
+            if (!is_in && message.u_bot_msg().hp()) {
                 m_objects.push_back(std::make_shared<Enemy>(message.u_bot_msg().id(),
                                                             sf::Vector2f(message.u_bot_msg().x(),
                                                                          message.u_bot_msg().y()),
-                                                                         message.u_bot_msg().state()));
+                                                                         message.u_bot_msg().hp()));
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),
-                                                         sf::Vector2f(message.nb_msg().x(), message.nb_msg().y()), message.nb_msg().state()));
+                                                         sf::Vector2f(message.nb_msg().x(), message.nb_msg().y()), message.nb_msg().hp()));
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBullet) {
             for (const auto obj: m_objects) {
                 if (obj->get_id() == message.ub_msg().id()) {
                     obj->set_position(sf::Vector2f(message.ub_msg().x(), message.ub_msg().y()));
-                    obj->set_state(message.ub_msg().state());
+                    obj->set_hp(message.ub_msg().hp());
                 }
             }
         }

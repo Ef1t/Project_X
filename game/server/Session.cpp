@@ -25,6 +25,10 @@ void Session::update(float dt) {
         auto &user = m_user.first;
         auto &player = m_user.second;
 
+        Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
+                                 message.b_direction().right(), message.b_direction().down()};
+        std::cout << message.b_direction().up() << " UP\n";
+      
         if (player->is_alive()) {
             UserSocket socket = user->get_socket();
             if (socket->receive(packet) == sf::Socket::Done) {

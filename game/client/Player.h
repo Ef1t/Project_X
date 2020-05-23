@@ -17,7 +17,7 @@
 
 class Player : public Object, Skin {
 public:
-    Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position, bool state);
+    Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position, int hp);
 
     void draw(sf::RenderWindow& window, float time, float& current_frame) override;
 

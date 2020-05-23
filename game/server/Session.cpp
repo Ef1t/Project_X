@@ -25,10 +25,6 @@ void Session::update(float dt) {
         auto &user = m_user.first;
         auto &player = m_user.second;
 
-        Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
-                                 message.b_direction().right(), message.b_direction().down()};
-        std::cout << message.b_direction().up() << " UP\n";
-      
         if (player->is_alive()) {
             UserSocket socket = user->get_socket();
             if (socket->receive(packet) == sf::Socket::Done) {
@@ -80,49 +76,20 @@ void Session::update(float dt) {
             }
             user->receive_socket(socket);
         }
-
-        user->receive_socket(socket);
-        // bot's movement
-        for (int i = 0; i < m_enemies.size(); ++i) {
-            if (m_enemies[i]->is_alive()) {
-                int lol = m_enemies[i]->get_target();
-                //int64_t kek = m_users[lol]->get_position().x;
-                int j = 0; // player ID
-                for (auto user : m_users) {
-                    //std::cout << "USER ID IS " << user.second->get_id() << "ENEMY ID IS " << m_enemies[i]->get_target() << std::endl;
-                    if (j == m_enemies[i]->get_target()) {
-                        m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y, m_objects);
-                    }
-                    j++;
-                }
-                //m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
-                auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemies[i]->get_id());
-                update_message->set_x(m_enemies[i]->get_position().x);
-                update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(1);
-
-                auto server_message = m_messages.add_vec_messages();
-                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-                server_message->set_allocated_u_bot_msg(update_message);
-            } else {
-                auto *update_message = new trans::UpdateBotMessage;
-                update_message->set_id(m_enemies[i]->get_id());
-                update_message->set_x(m_enemies[i]->get_position().x);
-                update_message->set_y(m_enemies[i]->get_position().y);
-                update_message->set_state(0);
-
-                auto server_message = m_messages.add_vec_messages();
-                server_message->set_type(trans::ServerToUserMessage::UpdateBot);
-                server_message->set_allocated_u_bot_msg(update_message);
-                for (size_t j = 0; j < m_objects.size(); ++j) {
-                    if (m_objects[j]->get_id() == m_enemies[i]->get_id()) {
-                        m_objects.erase(m_objects.begin() + j);
-                      
         if (player->is_alive()) {
             for (int i = 0; i < m_enemies.size(); ++i) {
                 if (m_enemies[i]->is_alive()) {
-                    m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y, m_objects);
+                    int lol = m_enemies[i]->get_target();
+                    //int64_t kek = m_users[lol]->get_position().x;
+                    int j = 0; // player ID
+                    for (auto user : m_users) {
+                        //std::cout << "USER ID IS " << user.second->get_id() << "ENEMY ID IS " << m_enemies[i]->get_target() << std::endl;
+                        if (j == m_enemies[i]->get_target()) {
+                            m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y,
+                                                   m_objects);
+                        }
+                        j++;
+                    }
                     auto *update_message = new trans::UpdateBotMessage;
                     update_message->set_id(m_enemies[i]->get_id());
                     update_message->set_x(m_enemies[i]->get_position().x);

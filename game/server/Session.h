@@ -37,6 +37,7 @@ public:
     sf::Uint64 get_id() const;
 
     void add_user(UserPtr user);
+
     void add_enemy();
 
     void add_bullet(PlayerPtr player, float x, float y, Direction b_dir);

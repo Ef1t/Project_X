@@ -35,6 +35,7 @@ private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
     float m_velocity;
+    float time_last_dmg;
 
     //Direction m_route; // Players route
 

@@ -9,7 +9,7 @@ Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
         m_velocity(bullet_velocity),
         GameObject(n_bullet, null_hp, n_player_dmg),
         b_dir(dir),
-        player_id(p_id) {
+        player_id(p_id){
 }
 
 void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {

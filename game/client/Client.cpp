@@ -17,7 +17,7 @@
 short ID = 5;
 
 Client::Client()
-        : m_window (sf::VideoMode(1280, 720), "HL3"), m_objects(), is_map(false), this_player_id(0),
+        : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
           is_creator(false) {
     std::cout << ID << '\n';
     //тут меняется область видимости камеры

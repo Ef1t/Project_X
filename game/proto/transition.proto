@@ -43,6 +43,14 @@ message UserToServerMessage {
 
     Rect rect = 4;
 
+    message Weapon {
+        bool pistol = 1;
+        bool automat = 2;
+        bool shotgun = 3;
+    };
+
+    Weapon weapon = 5;
+
 };
 // End User to Server message
 
@@ -76,7 +84,7 @@ message NewPlayerMessage {
     float y = 4;
     string map_name = 5;
     int32 name = 6;
-    int32 state = 7;
+    int32 hp = 7;
 };
 
 message UpdatePlayerMessage {
@@ -95,6 +103,15 @@ message UpdatePlayerMessage {
     Direction direction = 4;
     int32 name = 5;
     int32 state = 6;
+
+    message FireDirection {
+        bool f_up = 1;
+        bool f_left = 2;
+        bool f_right = 3;
+        bool f_down = 4;
+    };
+
+    int32 hp = 7;
 };
 
 //Bullet message
@@ -105,7 +122,7 @@ message NewBulletMessage {
     float y = 3;
     string map_name = 4;
     int32 name = 5;
-    int32 state = 6;
+    int32 hp = 6;
     int32 p_id = 7;
 };
 
@@ -114,7 +131,7 @@ message UpdateBulletMessage {
     float x = 2;
     float y = 3;
     int32 name = 4;
-    int32 state = 5;
+    int32 hp = 5;
     int32 p_id = 6;
 
     message Direction{
@@ -133,7 +150,7 @@ message NewBotMessage {
     float p_x = 5;
     float p_y = 6;
     string map_name = 7;
-    int32 state = 8;
+    int32 hp = 8;
 };
 
 message UpdateBotMessage {
@@ -144,7 +161,7 @@ message UpdateBotMessage {
     float p_x = 5;
     float p_y = 6;
     string map_name = 7;
-    int32 state = 8;
+    int32 hp = 8;
 };
 
 message ServerToUserMessage {

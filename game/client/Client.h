@@ -36,6 +36,8 @@ public:
 
     void apply_dir_b();
 
+    void choise_of_weapon();
+
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
@@ -47,6 +49,9 @@ private:
     View view;
     int this_player_id;
     bool is_creator;
+    FireDirection m_fire_dir;
+    Weapon m_weapon;
+    Weapon choise_weapon;
 
     void process_events();
 

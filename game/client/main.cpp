@@ -27,8 +27,8 @@ int main(int ac, const char* av[]) {
 
 
     Client client;
-    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
-    //menuDeath(client.get_window());
+    //menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    menuDeath(client.get_window());
 
     std::cout << "username: " << username_str << std::endl;
 

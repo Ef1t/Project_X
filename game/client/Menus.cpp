@@ -15,7 +15,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
     newGameInitTexture.loadFromFile("../../client/menuTextures/newGameInit.png");
-    newGameBloodTexture.loadFromFile("../../client/menuTextures/newGameBlood.jpg");
+    newGameBloodTexture.loadFromFile("../../client/menuTextures/newGameBlood.png");
     joinInitTexture.loadFromFile("../../client/menuTextures/joinInit.png");
     joinBloodTexture.loadFromFile("../../client/menuTextures/joinBlood.png");
     goInitTexture.loadFromFile("../../client/menuTextures/goInit.png");
@@ -382,7 +382,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 }
 
 void menuDeath(sf::RenderWindow &window) {
-    sf::Texture menuBGTexture, exitInitTexture, exitBloodTexture;
+    sf::Texture menuBGTexture, exitInitTexture, exitBloodTexture, uRDeadTexture;
     //sf::Music music;
     //music.openFromFile("../../client/music/menuTheme.wav");
     //music.play();
@@ -391,14 +391,18 @@ void menuDeath(sf::RenderWindow &window) {
     sf::Sprite menuBg(menuBGTexture);
     menuBg.setPosition(0, 0);
 
+    uRDeadTexture.loadFromFile("../../client/menuTextures/urDead.png");
+    sf::Sprite uRDead(uRDeadTexture);
+    uRDead.setPosition(100, 100);
+
     std::cout << "LOADED" << std::endl;
 
-    exitInitTexture.loadFromFile("../../client/menuTextures/newGameInit.png");
+    exitInitTexture.loadFromFile("../../client/menuTextures/exitInit.png");
     sf::Sprite exitInit(exitInitTexture);
     exitInit.setPosition(400, 400);
 
-    exitBloodTexture.loadFromFile("../../client/menuTextures/newGameBlood.png");
-    sf::Sprite exitBlood(exitInitTexture);
+    exitBloodTexture.loadFromFile("../../client/menuTextures/exitBlood.png");
+    sf::Sprite exitBlood(exitBloodTexture);
     exitBlood.setPosition(400, 400);
 
     bool exitMenu = true;
@@ -429,6 +433,8 @@ void menuDeath(sf::RenderWindow &window) {
             window.draw(exitBlood);
         else
             window.draw(exitInit);
+
+        window.draw(uRDead);
 
         window.display();
     }

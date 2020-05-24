@@ -20,6 +20,8 @@ class Collision {
 
     bool is_collide(std::vector<std::shared_ptr<GameObject>> &objects, sf::FloatRect this_obj_rect, int id);
 
+    bool is_collide(std::vector<std::shared_ptr<GameObject>> &objects, sf::FloatRect this_obj_rect, int id, int &dmg);
+
  private:
     sf::Vector2f last_non_zero_dir;
 };

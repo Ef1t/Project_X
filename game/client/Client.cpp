@@ -204,12 +204,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                 this->m_level.GetMapName() = message.np_msg().map_name();
                 this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
                 if (is_creator) {
-                    auto obj = m_level.GetAllObjects("VSE");
+                    auto obj = m_level.GetAllObjects("Wall");
                     send_obj_to_server(obj);
-//                    auto clock = sf::Clock();
-//                    while()
-//                    send_obj_to_server(m_level.GetAllObjects("lava"));
-//                    send_obj_to_server(m_level.GetAllObjects("spike"));
                 }
                 is_map = true;
             }
@@ -300,31 +296,34 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
 }
 
 void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
-    int i = 0;
-    for (auto obj: all_objects) {
-        //std::cout << "OBJ " << ++i << std::endl;
-        trans::UserToServerMessage message;
-        auto *rect = new trans::UserToServerMessage_Rect;
-        rect->set_left(obj.rect.left);
-        rect->set_top(obj.rect.top);
-        rect->set_width(obj.rect.width);
-        rect->set_height(obj.rect.height);
+    if (all_objects[0].name == "Wall") {
+        for (auto obj: all_objects) {
+            trans::UserToServerMessage message;
+            auto *rect = new trans::UserToServerMessage_Rect;
+            rect->set_left(obj.rect.left);
+            rect->set_top(obj.rect.top);
+            rect->set_width(obj.rect.width);
+            rect->set_height(obj.rect.height);
 
-        if (obj.name == "Wall") {
             message.set_type(trans::UserToServerMessage::Wall);
-        }
-        if (obj.name == "lava") {
-            message.set_type(trans::UserToServerMessage::Lava);
-        }
-        if (obj.name == "spike") {
-            message.set_type(trans::UserToServerMessage::Spike);
-        }
 
-        message.set_allocated_rect(rect);
+//            if (obj.name == "Wall") {
+//                message.set_type(trans::UserToServerMessage::Wall);
+//            }
+//            if (obj.name == "lava") {
+//                message.set_type(trans::UserToServerMessage::Lava);
+//            }
+//            if (obj.name == "spike") {
+//                message.set_type(trans::UserToServerMessage::Spike);
+//            }
 
-        sf::Packet packet;
-        packet << message;
+            message.set_allocated_rect(rect);
 
-        m_user->send_packet(packet);
+            sf::Packet packet;
+            packet << message;
+
+            m_user->send_packet(packet);
+            packet.clear();
+        }
     }
 }

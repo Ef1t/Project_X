@@ -7,6 +7,7 @@
 
 #include <map>
 #include <memory>
+#include <string_view>
 
 #include "Wall.h"
 #include "Lava.h"
@@ -20,8 +21,8 @@
 #include "transition.pb.h"
 #include "Enemy.h"
 
-#define win_height 1280
-#define win_lenght 1280
+#define win_height 2560
+#define win_lenght 2560
 
 //using Users = std::map<UserPtr, PlayerPtr>;
 //using Bullets = std::map<UserPtr, BulletPtr>;
@@ -30,7 +31,7 @@ using Users = std::map<UserPtr, PlayerPtr>;
 
 class Session {
 public:
-    Session();
+    Session(std::string_view map_name);
 
     void update(float dt);
 

@@ -8,14 +8,33 @@
 #include "messages/ServerToUserMessage.h"
 #include "iostream"
 #include "Enemy.h"
+#include "TmxLevel.h"
 
 sf::Uint64 Session::next_id = 10;
 
 
-Session::Session()
-        : m_id(next_id++), m_users(), m_messages() {
+Session::Session(std::string_view map_name)
+        : m_id(next_id++), m_users(), m_messages(), map_name(map_name) {
+    TmxLevel level;
+    level.LoadFromFile("../../client/maps/" + this->map_name);
+    auto objects = level.GetAllObjects("VSE");
+    for (auto obj : objects) {
+        if (obj.name == "lava") {
+            std::cout << "LAVA " << std::endl;
+            m_land_objects.push_back(std::make_shared<Lava>(obj.rect.left,
+                                                            obj.rect.top,
+                                                            obj.rect.width,
+                                                            obj.rect.height));
+        }
+        if (obj.name == "spike") {
+            std::cout << "SPIKE " << std::endl;
+            m_land_objects.push_back(std::make_shared<Spike>(obj.rect.left,
+                                                             obj.rect.top,
+                                                             obj.rect.width,
+                                                             obj.rect.height));
+        }
+    }
 }
-
 unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
 void Session::update(float dt) {
@@ -174,7 +193,7 @@ void Session::update(float dt) {
     }
     // проходимся по вектору пуль и обновляем координатыa
     for (auto &bullet: m_bullets) {
-        if (!((bullet->get_position().x > 1280) || (bullet->get_position().y > 1280) ||
+        if (!((bullet->get_position().x > win_lenght) || (bullet->get_position().y > win_height) ||
               (bullet->get_position().x < 0) ||
               (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули"
             bullet->update(dt, m_objects);
@@ -204,7 +223,7 @@ void Session::update(float dt) {
         }
 
     }
-    int count_enemies = 0;
+    int count_enemies = 3;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -269,6 +288,7 @@ void Session::add_user(UserPtr user) {
         player->set_position({player->get_position().x + 10, player->get_position().y + 10});
     }
 
+    player->add_land_obj(m_land_objects);
     m_users[user] = player;
 
     m_objects.push_back(player);

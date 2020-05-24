@@ -31,12 +31,17 @@ public:
 
     void set_position(sf::Vector2f pos);
 
+    void add_land_obj(std::vector<std::shared_ptr<GameObject>> &objects);
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
     float m_velocity;
     Direction m_route; // Players route
     float time_last_dgm;
+    float time_last_land_dgm;
+    float time_last_step;
+    std::vector<std::shared_ptr<GameObject>> land_obj;
 };
 
 using PlayerPtr = std::shared_ptr<Player>;

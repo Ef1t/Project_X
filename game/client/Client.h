@@ -63,7 +63,7 @@ private:
 
     void apply_messages(const trans::ServerToUserVectorMessage& messages);
 
-    void send_obj_to_server(std::vector<TmxObject> all_objects);
+    void send_obj_to_server(std::vector<TmxObject> &all_objects);
 
 };
 

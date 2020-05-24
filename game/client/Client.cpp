@@ -19,7 +19,7 @@ short ID = 5;
 Client::Client(const std::string &host, unsigned short port, const std::string &username)
         : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
           is_creator(false) {
-            
+
     auto socket = std::make_unique<sf::TcpSocket>();
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
         throw std::runtime_error(std::strerror(errno));
@@ -157,9 +157,10 @@ void Client::render(float time, float &dir) {
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
         }
-        if (obj->object_name == n_bullet || obj->object_name == n_enemy) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
+        if (obj->object_name == n_bullet ||
+            obj->object_name == n_enemy) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
             obj->draw_stat(m_window);
-        } 
+        }
     }
 
     m_window.display();
@@ -207,18 +208,20 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             temp_obj.push_back(obj);
         }
     }
-        m_objects = temp_obj;
+    m_objects = temp_obj;
     for (const trans::ServerToUserMessage &message: messages.vec_messages()) {
         if (message.type() == trans::ServerToUserMessage::NewPlayer) {
             m_objects.push_back(std::make_shared<Player>(message.np_msg().id(), message.np_msg().username(),
-                                                         sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
+
+            sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
 
             if (!is_map) {
                 std::cout << message.np_msg().map_name();
                 this->m_level.GetMapName() = message.np_msg().map_name();
                 this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
                 if (is_creator) {
-                    send_obj_to_server(m_level.GetAllObjects("Wall"));
+                    auto obj = m_level.GetAllObjects("Wall");
+                    send_obj_to_server(obj);
                 }
                 is_map = true;
             }
@@ -240,7 +243,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
                     }
-                  }
+                }
             }
             if (!is_in) {
                 m_objects.push_back(std::make_shared<Player>(message.upd_msg().id(), " ",
@@ -306,7 +309,7 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
     }
 }
 
-void Client::send_obj_to_server(std::vector<TmxObject> all_objects) {
+void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
     if (all_objects[0].name == "Wall") {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
@@ -317,12 +320,24 @@ void Client::send_obj_to_server(std::vector<TmxObject> all_objects) {
             rect->set_height(obj.rect.height);
 
             message.set_type(trans::UserToServerMessage::Wall);
+
+//            if (obj.name == "Wall") {
+//                message.set_type(trans::UserToServerMessage::Wall);
+//            }
+//            if (obj.name == "lava") {
+//                message.set_type(trans::UserToServerMessage::Lava);
+//            }
+//            if (obj.name == "spike") {
+//                message.set_type(trans::UserToServerMessage::Spike);
+//            }
+
             message.set_allocated_rect(rect);
 
             sf::Packet packet;
             packet << message;
 
             m_user->send_packet(packet);
+            packet.clear();
         }
     }
 }

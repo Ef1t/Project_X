@@ -57,4 +57,17 @@ bool Collision::is_collide(std::vector<std::shared_ptr<GameObject>> &objects, sf
     return false;
 }
 
+bool Collision::is_collide(std::vector<std::shared_ptr<GameObject>> &objects, sf::FloatRect this_obj_rect, int id, int &dmg) {
+    for (auto obj : objects) {
+        if (obj->get_id() != id) {
+            if (obj->get_rect().intersects(this_obj_rect) && obj->is_alive()) {
+                std::cout << "Minus " << obj->get_dmg() << std::endl;
+                dmg = obj->get_dmg();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 

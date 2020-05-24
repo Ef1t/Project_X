@@ -8,6 +8,8 @@ message UserToServerMessage {
         Standby = 0;
         Move = 1;
         Wall = 2;
+        Lava = 3;
+        Spike = 4;
     };
 
     MessageType type = 1;

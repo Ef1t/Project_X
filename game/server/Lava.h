@@ -1,19 +1,17 @@
 //
-// Created by Олег Реуцкий on 13.05.2020.
+// Created by Олег Реуцкий on 23.05.2020.
 //
 
-#ifndef GAME_WALL_H
-#define GAME_WALL_H
+#ifndef GAME_LAVA_H
+#define GAME_LAVA_H
 
-#include <iostream>
 #include <SFML/Graphics.hpp>
-#include <string_view>
-
 #include "GameObject.h"
 
-class Wall : public GameObject {
+class Lava : public GameObject {
  public:
-    Wall(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth, std::string_view name);
+
+    Lava(uint64_t left, uint64_t top, uint64_t width, uint64_t heigth);
 
     void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
 
@@ -30,4 +28,4 @@ class Wall : public GameObject {
 };
 
 
-#endif //GAME_WALL_H
+#endif //GAME_LAVA_H

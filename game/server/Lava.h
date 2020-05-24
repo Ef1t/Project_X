@@ -5,7 +5,6 @@
 #ifndef GAME_LAVA_H
 #define GAME_LAVA_H
 
-#include <SFML/Graphics.hpp>
 #include "GameObject.h"
 
 class Lava : public GameObject {

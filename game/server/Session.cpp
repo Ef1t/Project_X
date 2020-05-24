@@ -8,32 +8,31 @@
 #include "messages/ServerToUserMessage.h"
 #include "iostream"
 #include "Enemy.h"
-#include "TmxLevel.h"
 
 sf::Uint64 Session::next_id = 10;
 
 
 Session::Session(std::string_view map_name)
         : m_id(next_id++), m_users(), m_messages(), map_name(map_name) {
-    TmxLevel level;
-    level.LoadFromFile("../../client/maps/" + this->map_name);
-    auto objects = level.GetAllObjects("VSE");
-    for (auto obj : objects) {
-        if (obj.name == "lava") {
-            std::cout << "LAVA " << std::endl;
-            m_land_objects.push_back(std::make_shared<Lava>(obj.rect.left,
-                                                            obj.rect.top,
-                                                            obj.rect.width,
-                                                            obj.rect.height));
-        }
-        if (obj.name == "spike") {
-            std::cout << "SPIKE " << std::endl;
-            m_land_objects.push_back(std::make_shared<Spike>(obj.rect.left,
-                                                             obj.rect.top,
-                                                             obj.rect.width,
-                                                             obj.rect.height));
-        }
-    }
+//    TmxLevel level;
+//    level.LoadFromFile("../../client/maps/" + this->map_name);
+//    auto objects = level.GetAllObjects("VSE");
+//    for (auto obj : objects) {
+//        if (obj.name == "lava") {
+//            std::cout << "LAVA " << std::endl;
+//            m_land_objects.push_back(std::make_shared<Lava>(obj.rect.left,
+//                                                            obj.rect.top,
+//                                                            obj.rect.width,
+//                                                            obj.rect.height));
+//        }
+//        if (obj.name == "spike") {
+//            std::cout << "SPIKE " << std::endl;
+//            m_land_objects.push_back(std::make_shared<Spike>(obj.rect.left,
+//                                                             obj.rect.top,
+//                                                             obj.rect.width,
+//                                                             obj.rect.height));
+//        }
+//    }
 }
 unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
@@ -86,7 +85,7 @@ void Session::update(float dt) {
 
                 }
                 if (message.type() == trans::UserToServerMessage::Wall) {
-                    std::cout << "WALL " << std::endl;
+                    //std::cout << "WALL " << std::endl;
                     m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
                                                                message.rect().top(),
                                                                message.rect().width(),
@@ -94,14 +93,14 @@ void Session::update(float dt) {
                                                                "Wall"));
                 }
                 if (message.type() == trans::UserToServerMessage::Lava) {
-                    std::cout << "LAVA " << std::endl;
+                    //std::cout << "LAVA " << std::endl;
                     m_land_objects.push_back(std::make_shared<Lava>(message.rect().left(),
                                                                     message.rect().top(),
                                                                     message.rect().width(),
                                                                     message.rect().height()));
                 }
                 if (message.type() == trans::UserToServerMessage::Spike) {
-                    std::cout << "SPIKE " << std::endl;
+                    //std::cout << "SPIKE " << std::endl;
                     m_land_objects.push_back(std::make_shared<Spike>(message.rect().left(),
                                                                      message.rect().top(),
                                                                      message.rect().width(),
@@ -273,7 +272,7 @@ sf::Uint64 Session::get_id() const {
 }
 
 void Session::add_enemy(float bot_x, float bot_y) {
-    std::cout << "BOT_ADDED!!!\n";
+    //std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
     int count = rand() % m_users.size();
 

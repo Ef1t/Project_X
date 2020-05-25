@@ -61,7 +61,7 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
     if (want_step != step &&  time_last_dmg > 0.1) {
         if (near_obj->m_name == n_player) {
             near_obj->get_hp() -= get_dmg();
-            std::cout << " damaga " << std::endl;
+            //std::cout << " damaga " << std::endl;
             time_last_dmg = 0;
         }
     }

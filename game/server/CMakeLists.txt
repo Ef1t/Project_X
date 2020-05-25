@@ -25,11 +25,7 @@ add_executable(server
                Spike.cpp
                Spike.h
                Lava.cpp
-               Lava.h
-               TmxLevel.h
-               TmxLevel.cpp
-               tinyxml2.h
-               tinyxml2.cpp)
+               Lava.h)
 
 
 target_include_directories(server

@@ -16,21 +16,30 @@
 
 short ID = 5;
 
-
-Client::Client(const std::string &host, unsigned short port, const std::string &username)
-        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
+Client::Client()
+        : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
           is_creator(false) {
-
-    auto socket = std::make_unique<sf::TcpSocket>();
-    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
-        throw std::runtime_error(std::strerror(errno));
-    }
-    //std::cout << ID << '\n';
-    m_user = std::make_shared<User>(username, std::move(socket));
+    std::cout << ID << '\n';
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
-    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+    view.get_view().reset(sf::FloatRect(0, 0, 640, 360));
 }
+
+
+//Client::Client(const std::string &host, unsigned short port, const std::string &username)
+//        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
+//          is_creator(false) {
+//
+//    auto socket = std::make_unique<sf::TcpSocket>();
+//    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+//        throw std::runtime_error(std::strerror(errno));
+//    }
+//    //std::cout << ID << '\n';
+//    m_user = std::make_shared<User>(username, std::move(socket));
+//    //тут меняется область видимости камеры
+//    //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
+//    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+//}
 
 void Client::create_session(std::string map_name) {
     sf::Packet packet;
@@ -219,7 +228,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
-        if (obj->get_hp() > 0) {
+        if (obj->get_hp() > 0 || obj->object_name == n_player) {
             temp_obj.push_back(obj);
         }
     }
@@ -231,7 +240,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
 
             if (!is_map) {
-                std::cout << message.np_msg().map_name();
+                //std::cout << message.np_msg().map_name();
                 this->m_level.GetMapName() = message.np_msg().map_name();
                 this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
                 if (is_creator) {
@@ -333,7 +342,7 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
 }
 
 void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
-    if (all_objects[0].name == "Wall") {
+    //if (all_objects[0].name == "Wall") {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
             auto *rect = new trans::UserToServerMessage_Rect;
@@ -342,17 +351,17 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             rect->set_width(obj.rect.width);
             rect->set_height(obj.rect.height);
 
-            message.set_type(trans::UserToServerMessage::Wall);
+            //message.set_type(trans::UserToServerMessage::Wall);
 
-//            if (obj.name == "Wall") {
-//                message.set_type(trans::UserToServerMessage::Wall);
-//            }
-//            if (obj.name == "lava") {
-//                message.set_type(trans::UserToServerMessage::Lava);
-//            }
-//            if (obj.name == "spike") {
-//                message.set_type(trans::UserToServerMessage::Spike);
-//            }
+            if (obj.name == "Wall") {
+                message.set_type(trans::UserToServerMessage::Wall);
+            }
+            if (obj.name == "lava") {
+                message.set_type(trans::UserToServerMessage::Lava);
+            }
+            if (obj.name == "spike") {
+                message.set_type(trans::UserToServerMessage::Spike);
+            }
 
             message.set_allocated_rect(rect);
 
@@ -362,7 +371,7 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             m_user->send_packet(packet);
             packet.clear();
         }
-    }
+   // }
 }
 
 void Client::choise_of_weapon() {
@@ -401,3 +410,16 @@ void Client::play_sound() {
     } */
     std::cout << std::endl << std::endl;
 }
+
+sf::RenderWindow &Client::get_window() {
+    return m_window;
+}
+
+void Client::set_config(const std::string &host, unsigned short port, const std::string &username) {
+    auto socket = std::make_unique<sf::TcpSocket>();
+    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+        throw std::runtime_error(std::strerror(errno));
+    }
+    m_user = std::make_shared<User>(username, std::move(socket));
+}
+

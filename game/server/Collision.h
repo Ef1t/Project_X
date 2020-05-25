@@ -5,7 +5,6 @@
 #ifndef GAME_COLLISION_H
 #define GAME_COLLISION_H
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
 

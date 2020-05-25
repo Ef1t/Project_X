@@ -6,6 +6,8 @@
 #include "Object.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Menus.h"
+#include "View.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -18,7 +20,7 @@ short ID = 5;
 
 Client::Client()
         : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
-          is_creator(false) {
+          is_creator(false), isAlive(true) {
     std::cout << ID << '\n';
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
@@ -86,6 +88,7 @@ void Client::join_to(sf::Uint64 session_id) {
 }
 
 int Client::run() {
+    bool run = true;
     sf::Time TimeSinceUpdate = sf::Time::Zero;
     sf::Time TimePerFrame = sf::seconds(1.f / 90.f);
     sf::Clock clock;
@@ -93,19 +96,32 @@ int Client::run() {
     float current_frame_enemy = 0;  //хранит текущий кадр врага
     float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
-    while (m_window.isOpen()) {
+    while (m_window.isOpen() && run) {
 
         // process_events();
 
         TimeSinceUpdate += clock.restart();
         time = TimePerFrame.asSeconds();
-        while (TimeSinceUpdate > TimePerFrame) {
+        while (TimeSinceUpdate > TimePerFrame && run) {
             receive_from_server();
             process_events();
             render(time, current_frame, current_frame_enemy);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
+            if (!isAlive) {
+
+
+
+                view.get_view().reset(sf::FloatRect(0, 0, 1280, 720));
+                m_window.setView(view.get_view());
+                menuDeath(get_window());
+                run = false;
+            }
         }
+    }
+
+    if (!run) {
+        m_window.close();
     }
 
     return 0;
@@ -266,6 +282,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     if (this_player_id == message.upd_msg().id()) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
+                        if (message.upd_msg().hp() <= 0)
+                            isAlive = false;
                     }
                 }
             }

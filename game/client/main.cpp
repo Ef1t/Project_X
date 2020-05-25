@@ -70,6 +70,7 @@ int main(int ac, const char* av[]) {
 
     Client client;
     menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    //menuDeath(client.get_window());
     if (command_str == "exit") {
         client.get_window().close();
         return EXIT_SUCCESS;

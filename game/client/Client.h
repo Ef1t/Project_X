@@ -75,6 +75,7 @@ private:
     void play_sound();
 
 
+    bool isAlive;
 
     sf::SoundBuffer buffer;
     //buffer.loadFromFile("/home/yaroslav/X/Project_X/game/client/sounds/shoot.ogg");

@@ -4,12 +4,13 @@
 
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
+Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id, short weap) :
         m_position(positon),
         m_velocity(bullet_velocity),
         GameObject(n_bullet, null_hp, n_player_dmg),
         b_dir(dir),
-        player_id(p_id){
+        player_id(p_id),
+        name_weapon(weap){
 }
 
 void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
@@ -18,7 +19,7 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
 //    std:: cout << b_dir.down << " Do B-_dir in update\n";
 //    std:: cout << b_dir.right << " Le B-_dir in update\n";
 //    std:: cout << b_dir.left << " Ri B-_dir in update\n";
-
+if ((name_weapon == pistolet) || (name_weapon == aut)) {
     if (b_dir.up) {
         m_direction.y = -1;
     }
@@ -31,6 +32,9 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
     if (b_dir.right) {
         m_direction.x = 1;
     }
+} else if (name_weapon == drobovik) {
+    
+}
 
     m_position += m_direction * (m_velocity * dt);
     //m_position.x += m_direction.x;
@@ -76,6 +80,10 @@ sf::FloatRect Bullet::get_rect() {
     rect.width = texture_width - delta;
 
     return rect;
+}
+
+short Bullet::get_name_weapon() {
+    return name_weapon;
 }
 
 

@@ -35,7 +35,9 @@ Session::Session(std::string_view map_name)
         }
     }
 }
-unsigned int time_per_fire = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire_pistol = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire_automat = 5;
+unsigned int time_per_fire_shotgun = 40;
 
 void Session::update(float dt) {
     for (auto &m_user : m_users) {
@@ -72,13 +74,27 @@ void Session::update(float dt) {
 
                     Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
                                              message.b_direction().right(), message.b_direction().down()};
+                    std:: cout << message.weapon().pistol() << " Pistol\n";
 
                     //стрельба
                     if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
-                        if (time_per_fire++ > 30) {
-                            add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
-                            time_per_fire = 0; //обнуляем счетчик после выстрела
+                        if (message.weapon().pistol()) {
+                            if (time_per_fire_pistol++ > 30) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet);
+                                time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
+                            }
+                        } else if (message.weapon().automat()) {
+                            if (time_per_fire_automat++ > 15) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut);
+                                time_per_fire_automat = 0; //обнуляем счетчик после выстрела
+                            }
+                        } else if (message.weapon().shotgun()) {
+                            if (time_per_fire_shotgun++ > 40) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut);
+                                time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
+                            }
                         }
+
 
 
                     }
@@ -327,7 +343,7 @@ void Session::add_user(UserPtr user) {
 
 }
 
-void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir) {
+void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon) {
     //функция аналогична с добавлением игрока за исключением того, что мы тут создаем вектор пуль, который автономно обрабатывается на сервере
     auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir, player->get_id());
 

@@ -47,8 +47,8 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
     m_direction.x = step.x / modul_step;
     m_direction.y = step.y / modul_step;
 
-    std:: cout << m_direction.x << " dir_x\n";
-    std::cout << m_direction.y << " dtr_y\n";
+    //std:: cout << m_direction.x << " dir_x\n";
+    //std::cout << m_direction.y << " dtr_y\n";
 
     sf::Vector2f dir = {(tempX - m_position.x) / dist, (tempY - m_position.y) / dist};
 

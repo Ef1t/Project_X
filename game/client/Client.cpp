@@ -131,6 +131,9 @@ void Client::process_events() {
     m_direction.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S) && m_window.hasFocus();
 
     m_weapon.pistol = sf::Keyboard::isKeyPressed(sf::Keyboard::Num1);
+    std:: cout << m_weapon.pistol << " PISTOL\n";
+    m_weapon.automat = sf::Keyboard::isKeyPressed(sf::Keyboard::Num2);
+    m_weapon.shotgun = sf::Keyboard::isKeyPressed(sf::Keyboard::Num3);
 
     //управление стрелочками стрельбой пулями
     m_fire_dir.f_up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && m_window.hasFocus();
@@ -146,6 +149,7 @@ void Client::process_events() {
    // sound.setBuffer(buffer);
    // sound.play();
     }//выстрел
+    choise_of_weapon();
     apply_dir_b();
 }
 
@@ -201,12 +205,14 @@ void Client::send_to_server() {
 
     trans::UserToServerMessage_Weapon *weap_choise = new trans::UserToServerMessage_Weapon;
     weap_choise->set_pistol(choise_weapon.pistol);
+    std::cout << choise_weapon.pistol << " PISTOL_MESSAGE\n";
     weap_choise->set_automat(choise_weapon.automat);
     weap_choise->set_shotgun(choise_weapon.shotgun);
 
     message.set_type(trans::UserToServerMessage::Move);
     message.set_allocated_direction(direction);
     message.set_allocated_b_direction(bulletDirection);
+    message.set_allocated_weapon(weap_choise);
 
 
     sf::Packet packet;

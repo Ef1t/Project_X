@@ -54,8 +54,8 @@ void Enemy::set_direction(const Direction dir) {
 }
 
 void Enemy::update_dir_enemy(float x, float y) {
-    std::cout << x << " x\n";
-    std::cout << y << " y\n";
+//    std::cout << x << " x\n";
+//    std::cout << y << " y\n";
 
     if ((y > 0) && (abs(y) > abs(x)))  {
         m_dir.up = 0;
@@ -78,10 +78,10 @@ void Enemy::update_dir_enemy(float x, float y) {
         m_dir.right = 0;
         m_dir.left = 1;
     }
-    std::cout << m_dir.up << " En_up\n";
-    std::cout << m_dir.down << " En_D\n";
-    std::cout << m_dir.right << " En_R\n";
-    std::cout << m_dir.left << " En_L\n";
+//    std::cout << m_dir.up << " En_up\n";
+//    std::cout << m_dir.down << " En_D\n";
+//    std::cout << m_dir.right << " En_R\n";
+//    std::cout << m_dir.left << " En_L\n";
 
 }
 

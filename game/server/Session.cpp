@@ -34,7 +34,7 @@ Session::Session(std::string_view map_name)
 //        }
 //    }
 }
-unsigned int time_per_fire = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
 void Session::update(float dt) {
     for (auto &m_user : m_users) {
@@ -74,7 +74,7 @@ void Session::update(float dt) {
 
                     //стрельба
                     if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
-                        if (time_per_fire++ > 30) {
+                        if (time_per_fire++ > 10) {
                             add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
                             time_per_fire = 0; //обнуляем счетчик после выстрела
                         }

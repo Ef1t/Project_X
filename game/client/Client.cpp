@@ -301,7 +301,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             //play_sound();
             buffer.loadFromFile("../../client/sounds/pistol.wav");
             sound.setBuffer(buffer);
-
+            sound.setVolume(5);
             //sf::Sound sound;
             sound.play();
 
@@ -408,7 +408,7 @@ void Client::play_sound() {
         std::cout << "\rPlaying... " << sound.getPlayingOffset().asSeconds() << " sec        ";
         std::cout << std::flush;
     } */
-    std::cout << std::endl << std::endl;
+    //std::cout << std::endl << std::endl;
 }
 
 sf::RenderWindow &Client::get_window() {

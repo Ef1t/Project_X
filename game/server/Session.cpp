@@ -128,9 +128,11 @@ void Session::update(float dt) {
             player->update(dt * 10, m_objects);
             if (!player->is_alive()) {
                 remove_player();
-                for (auto enemy : m_enemies) {
-                    int count = rand() % get_players();
-                    enemy->set_target(count);
+                for (int i = 0; i < m_enemies.size(); ++i) {
+                        if (m_enemies[i]->is_alive()) {
+                                int count = rand() % get_players();
+                                m_enemies[i]->set_target(count);
+                        }
                 }
             }
             auto *direction = new trans::UpdatePlayerMessage::Direction;

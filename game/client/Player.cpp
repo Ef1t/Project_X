@@ -8,7 +8,7 @@
 Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& position, int hp)
         : Object(id, position, n_player, hp)
         , m_username(username)
-        , m_actor()
+        , m_actor("../../images/pigcop_vest.png")
         {
 }
 
@@ -49,4 +49,8 @@ void Player::set_direction(const Direction dir) {
 
 void Player::set_hp(int hp) {
     m_hp = hp;
+}
+
+void Player::update_dir_enemy(float x, float y) {
+
 }

@@ -35,6 +35,10 @@ public:
 
     const Direction get_route() override;
 
+    float get_dir_x() const;
+
+    float get_dir_y() const;
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;

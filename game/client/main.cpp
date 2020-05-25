@@ -59,6 +59,16 @@ int main(int ac, const char* av[]) {
 
         return client.run();
     }
+    sf::Music music;
+    music.openFromFile("/home/yaroslav/X/Project_X/game/client/music/Overworld.wav");
+    music.play();
+    //music.setLoop(true);
+
+  //  sf::SoundBuffer buffer;
+    //buffer.loadFromFile("/home/yaroslav/X/Project_X/game/client/sounds/shoot.ogg");
+    //sf::Sound sound;
+    //sound.setBuffer(buffer);
+    //sound.play();
 
 
     Client client;
@@ -90,6 +100,10 @@ int main(int ac, const char* av[]) {
         usage();
         return -1;
     }
+
+
+
+
 
     return client.run();
 }

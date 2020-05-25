@@ -29,6 +29,8 @@ public:
 
     void set_hp(int hp) override;
 
+    void update_dir_enemy(float x, float y) override;
+
 private:
     std::string m_username;
     Skin m_actor;

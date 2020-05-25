@@ -42,6 +42,9 @@ public:
     virtual
     void draw_stat(sf::RenderWindow& window) = 0;
 
+    virtual
+    void update_dir_enemy(float x, float y) = 0;
+
     Direction get_direction();
 
     sf::Uint64 get_id() const;

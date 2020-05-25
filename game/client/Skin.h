@@ -18,7 +18,9 @@ using namespace sf;
 
 class Skin  {
 public:
-    Skin ();
+    Skin (std::string path);
+
+    Skin();
 
 
 //protected:
@@ -30,6 +32,8 @@ public:
     float time = clock.getElapsedTime().asMicroseconds();
 
     void go_texture(Direction dir, float time, float& current_frame, Skin& m_actor);
+
+    void go_texture_enemy(Direction dir, float time, float& current_frame, Skin& m_actor);
 
 
 };

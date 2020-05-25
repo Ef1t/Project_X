@@ -34,7 +34,7 @@ Session::Session(std::string_view map_name)
 //        }
 //    }
 }
-unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
 void Session::update(float dt) {
     for (auto &m_user : m_users) {
@@ -74,7 +74,7 @@ void Session::update(float dt) {
 
                     //стрельба
                     if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
-                        if (time_per_fire++ > 10) {
+                        if (time_per_fire++ > 30) {
                             add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
                             time_per_fire = 0; //обнуляем счетчик после выстрела
                         }
@@ -127,6 +127,8 @@ void Session::update(float dt) {
                     update_message->set_x(m_enemies[i]->get_position().x);
                     update_message->set_y(m_enemies[i]->get_position().y);
                     update_message->set_hp(m_enemies[i]->get_hp());
+                    update_message->set_step_x(m_enemies[i]->get_dir_x());
+                    update_message->set_step_y(m_enemies[i]->get_dir_y());
 
                     auto server_message = m_messages.add_vec_messages();
                     server_message->set_type(trans::ServerToUserMessage::UpdateBot);
@@ -137,6 +139,8 @@ void Session::update(float dt) {
                     update_message->set_x(m_enemies[i]->get_position().x);
                     update_message->set_y(m_enemies[i]->get_position().y);
                     update_message->set_hp(m_enemies[i]->get_hp());
+                    update_message->set_step_x(m_enemies[i]->get_dir_x());
+                    update_message->set_step_y(m_enemies[i]->get_dir_y());
 
                     auto server_message = m_messages.add_vec_messages();
                     server_message->set_type(trans::ServerToUserMessage::UpdateBot);

@@ -19,6 +19,7 @@
 #include "Bullet.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Audio.hpp>
 
 #include <string>
 
@@ -63,13 +64,21 @@ private:
 
     void receive_from_server();
 
-    void render(float time, float& dir);
+    void render(float time, float& dir, float& dir_en);
 
     void send_to_server();
 
     void apply_messages(const trans::ServerToUserVectorMessage& messages);
 
     void send_obj_to_server(std::vector<TmxObject> &all_objects);
+
+    void play_sound();
+
+
+
+    sf::SoundBuffer buffer;
+    //buffer.loadFromFile("/home/yaroslav/X/Project_X/game/client/sounds/shoot.ogg");
+    sf::Sound sound;
 
 };
 

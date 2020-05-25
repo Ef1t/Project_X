@@ -215,7 +215,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
-        if (obj->get_hp() > 0) {
+        if (obj->get_hp() > 0 || obj->object_name == n_player) {
             temp_obj.push_back(obj);
         }
     }
@@ -227,7 +227,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
 
             if (!is_map) {
-                std::cout << message.np_msg().map_name();
+                //std::cout << message.np_msg().map_name();
                 this->m_level.GetMapName() = message.np_msg().map_name();
                 this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
                 if (is_creator) {
@@ -321,7 +321,7 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
 }
 
 void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
-    if (all_objects[0].name == "Wall") {
+    //if (all_objects[0].name == "Wall") {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
             auto *rect = new trans::UserToServerMessage_Rect;
@@ -330,17 +330,17 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             rect->set_width(obj.rect.width);
             rect->set_height(obj.rect.height);
 
-            message.set_type(trans::UserToServerMessage::Wall);
+            //message.set_type(trans::UserToServerMessage::Wall);
 
-//            if (obj.name == "Wall") {
-//                message.set_type(trans::UserToServerMessage::Wall);
-//            }
-//            if (obj.name == "lava") {
-//                message.set_type(trans::UserToServerMessage::Lava);
-//            }
-//            if (obj.name == "spike") {
-//                message.set_type(trans::UserToServerMessage::Spike);
-//            }
+            if (obj.name == "Wall") {
+                message.set_type(trans::UserToServerMessage::Wall);
+            }
+            if (obj.name == "lava") {
+                message.set_type(trans::UserToServerMessage::Lava);
+            }
+            if (obj.name == "spike") {
+                message.set_type(trans::UserToServerMessage::Spike);
+            }
 
             message.set_allocated_rect(rect);
 
@@ -350,7 +350,7 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             m_user->send_packet(packet);
             packet.clear();
         }
-    }
+   // }
 }
 
 void Client::choise_of_weapon() {

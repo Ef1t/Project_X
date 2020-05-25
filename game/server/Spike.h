@@ -5,7 +5,6 @@
 #ifndef GAME_SPIKE_H
 #define GAME_SPIKE_H
 
-#include <SFML/Graphics.hpp>
 #include "GameObject.h"
 
 class Spike : public GameObject {

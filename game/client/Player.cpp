@@ -22,7 +22,7 @@ void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     hp_bar_red.setPosition(hp_bar_green.getPosition().x + hp_bar_green.getSize().x, m_position.y - 20);
     hp_bar_red.setSize(sf::Vector2f( hp_bar_length  - hp_bar_green.getSize().x, 10));
 
-    std::cout << m_hp << std::endl;
+    //std::cout << m_hp << std::endl;
     //std::cout << hp_bar_length * ((double)m_hp / m_max_hp) << std::endl;
     //std::cout << hp_bar_length  - hp_bar_green.getSize().x << std::endl;
 

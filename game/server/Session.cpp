@@ -8,32 +8,31 @@
 #include "messages/ServerToUserMessage.h"
 #include "iostream"
 #include "Enemy.h"
-#include "TmxLevel.h"
 
 sf::Uint64 Session::next_id = 10;
 
 
 Session::Session(std::string_view map_name)
         : m_id(next_id++), m_users(), m_messages(), map_name(map_name) {
-    TmxLevel level;
-    level.LoadFromFile("../../client/maps/" + this->map_name);
-    auto objects = level.GetAllObjects("VSE");
-    for (auto obj : objects) {
-        if (obj.name == "lava") {
-            std::cout << "LAVA " << std::endl;
-            m_land_objects.push_back(std::make_shared<Lava>(obj.rect.left,
-                                                            obj.rect.top,
-                                                            obj.rect.width,
-                                                            obj.rect.height));
-        }
-        if (obj.name == "spike") {
-            std::cout << "SPIKE " << std::endl;
-            m_land_objects.push_back(std::make_shared<Spike>(obj.rect.left,
-                                                             obj.rect.top,
-                                                             obj.rect.width,
-                                                             obj.rect.height));
-        }
-    }
+//    TmxLevel level;
+//    level.LoadFromFile("../../client/maps/" + this->map_name);
+//    auto objects = level.GetAllObjects("VSE");
+//    for (auto obj : objects) {
+//        if (obj.name == "lava") {
+//            std::cout << "LAVA " << std::endl;
+//            m_land_objects.push_back(std::make_shared<Lava>(obj.rect.left,
+//                                                            obj.rect.top,
+//                                                            obj.rect.width,
+//                                                            obj.rect.height));
+//        }
+//        if (obj.name == "spike") {
+//            std::cout << "SPIKE " << std::endl;
+//            m_land_objects.push_back(std::make_shared<Spike>(obj.rect.left,
+//                                                             obj.rect.top,
+//                                                             obj.rect.width,
+//                                                             obj.rect.height));
+//        }
+//    }
 }
 unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
@@ -79,33 +78,32 @@ void Session::update(float dt) {
                             add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
                             time_per_fire = 0; //обнуляем счетчик после выстрела
                         }
-
-
                     }
-
-
                 }
                 if (message.type() == trans::UserToServerMessage::Wall) {
-                    std::cout << "WALL " << std::endl;
+                    //std::cout << "WALL " << std::endl;
                     m_objects.push_back(std::make_shared<Wall>(message.rect().left(),
                                                                message.rect().top(),
                                                                message.rect().width(),
                                                                message.rect().height(),
                                                                "Wall"));
+                    player->add_land_obj(m_land_objects);
                 }
                 if (message.type() == trans::UserToServerMessage::Lava) {
-                    std::cout << "LAVA " << std::endl;
+                    //std::cout << "LAVA " << std::endl;
                     m_land_objects.push_back(std::make_shared<Lava>(message.rect().left(),
                                                                     message.rect().top(),
                                                                     message.rect().width(),
                                                                     message.rect().height()));
+                    player->add_land_obj(m_land_objects);
                 }
                 if (message.type() == trans::UserToServerMessage::Spike) {
-                    std::cout << "SPIKE " << std::endl;
+                    //std::cout << "SPIKE " << std::endl;
                     m_land_objects.push_back(std::make_shared<Spike>(message.rect().left(),
                                                                      message.rect().top(),
                                                                      message.rect().width(),
                                                                      message.rect().height()));
+                    player->add_land_obj(m_land_objects);
                 }
             }
             user->receive_socket(socket);
@@ -202,18 +200,18 @@ void Session::update(float dt) {
         }
     }
     // проходимся по вектору пуль и обновляем координатыa
-    for (auto &bullet: m_bullets) {
-        if (!((bullet->get_position().x > win_lenght) || (bullet->get_position().y > win_height) ||
-              (bullet->get_position().x < 0) ||
-              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули"
-            bullet->update(dt, m_objects);
+    for (int i = 0; i < m_bullets.size(); ++i) {
+        if (!((m_bullets[i]->get_position().x > win_lenght) || (m_bullets[i]->get_position().y > win_height) ||
+              (m_bullets[i]->get_position().x < 0) ||
+              (m_bullets[i]->get_position().y < 0)) && m_bullets[i]->is_alive()) { //условие "исчесновения пули"
+            m_bullets[i]->update(dt, m_objects);
             //std::cout << " JOE\n";
 
             auto *update_message_bul = new trans::UpdateBulletMessage;
-            update_message_bul->set_id(bullet->get_id());
+            update_message_bul->set_id(m_bullets[i]->get_id());
             update_message_bul->set_hp(1); //условие исчезновения
-            update_message_bul->set_x(bullet->get_position().x);
-            update_message_bul->set_y(bullet->get_position().y);
+            update_message_bul->set_x(m_bullets[i]->get_position().x);
+            update_message_bul->set_y(m_bullets[i]->get_position().y);
             update_message_bul->set_name(n_bullet); //название объекта
 
             auto server_message = m_messages.add_vec_messages();
@@ -221,12 +219,13 @@ void Session::update(float dt) {
             server_message->set_allocated_ub_msg(update_message_bul);
         } else {
             auto *update_message_bul = new trans::UpdateBulletMessage;
-            update_message_bul->set_id(bullet->get_id());
+            update_message_bul->set_id(m_bullets[i]->get_id());
             update_message_bul->set_hp(0); //условие жизни
-            update_message_bul->set_x(bullet->get_position().x);
-            update_message_bul->set_y(bullet->get_position().y);
+            update_message_bul->set_x(m_bullets[i]->get_position().x);
+            update_message_bul->set_y(m_bullets[i]->get_position().y);
             update_message_bul->set_name(n_bullet);
 
+            m_bullets.erase(m_bullets.begin() + i);
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
             server_message->set_allocated_ub_msg(update_message_bul);
@@ -273,7 +272,7 @@ sf::Uint64 Session::get_id() const {
 }
 
 void Session::add_enemy(float bot_x, float bot_y) {
-    std::cout << "BOT_ADDED!!!\n";
+    //std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
     int count = rand() % m_users.size();
 
@@ -298,6 +297,8 @@ void Session::add_enemy(float bot_x, float bot_y) {
 void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
+
+    player->add_land_obj(m_land_objects);
 
     //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {

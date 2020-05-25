@@ -9,7 +9,7 @@
 #include "Collision.h"
 
 
-#define bullet_velocity 150.0
+#define bullet_velocity 450.0
 
 class Bullet: public GameObject, public Collision {
 public:

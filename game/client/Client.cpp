@@ -16,6 +16,7 @@
 
 short ID = 5;
 
+
 Client::Client(const std::string &host, unsigned short port, const std::string &username)
         : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
           is_creator(false) {
@@ -80,6 +81,7 @@ int Client::run() {
     sf::Time TimePerFrame = sf::seconds(1.f / 90.f);
     sf::Clock clock;
     float current_frame = 0;  //хранит текущий кадр
+    float current_frame_enemy = 0;  //хранит текущий кадр врага
     float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
     while (m_window.isOpen()) {
@@ -91,7 +93,7 @@ int Client::run() {
         while (TimeSinceUpdate > TimePerFrame) {
             receive_from_server();
             process_events();
-            render(time, current_frame);
+            render(time, current_frame, current_frame_enemy);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
         }
@@ -102,6 +104,11 @@ int Client::run() {
 
 void Client::process_events() {
     sf::Event event{};
+    //sf::SoundBuffer buffer;
+
+   // sf::Sound sound;
+
+
     while (m_window.pollEvent(event)) {
 
         switch (event.type) {
@@ -134,6 +141,10 @@ void Client::process_events() {
     m_direction.fire = 0;
     if (m_fire_dir.f_up || m_fire_dir.f_left || m_fire_dir.f_right || m_fire_dir.f_down){
     m_direction.fire = 1;
+
+
+   // sound.setBuffer(buffer);
+   // sound.play();
     }//выстрел
     apply_dir_b();
 }
@@ -147,19 +158,23 @@ void Client::receive_from_server() {
     apply_messages(message);
 }
 
-void Client::render(float time, float &dir) {
+void Client::render(float time, float& dir, float& dir_en) {
     m_window.clear();
+
     m_window.setView(view.get_view());
 
     m_level.Draw(m_window);
 
-    for (auto &obj: m_objects) {
+    for (auto& obj: m_objects) {
+        if (obj->object_name == n_enemy) {
+            obj->draw(m_window, time, dir_en);
+        }
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
         }
-        if (obj->object_name == n_bullet ||
-            obj->object_name == n_enemy) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
+        if (obj->object_name == n_bullet) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
             obj->draw_stat(m_window);
+
         }
     }
 
@@ -260,6 +275,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             for (const auto obj: m_objects) {
                 if (obj->get_id() == message.u_bot_msg().id()) {
                     is_in = true;
+                    obj->update_dir_enemy( message.u_bot_msg().step_x(), message.u_bot_msg().step_y()); //смотрим направление по обновлению координат
                     obj->set_position(sf::Vector2f(message.u_bot_msg().x(), message.u_bot_msg().y()));
                     obj->set_hp(message.u_bot_msg().hp());
                 }
@@ -273,6 +289,13 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),
                                                          sf::Vector2f(message.nb_msg().x(), message.nb_msg().y()), message.nb_msg().hp()));
+            //play_sound();
+            buffer.loadFromFile("../../client/sounds/pistol.wav");
+            sound.setBuffer(buffer);
+
+            //sf::Sound sound;
+            sound.play();
+
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBullet) {
             for (const auto obj: m_objects) {
@@ -357,4 +380,24 @@ void Client::choise_of_weapon() {
         choise_weapon.shotgun = 1;
     }
 
+}
+
+void Client::play_sound() {
+    //sf::SoundBuffer buffer;
+    if(!buffer.loadFromFile("../../client/sounds/pistol.wav")) {
+        return;
+    }
+    //sf::Sound sound;
+    sound.play();
+
+   /* while (sound.getStatus() == sf::Sound::Playing)
+    {
+        // Leave some CPU time for other processes
+        sf::sleep(sf::milliseconds(100));
+
+        // Display the playing position
+        std::cout << "\rPlaying... " << sound.getPlayingOffset().asSeconds() << " sec        ";
+        std::cout << std::flush;
+    } */
+    std::cout << std::endl << std::endl;
 }

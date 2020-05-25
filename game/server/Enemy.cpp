@@ -43,6 +43,13 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
     step.x = m_velocity * dt * (tempX - m_position.x) / dist;
     step.y =  m_velocity * dt * (tempY - m_position.y) / dist;
 
+    float modul_step = sqrt(step.x * step.x + step.y * step.y);
+    m_direction.x = step.x / modul_step;
+    m_direction.y = step.y / modul_step;
+
+    std:: cout << m_direction.x << " dir_x\n";
+    std::cout << m_direction.y << " dtr_y\n";
+
     sf::Vector2f dir = {(tempX - m_position.x) / dist, (tempY - m_position.y) / dist};
 
     std::shared_ptr<GameObject> near_obj;
@@ -92,6 +99,14 @@ const Direction Enemy::get_route() {
 
 void Enemy::apply(sf::Vector2f diretcion, Direction dir) {
     
+}
+
+float Enemy::get_dir_x() const {
+    return m_direction.x;
+}
+
+float Enemy::get_dir_y() const {
+    return m_direction.y;
 }
 
 

@@ -162,6 +162,8 @@ message UpdateBotMessage {
     float p_y = 6;
     string map_name = 7;
     int32 hp = 8;
+    float step_x = 9;
+    float step_y = 10;
 };
 
 message ServerToUserMessage {

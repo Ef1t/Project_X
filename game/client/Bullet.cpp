@@ -27,6 +27,16 @@ void Bullet::set_direction(const Direction dir) {
 void Bullet::draw_stat(sf::RenderWindow &window) {
     shape.setPosition(m_position);
     window.draw(shape);
+    /*sf::Image heroimage;
+    heroimage.loadFromFile("../../images/bullet.png");
+    sf::Texture herotexture;
+    herotexture.loadFromImage((heroimage));
+    sf::Sprite herosprite;
+    herosprite.setTexture(herotexture);
+    herosprite.setTextureRect(sf::IntRect(0,0,16,16));
+    //herosprite.setTextureRect(IntRect(0,192,96,96));
+    herosprite.setPosition(0, 0);
+    window.draw(herosprite); */
 }
 
 void Bullet::draw(sf::RenderWindow &window, float time, float &current_frame) {
@@ -35,6 +45,10 @@ void Bullet::draw(sf::RenderWindow &window, float time, float &current_frame) {
 
 void Bullet::set_hp(int hp) {
     m_hp = hp;
+}
+
+void Bullet::update_dir_enemy(float x, float y) {
+
 }
 
 

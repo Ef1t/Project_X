@@ -3,6 +3,7 @@
 //
 
 #include "Client.h"
+#include "Menus.h"
 
 #include <iostream>
 void usage() {
@@ -20,15 +21,53 @@ std::string lobby_str;
 
 
 int main(int ac, const char* av[]) {
-//    if (ac < 5) {
-//        usage();
-//        return -1;
-//    }
+    bool withMenu = true;  // To operate with arguments - set the value to false
+    if (!withMenu) {
+        if (ac < 5) {
+            usage();
+            return -1;
+        }
+
+        Client client;
+        username_str = av[1];
+        host_str = av[2];
+        port_str = av[3];
+        command_str = av[4];
+        lobby_str = av[5];
+        //menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+
+        std::cout << "username: " << username_str << std::endl;
+
+        auto username = std::string(username_str);
+        auto host = std::string(host_str);
+        auto port = static_cast<unsigned short>(std::stoul(port_str));
+
+        client.set_config(host, port, username);
+
+        if (command_str == "create") {
+            //auto map_name = std::string(av[5]);
+            auto map_name = std::string("map.tmx");
+            client.create_session(map_name);
+        } else if (command_str == "join") {
+            //auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
+            auto session_id = static_cast<sf::Uint64>(std::stoul(lobby_str));
+            client.join_to(session_id);
+        } else {
+            usage();
+            return -1;
+        }
+
+        return client.run();
+    }
 
 
     Client client;
-    //menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
-    menuDeath(client.get_window());
+    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    if (command_str == "exit") {
+        client.get_window().close();
+        return EXIT_SUCCESS;
+    }
+    //menuDeath(client.get_window());
 
     std::cout << "username: " << username_str << std::endl;
 

@@ -8,12 +8,16 @@
 
 
 void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str) {
-    sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture;
+    sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture,
+                exitInitTexture, exitBloodTexture;
+
     sf::Music music;
     music.openFromFile("../../client/music/menuTheme.wav");
     music.play();
 
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
+    exitInitTexture.loadFromFile("../../client/menuTextures/exitInit.png");
+    exitBloodTexture.loadFromFile("../../client/menuTextures/exitBlood.png");
     newGameInitTexture.loadFromFile("../../client/menuTextures/newGameInit.png");
     newGameBloodTexture.loadFromFile("../../client/menuTextures/newGameBlood.png");
     joinInitTexture.loadFromFile("../../client/menuTextures/joinInit.png");
@@ -28,6 +32,8 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     sf::Sprite joinBlood(joinBloodTexture);
     sf::Sprite goInit(goInitTexture);
     sf::Sprite goBlood(goBloodTexture);
+    sf::Sprite exitInit(exitInitTexture);
+    sf::Sprite exitBlood(exitBloodTexture);
 
     menuBg.setPosition(0, 0);
     newGameInit.setPosition(390, 100);
@@ -39,11 +45,16 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     goInit.setPosition(250, 660);
     goBlood.setPosition(250, 660);
 
-    bool newGameBloodDraw = 0;
-    bool joinBloodDraw = 0;
+    exitInit.setPosition(390, 300);
+    exitBlood.setPosition(390, 300);
+
+    bool newGameBloodDraw = false;
+    bool joinBloodDraw = false;
+    bool exitBloodDraw = false;
     bool initMenu = true;
     bool createMenu = false;
     bool joinMenu = false;
+    bool exitMenu = false;
     while (initMenu) {
         window.draw(menuBg);
 
@@ -64,6 +75,13 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             else
                 joinBloodDraw = false;
 
+            if (sf::IntRect(exitInit.getPosition().x, exitInit.getPosition().y,
+                            exitInit.getTextureRect().width, exitInit.getTextureRect().height).contains(
+                    sf::Mouse::getPosition(window)))
+                exitBloodDraw = true;
+            else
+                exitBloodDraw = false;
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 if (sf::IntRect(newGameInit.getPosition().x, newGameInit.getPosition().y,
                                 newGameInit.getTextureRect().width, newGameInit.getTextureRect().height).contains(
@@ -80,6 +98,15 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
                     joinMenu = true;
                     command_str = "join";
                 }
+
+                if (sf::IntRect(exitInit.getPosition().x, exitInit.getPosition().y,
+                                exitInit.getTextureRect().width, exitInit.getTextureRect().height).contains(
+                        sf::Mouse::getPosition(window))) {
+                    initMenu = false;
+                    exitMenu = true;
+                    command_str = "exit";
+                }
+
             }
         }
         if (newGameBloodDraw)
@@ -91,6 +118,11 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             window.draw(joinBlood);
         else
             window.draw(joinInit);
+
+        if (exitBloodDraw)
+            window.draw(exitBlood);
+        else
+            window.draw(exitInit);
 
         window.display();
     }
@@ -397,11 +429,11 @@ void menuDeath(sf::RenderWindow &window) {
 
     std::cout << "LOADED" << std::endl;
 
-    exitInitTexture.loadFromFile("../../client/menuTextures/exitInit.png");
+    exitInitTexture.loadFromFile("../../client/menuTextures/exitFGInit.png");
     sf::Sprite exitInit(exitInitTexture);
     exitInit.setPosition(400, 400);
 
-    exitBloodTexture.loadFromFile("../../client/menuTextures/exitBlood.png");
+    exitBloodTexture.loadFromFile("../../client/menuTextures/exitFGBlood.png");
     sf::Sprite exitBlood(exitBloodTexture);
     exitBlood.setPosition(400, 400);
 

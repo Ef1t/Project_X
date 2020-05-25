@@ -117,6 +117,7 @@ void Player::set_position(sf::Vector2f pos) {
 }
 
 void Player::add_land_obj(std::vector<std::shared_ptr<GameObject>> &objects) {
+    land_obj.clear();
     for (auto obj : objects) {
         land_obj.push_back(obj);
     }

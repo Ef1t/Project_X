@@ -310,7 +310,7 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
 }
 
 void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
-    if (all_objects[0].name == "Wall") {
+    //if (all_objects[0].name == "Wall") {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
             auto *rect = new trans::UserToServerMessage_Rect;
@@ -319,17 +319,17 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             rect->set_width(obj.rect.width);
             rect->set_height(obj.rect.height);
 
-            message.set_type(trans::UserToServerMessage::Wall);
+            //message.set_type(trans::UserToServerMessage::Wall);
 
-//            if (obj.name == "Wall") {
-//                message.set_type(trans::UserToServerMessage::Wall);
-//            }
-//            if (obj.name == "lava") {
-//                message.set_type(trans::UserToServerMessage::Lava);
-//            }
-//            if (obj.name == "spike") {
-//                message.set_type(trans::UserToServerMessage::Spike);
-//            }
+            if (obj.name == "Wall") {
+                message.set_type(trans::UserToServerMessage::Wall);
+            }
+            if (obj.name == "lava") {
+                message.set_type(trans::UserToServerMessage::Lava);
+            }
+            if (obj.name == "spike") {
+                message.set_type(trans::UserToServerMessage::Spike);
+            }
 
             message.set_allocated_rect(rect);
 
@@ -339,7 +339,7 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             m_user->send_packet(packet);
             packet.clear();
         }
-    }
+   // }
 }
 
 void Client::choise_of_weapon() {

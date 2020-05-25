@@ -78,11 +78,7 @@ void Session::update(float dt) {
                             add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
                             time_per_fire = 0; //обнуляем счетчик после выстрела
                         }
-
-
                     }
-
-
                 }
                 if (message.type() == trans::UserToServerMessage::Wall) {
                     //std::cout << "WALL " << std::endl;
@@ -91,6 +87,7 @@ void Session::update(float dt) {
                                                                message.rect().width(),
                                                                message.rect().height(),
                                                                "Wall"));
+                    player->add_land_obj(m_land_objects);
                 }
                 if (message.type() == trans::UserToServerMessage::Lava) {
                     //std::cout << "LAVA " << std::endl;
@@ -98,6 +95,7 @@ void Session::update(float dt) {
                                                                     message.rect().top(),
                                                                     message.rect().width(),
                                                                     message.rect().height()));
+                    player->add_land_obj(m_land_objects);
                 }
                 if (message.type() == trans::UserToServerMessage::Spike) {
                     //std::cout << "SPIKE " << std::endl;
@@ -105,6 +103,7 @@ void Session::update(float dt) {
                                                                      message.rect().top(),
                                                                      message.rect().width(),
                                                                      message.rect().height()));
+                    player->add_land_obj(m_land_objects);
                 }
             }
             user->receive_socket(socket);
@@ -297,6 +296,8 @@ void Session::add_enemy(float bot_x, float bot_y) {
 void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
+
+    player->add_land_obj(m_land_objects);
 
     //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {

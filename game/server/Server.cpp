@@ -98,7 +98,6 @@ void Server::accept_new_user() {
 
                 (*session)->add_user(user);
 
-
                 break;
             }
         }

@@ -26,7 +26,13 @@ using Objects = std::vector<ObjectPtr>;
 
 class Client {
 public:
-    Client(const std::string& host, unsigned short port, const std::string& username);
+    Client();
+
+    void set_config(const std::string& host, unsigned short port, const std::string& username);
+
+    //Client(const std::string& host, unsigned short port, const std::string& username);
+
+    sf::RenderWindow& get_window();
 
     void create_session(std::string map_name);
 

@@ -16,20 +16,31 @@
 
 short ID = 5;
 
-Client::Client(const std::string &host, unsigned short port, const std::string &username)
-        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
-          is_creator(false) {
 
-    auto socket = std::make_unique<sf::TcpSocket>();
-    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
-        throw std::runtime_error(std::strerror(errno));
-    }
-    //std::cout << ID << '\n';
-    m_user = std::make_shared<User>(username, std::move(socket));
+Client::Client()
+        : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
+          is_creator(false) {
+    std::cout << ID << '\n';
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
-    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+    view.get_view().reset(sf::FloatRect(0, 0, 640, 360));
 }
+
+
+//Client::Client(const std::string &host, unsigned short port, const std::string &username)
+//        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
+//          is_creator(false) {
+//
+//    auto socket = std::make_unique<sf::TcpSocket>();
+//    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+//        throw std::runtime_error(std::strerror(errno));
+//    }
+//    //std::cout << ID << '\n';
+//    m_user = std::make_shared<User>(username, std::move(socket));
+//    //тут меняется область видимости камеры
+//    //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
+//    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+//}
 
 void Client::create_session(std::string map_name) {
     sf::Packet packet;
@@ -357,4 +368,16 @@ void Client::choise_of_weapon() {
         choise_weapon.shotgun = 1;
     }
 
+}
+
+sf::RenderWindow &Client::get_window() {
+    return m_window;
+}
+
+void Client::set_config(const std::string &host, unsigned short port, const std::string &username) {
+    auto socket = std::make_unique<sf::TcpSocket>();
+    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+        throw std::runtime_error(std::strerror(errno));
+    }
+    m_user = std::make_shared<User>(username, std::move(socket));
 }

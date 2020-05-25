@@ -13,6 +13,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
     sf::Music music;
     music.openFromFile("../../client/music/menuTheme.wav");
+    music.setVolume(10);
     music.play();
 
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
@@ -470,4 +471,5 @@ void menuDeath(sf::RenderWindow &window) {
 
         window.display();
     }
+    window.close();
 }

@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Menus.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -105,7 +106,14 @@ int Client::run() {
             render(time, current_frame, current_frame_enemy);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
+            if (m_objects[0]->get_hp() <= 0) {
+                get_window().clear();
+                get_window().getDefaultView();
+                menuDeath(get_window());
+                break;
+            }
         }
+
     }
 
     return 0;

@@ -39,6 +39,9 @@ public:
 
     float get_dir_y() const;
 
+    //GOVNOKODIM
+     bool findingNewTarget;
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;

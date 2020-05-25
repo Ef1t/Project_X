@@ -37,13 +37,14 @@ Session::Session(std::string_view map_name)
 unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 
 void Session::update(float dt) {
+    int cycleID = 0;
     for (auto &m_user : m_users) {
         sf::Packet packet;
 
         auto &user = m_user.first;
         auto &player = m_user.second;
 
-        if (player->is_alive()) {
+        if (player->get_hp() > 0) {
             UserSocket socket = user->get_socket();
             if (socket->receive(packet) == sf::Socket::Done) {
                 trans::UserToServerMessage message;
@@ -73,10 +74,11 @@ void Session::update(float dt) {
                                              message.b_direction().right(), message.b_direction().down()};
 
                     //стрельба
-                    if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
-                        if (time_per_fire++ > 10) {
+                    if (player->get_route().fire == 1 &&
+                        player->get_hp() > 0) { //если нажата клавижа space, создаем пулю
+                        if ((player->time_per_fire)++ > 10) {
                             add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
-                            time_per_fire = 0; //обнуляем счетчик после выстрела
+                            player->time_per_fire = 0; //обнуляем счетчик после выстрела
                         }
                     }
                 }
@@ -108,19 +110,17 @@ void Session::update(float dt) {
             }
             user->receive_socket(socket);
         }
-        if (player->is_alive()) {
+        if (player->get_hp() > 0) {
             for (int i = 0; i < m_enemies.size(); ++i) {
-                if (m_enemies[i]->is_alive()) {
-                    int lol = m_enemies[i]->get_target();
-                    //int64_t kek = m_users[lol]->get_position().x;
-                    int j = 0; // player ID
-                    for (auto user : m_users) {
-                        //std::cout << "USER ID IS " << user.second->get_id() << "ENEMY ID IS " << m_enemies[i]->get_target() << std::endl;
-                        if (j == m_enemies[i]->get_target()) {
-                            m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y,
-                                                   m_objects);
-                        }
-                        j++;
+                if (m_enemies[i]->get_hp() > 0) {
+                    if (m_enemies[i]->findingNewTarget) {
+                        std::cout << "OLD TARGET IS " << m_enemies[i]->get_target() << "NEW TARGET IS " << cycleID << std::endl;
+                        m_enemies[i]->findingNewTarget = false;
+                        m_enemies[i]->set_target(cycleID);
+                    }
+                    if (cycleID == m_enemies[i]->get_target()) {
+                        m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y,
+                        m_objects);
                     }
                     auto *update_message = new trans::UpdateBotMessage;
                     update_message->set_id(m_enemies[i]->get_id());
@@ -153,13 +153,22 @@ void Session::update(float dt) {
                     m_enemies.erase(m_enemies.begin() + i);
                 }
             }
+        } else {
+            for (auto & m_enemie : m_enemies) {
+                //std::cout << "PLAYERS HP LESS THAN 0" << std::endl;
+                if (m_enemie->get_hp() > 0 && m_enemie->get_target() == cycleID) {
+                    //std::cout << "IN ELSE FINDING NEW TARGET" << std::endl;
+                    m_enemie->findingNewTarget = true;
+                }
+            }
         }
+        cycleID++;
     }
     auto it = m_users.begin();
     for (int i = 0; it != m_users.end(); ++it, ++i) {
         auto &player = it->second;
 
-        if (player->m_name == n_player && player->is_alive()) {
+        if (player->m_name == n_player && player->get_hp() > 0) {
             player->update(dt * 10, m_objects);
 
             auto *direction = new trans::UpdatePlayerMessage::Direction;

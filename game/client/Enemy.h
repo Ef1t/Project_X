@@ -9,6 +9,7 @@
 #include "TmxLevel.h"
 
 #include "Skin.h"
+#include "View.h"
 
 #include <SFML/Graphics/CircleShape.hpp>
 

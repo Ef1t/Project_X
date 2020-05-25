@@ -52,7 +52,7 @@ private:
     Direction m_direction_bullet;
     TmxLevel m_level;
     bool is_map;
-    View view;
+    view::View view;
     int this_player_id;
     bool is_creator;
     FireDirection m_fire_dir;

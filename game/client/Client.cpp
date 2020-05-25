@@ -167,6 +167,7 @@ void Client::render(float time, float &dir) {
     for (auto &obj: m_objects) {
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
+            obj->draw_hp_interface(m_window, view);
         }
         if (obj->object_name == n_bullet ||
             obj->object_name == n_enemy) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)

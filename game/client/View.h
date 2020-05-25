@@ -7,15 +7,16 @@
 
 #include <SFML/Graphics.hpp>
 
-class View {
- public:
-    void set_view(float x, float y, float map_width, float map_height);
+namespace view {
+    class View {
+    public:
+        void set_view(float x, float y, float map_width, float map_height);
 
-    sf::View & get_view();
+        sf::View &get_view();
 
- private:
-    sf::View view;
-};
-
+    private:
+        sf::View view;
+    };
+}
 
 #endif //GAME_VIEW_H

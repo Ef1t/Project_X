@@ -13,6 +13,7 @@
 
 #include "messages/UserToServerMessage.h"
 #include "transition.pb.h"
+#include "View.h"
 
 #include <memory>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -38,6 +39,9 @@ public:
 
     virtual
     void draw(sf::RenderWindow& window,  float time, float& current_frame) = 0; //вопрос, почему нельзя переопределить ее
+
+    virtual
+    void draw_hp_interface(sf::RenderWindow& window, view::View& view) { };
 
     virtual
     void draw_stat(sf::RenderWindow& window) = 0;

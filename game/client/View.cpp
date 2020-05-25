@@ -4,7 +4,7 @@
 
 #include "View.h"
 
-void View::set_view(float x, float y, float map_width, float map_height) {
+void view::View::set_view(float x, float y, float map_width, float map_height) {
     float temp_x = x;
     float  temp_y = y;
     if (x < 192) temp_x = 192;
@@ -15,6 +15,6 @@ void View::set_view(float x, float y, float map_width, float map_height) {
     view.setCenter(temp_x + 50, temp_y + 60);
 }
 
-sf::View & View::get_view() {
+sf::View & view::View::get_view() {
     return view;
 }

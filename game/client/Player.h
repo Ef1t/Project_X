@@ -23,6 +23,8 @@ public:
 
     void draw_stat(sf::RenderWindow& window) override ;
 
+    void draw_hp_interface(sf::RenderWindow& window, view::View& view) override;
+
     void set_position(const sf::Vector2f& position) override;
 
     void set_direction(Direction dir) override;
@@ -32,6 +34,12 @@ public:
 private:
     std::string m_username;
     Skin m_actor;
+
+    sf::Texture m_hp_texture;
+    sf::Sprite m_hp_sprite;
+
+    sf::Font m_font;
+    sf::Text m_hp_text;
 
 public:
 

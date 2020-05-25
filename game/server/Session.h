@@ -38,11 +38,15 @@ public:
 
     void add_user(UserPtr user);
 
-    void add_enemy();
-
     void add_bullet(PlayerPtr player, float x, float y, Direction b_dir);
 
     void add_enemy(float bot_x, float bot_y);
+
+    void add_player();
+
+    void remove_player();
+
+    sf::Uint64 get_players();
 
     std::string& get_map();
 
@@ -50,6 +54,7 @@ private:
     static sf::Uint64 next_id;
     sf::Uint64 m_id;
     Users m_users;
+    sf::Uint64 m_players;
     //Bullets m_bullets;
     std::string map_name;
     std::vector<std::shared_ptr<GameObject>> m_objects;

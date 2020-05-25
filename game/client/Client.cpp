@@ -203,7 +203,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
-        if (obj->get_hp() > 0) {
+        if (obj->get_hp() > 0 || obj->object_name == n_player) {
             temp_obj.push_back(obj);
         }
     }

@@ -13,7 +13,7 @@ sf::Uint64 Session::next_id = 10;
 
 
 Session::Session()
-        : m_id(next_id++), m_users(), m_messages() {
+        : m_id(next_id++), m_users(), m_messages(), m_players(0) {
 }
 
 unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
@@ -84,10 +84,11 @@ void Session::update(float dt) {
                     int j = 0; // player ID
                     for (auto user : m_users) {
                         //std::cout << "USER ID IS " << user.second->get_id() << "ENEMY ID IS " << m_enemies[i]->get_target() << std::endl;
-                        if (j == m_enemies[i]->get_target()) {
+                        if (j == m_enemies[i]->get_target() && user.second->is_alive()) {
                             m_enemies[i]->movement(dt, user.second->get_position().x, user.second->get_position().y,
                                                    m_objects);
                         }
+
                         j++;
                     }
                     auto *update_message = new trans::UpdateBotMessage;
@@ -125,7 +126,13 @@ void Session::update(float dt) {
 
         if (player->m_name == n_player && player->is_alive()) {
             player->update(dt * 10, m_objects);
-
+            if (!player->is_alive()) {
+                remove_player();
+                for (auto enemy : m_enemies) {
+                    int count = rand() % get_players();
+                    enemy->set_target(count);
+                }
+            }
             auto *direction = new trans::UpdatePlayerMessage::Direction;
             direction->set_up(player->get_route().up);
             direction->set_down(player->get_route().down); //почему не зануляются??
@@ -199,7 +206,7 @@ void Session::update(float dt) {
         }
 
     }
-    int count_enemies = 1;
+    int count_enemies = 3;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -239,10 +246,22 @@ sf::Uint64 Session::get_id() const {
     return m_id;
 }
 
+void Session::add_player() {
+    m_players++;
+}
+
+void Session::remove_player() {
+    m_players--;
+}
+
+sf::Uint64 Session::get_players() {
+    return m_players;
+}
+
 void Session::add_enemy(float bot_x, float bot_y) {
     std::cout << "BOT_ADDED!!!\n";
     auto bot = std::make_shared<Enemy>();
-    int count = rand() % m_users.size();
+    int count = rand() % get_players();
 
     bot->set_position(bot_x, bot_y);
     bot->set_target(count);
@@ -264,6 +283,7 @@ void Session::add_enemy(float bot_x, float bot_y) {
 
 void Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
+    add_player();
     auto player = std::make_shared<Player>();
 
     //фикс баги с появлением в ком-то

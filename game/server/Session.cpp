@@ -200,18 +200,18 @@ void Session::update(float dt) {
         }
     }
     // проходимся по вектору пуль и обновляем координатыa
-    for (auto &bullet: m_bullets) {
-        if (!((bullet->get_position().x > win_lenght) || (bullet->get_position().y > win_height) ||
-              (bullet->get_position().x < 0) ||
-              (bullet->get_position().y < 0)) && bullet->is_alive()) { //условие "исчесновения пули"
-            bullet->update(dt, m_objects);
+    for (int i = 0; i < m_bullets.size(); ++i) {
+        if (!((m_bullets[i]->get_position().x > win_lenght) || (m_bullets[i]->get_position().y > win_height) ||
+              (m_bullets[i]->get_position().x < 0) ||
+              (m_bullets[i]->get_position().y < 0)) && m_bullets[i]->is_alive()) { //условие "исчесновения пули"
+            m_bullets[i]->update(dt, m_objects);
             //std::cout << " JOE\n";
 
             auto *update_message_bul = new trans::UpdateBulletMessage;
-            update_message_bul->set_id(bullet->get_id());
+            update_message_bul->set_id(m_bullets[i]->get_id());
             update_message_bul->set_hp(1); //условие исчезновения
-            update_message_bul->set_x(bullet->get_position().x);
-            update_message_bul->set_y(bullet->get_position().y);
+            update_message_bul->set_x(m_bullets[i]->get_position().x);
+            update_message_bul->set_y(m_bullets[i]->get_position().y);
             update_message_bul->set_name(n_bullet); //название объекта
 
             auto server_message = m_messages.add_vec_messages();
@@ -219,12 +219,13 @@ void Session::update(float dt) {
             server_message->set_allocated_ub_msg(update_message_bul);
         } else {
             auto *update_message_bul = new trans::UpdateBulletMessage;
-            update_message_bul->set_id(bullet->get_id());
+            update_message_bul->set_id(m_bullets[i]->get_id());
             update_message_bul->set_hp(0); //условие жизни
-            update_message_bul->set_x(bullet->get_position().x);
-            update_message_bul->set_y(bullet->get_position().y);
+            update_message_bul->set_x(m_bullets[i]->get_position().x);
+            update_message_bul->set_y(m_bullets[i]->get_position().y);
             update_message_bul->set_name(n_bullet);
 
+            m_bullets.erase(m_bullets.begin() + i);
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
             server_message->set_allocated_ub_msg(update_message_bul);

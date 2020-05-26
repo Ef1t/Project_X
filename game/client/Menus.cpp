@@ -13,6 +13,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
     sf::Music music;
     music.openFromFile("../../client/music/menuTheme.wav");
+    music.setVolume(2);
     music.play();
 
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
@@ -413,11 +414,23 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     music.stop();
 }
 
-void menuDeath(sf::RenderWindow &window) {
-    sf::Texture menuBGTexture, exitInitTexture, exitBloodTexture, uRDeadTexture;
+void menuDeath(sf::RenderWindow &window, int kills) {
+    sf::Texture menuBGTexture, exitInitTexture, exitBloodTexture, uRDeadTexture, scoreTexture;
     //sf::Music music;
     //music.openFromFile("../../client/music/menuTheme.wav");
     //music.play();
+
+    sf::Text score_text;
+    sf::Font font;
+    font.loadFromFile("../../client/menuTextures/font.ttf");
+    score_text.setFont(font);
+    score_text.setString(std::to_string(kills));
+    score_text.setFillColor(sf::Color::Red);
+    score_text.setPosition(565, 230);
+
+    scoreTexture.loadFromFile("../../client/menuTextures/finalScore.png");
+    sf::Sprite score(scoreTexture);
+    score.setPosition(100, 200);
 
     menuBGTexture.loadFromFile("../../client/menuTextures/death.jpg");
     sf::Sprite menuBg(menuBGTexture);
@@ -467,6 +480,8 @@ void menuDeath(sf::RenderWindow &window) {
             window.draw(exitInit);
 
         window.draw(uRDead);
+        window.draw(score);
+        window.draw(score_text);
 
         window.display();
     }

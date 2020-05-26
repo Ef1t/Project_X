@@ -35,6 +35,12 @@ private:
     std::string m_username;
     Skin m_actor;
 
+    sf::Texture m_skull_texture;
+    sf::Texture m_hp_bar_texture;
+    sf::Sprite m_skull_sprite;
+    sf::Sprite m_hp_bar_sprite;
+    sf::Font m_font;
+
 public:
 
 };

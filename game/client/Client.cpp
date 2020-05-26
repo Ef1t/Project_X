@@ -110,11 +110,9 @@ int Client::run() {
             TimeSinceUpdate -= TimePerFrame;
             if (!isAlive) {
 
-
-
                 view.get_view().reset(sf::FloatRect(0, 0, 1280, 720));
                 m_window.setView(view.get_view());
-                menuDeath(get_window());
+                menuDeath(get_window(), m_objects[0]->kills_count);
                 run = false;
             }
         }
@@ -312,6 +310,10 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                                                             sf::Vector2f(message.u_bot_msg().x(),
                                                                          message.u_bot_msg().y()),
                                                                          message.u_bot_msg().hp()));
+
+            }
+            if (message.u_bot_msg().hp() <= 0) {
+                (m_objects[0]->kills_count)++;
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),

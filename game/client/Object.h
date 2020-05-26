@@ -54,6 +54,7 @@ public:
 
     int get_hp() const;
     short object_name;
+    int kills_count;
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;

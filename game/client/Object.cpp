@@ -9,7 +9,8 @@ Object::Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, i
         , m_position(position) ,
         object_name(object_name),
         m_hp(hp),
-        m_max_hp(hp){
+        m_max_hp(hp),
+        kills_count(0){
 
     hp_bar_green.setFillColor(sf::Color::Green);
     hp_bar_red.setFillColor(sf::Color::Red);

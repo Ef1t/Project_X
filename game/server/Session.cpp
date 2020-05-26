@@ -35,26 +35,28 @@ Session::Session(std::string_view map_name)
 //        }
 //    }
 }
-unsigned int time_per_fire_pistol = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
-unsigned int time_per_fire_automat = 10;
-unsigned int time_per_fire_shotgun = 40;
+//unsigned int time_per_fire_pistol = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+//unsigned int time_per_fire_automat = 10;
+//unsigned int time_per_fire_shotgun = 40;
 
 void Session::update(float dt) {
     int cycleID = 0;
     for (auto &m_user : m_users) {
-        if (time_per_fire_automat < 100 ) {
-            time_per_fire_automat++;
-        }
-        if (time_per_fire_pistol < 100 ) {
-            time_per_fire_pistol++;
-        }
-        if (time_per_fire_shotgun < 100 ) {
-            time_per_fire_shotgun++;
-        }
+
         sf::Packet packet;
 
         auto &user = m_user.first;
         auto &player = m_user.second;
+
+        if (player->time_per_fire_automat < 100 ) {
+            (player->time_per_fire_automat)++;
+        }
+        if (player->time_per_fire_pistol < 100 ) {
+            (player->time_per_fire_pistol)++;
+        }
+        if (player->time_per_fire_shotgun < 100 ) {
+            (player->time_per_fire_shotgun)++;
+        }
 
         if (player->get_hp() > 0) {
             UserSocket socket = user->get_socket();
@@ -89,22 +91,22 @@ void Session::update(float dt) {
                     //стрельба
                     if (player->get_route().fire == 1 && (player->get_hp() > 0)) { //если нажата клавижа space, создаем пулю
                         if (message.weapon().pistol()) {
-                            if (time_per_fire_pistol > 30) {
+                            if (player->time_per_fire_pistol > 30) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet,0);
-                                time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
+                                player->time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().automat()) {
-                            if (time_per_fire_automat > 10) {
+                            if (player->time_per_fire_automat > 10) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
-                                time_per_fire_automat = 0; //обнуляем счетчик после выстрела
+                                player->time_per_fire_automat = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().shotgun()) {
-                            if (time_per_fire_shotgun > 40) {
+                            if (player->time_per_fire_shotgun > 40) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,0);
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,1);
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,2);
 
-                                time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
+                                player->time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
                             }
                         }
                     }
@@ -141,7 +143,7 @@ void Session::update(float dt) {
             for (int i = 0; i < m_enemies.size(); ++i) {
                 if (m_enemies[i]->get_hp() > 0) {
                     if (m_enemies[i]->findingNewTarget) {
-                        std::cout << "OLD TARGET IS " << m_enemies[i]->get_target() << "NEW TARGET IS " << cycleID << std::endl;
+                        //std::cout << "OLD TARGET IS " << m_enemies[i]->get_target() << "NEW TARGET IS " << cycleID << std::endl;
                         m_enemies[i]->findingNewTarget = false;
                         m_enemies[i]->set_target(cycleID);
                     }

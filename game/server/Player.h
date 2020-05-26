@@ -33,6 +33,8 @@ public:
 
     void add_land_obj(std::vector<std::shared_ptr<GameObject>> &objects);
 
+    // GOVNOKODIM
+    unsigned int time_per_fire; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
@@ -42,6 +44,7 @@ private:
     float time_last_land_dgm;
     float time_last_step;
     std::vector<std::shared_ptr<GameObject>> land_obj;
+
 };
 
 using PlayerPtr = std::shared_ptr<Player>;

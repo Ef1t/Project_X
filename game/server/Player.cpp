@@ -17,7 +17,8 @@ Player::Player(const sf::Vector2f &position)
         , GameObject(n_player, n_player_hp, n_player_dmg)
         , time_last_dgm(0)
         , time_last_land_dgm(0)
-        , time_last_step(0) {}
+        , time_last_step(0)
+        , time_per_fire(10){}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 
@@ -117,6 +118,7 @@ void Player::set_position(sf::Vector2f pos) {
 }
 
 void Player::add_land_obj(std::vector<std::shared_ptr<GameObject>> &objects) {
+    land_obj.clear();
     for (auto obj : objects) {
         land_obj.push_back(obj);
     }

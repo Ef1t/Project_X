@@ -47,9 +47,6 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
     m_direction.x = step.x / modul_step;
     m_direction.y = step.y / modul_step;
 
-    //std:: cout << m_direction.x << " dir_x\n";
-    //std::cout << m_direction.y << " dtr_y\n";
-
     sf::Vector2f dir = {(tempX - m_position.x) / dist, (tempY - m_position.y) / dist};
 
     std::shared_ptr<GameObject> near_obj;
@@ -61,7 +58,7 @@ void Enemy::movement(float dt, float tempX, float tempY, std::vector<std::shared
     if (want_step != step &&  time_last_dmg > 0.1) {
         if (near_obj->m_name == n_player) {
             near_obj->get_hp() -= get_dmg();
-            std::cout << " damaga " << std::endl;
+            //std::cout << " damaga " << std::endl;
             time_last_dmg = 0;
         }
     }
@@ -80,11 +77,11 @@ sf::FloatRect Enemy::get_rect() {
     sf::FloatRect rect;
 
     // смещение начала прямоугольника игрока от его позиции m_position
-    float delta = 15;
+    float delta = 0;
 
     // размеры текстуры
-    float texture_heigh = 50;
-    float texture_width = 50;
+    float texture_heigh = 73;
+    float texture_width = 40;
 
     rect.top = m_position.y + delta;
     rect.left = m_position.x + delta;

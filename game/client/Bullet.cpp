@@ -8,7 +8,7 @@
 
 Bullet::Bullet(sf::Uint64 id, const sf::Vector2f& position, bool state)
        :  Object(id, position, n_bullet, state)
-        , shape(10.f){
+        , shape(6.f){
 }
 
 

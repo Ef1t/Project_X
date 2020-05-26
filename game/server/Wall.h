@@ -6,7 +6,6 @@
 #define GAME_WALL_H
 
 #include <iostream>
-#include <SFML/Graphics.hpp>
 #include <string_view>
 
 #include "GameObject.h"

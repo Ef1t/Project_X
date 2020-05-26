@@ -54,9 +54,6 @@ void Enemy::set_direction(const Direction dir) {
 }
 
 void Enemy::update_dir_enemy(float x, float y) {
-   // std::cout << x << " x\n";
-   // std::cout << y << " y\n";
-
     if ((y > 0) && (abs(y) > abs(x)))  {
         m_dir.up = 0;
         m_dir.down = 1;

@@ -9,6 +9,8 @@
 #include <memory>
 #include <SFML/Config.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
+
 #include "messages/UserToServerMessage.h"
 
 //названия объектов
@@ -22,7 +24,7 @@
 #define n_player_hp 100
 #define n_player_dmg 1
 
-#define n_enemy_hp 10
+#define n_enemy_hp 1
 #define n_enemy_dmg 1
 
 #define n_lava_dmg 2
@@ -31,8 +33,6 @@
 #define null_dmg 0
 #define null_hp 0
 
-
-#include <SFML/Graphics.hpp>
 #include <string>
 
 class GameObject {

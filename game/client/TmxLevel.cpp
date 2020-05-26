@@ -360,10 +360,10 @@ std::vector<TmxObject> TmxLevel::GetAllObjects(const std::string &name) const
     std::vector<TmxObject> vec;
     for (size_t i = 0; i < m_objects.size(); i++)
     {
-        if (m_objects[i].name == name)
-        {
+//        if (m_objects[i].name == name)
+//        {
             vec.push_back(m_objects[i]);
-        }
+//        }
     }
 
     return vec;

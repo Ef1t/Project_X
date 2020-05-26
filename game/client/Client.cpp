@@ -6,6 +6,8 @@
 #include "Object.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Menus.h"
+#include "View.h"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -16,22 +18,30 @@
 
 short ID = 5;
 
-
-Client::Client(const std::string &host, unsigned short port, const std::string &username)
-        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
-          is_creator(false) {
-
-    auto socket = std::make_unique<sf::TcpSocket>();
-    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
-        throw std::runtime_error(std::strerror(errno));
-    }
-    //std::cout << ID << '\n';
-    m_user = std::make_shared<User>(username, std::move(socket));
+Client::Client()
+        : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
+          is_creator(false), isAlive(true) {
+    std::cout << ID << '\n';
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
-    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+    view.get_view().reset(sf::FloatRect(0, 0, 640, 360));
     choise_weapon.pistol = 1;
-}
+
+
+//Client::Client(const std::string &host, unsigned short port, const std::string &username)
+//        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
+//          is_creator(false) {
+//
+//    auto socket = std::make_unique<sf::TcpSocket>();
+//    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+//        throw std::runtime_error(std::strerror(errno));
+//    }
+//    //std::cout << ID << '\n';
+//    m_user = std::make_shared<User>(username, std::move(socket));
+//    //тут меняется область видимости камеры
+//    //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
+//    view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+//}
 
 void Client::create_session(std::string map_name) {
     sf::Packet packet;
@@ -78,6 +88,7 @@ void Client::join_to(sf::Uint64 session_id) {
 }
 
 int Client::run() {
+    bool run = true;
     sf::Time TimeSinceUpdate = sf::Time::Zero;
     sf::Time TimePerFrame = sf::seconds(1.f / 90.f);
     sf::Clock clock;
@@ -86,19 +97,30 @@ int Client::run() {
     //float time = clock.getElapsedTime().asMicroseconds();
     float time = 0.005;
     clock.restart();
-    while (m_window.isOpen()) {
+    while (m_window.isOpen() && run) {
 
         // process_events();
 
         TimeSinceUpdate += clock.restart();
         //time = TimePerFrame.asSeconds();
-        while (TimeSinceUpdate > TimePerFrame) {
+        while (TimeSinceUpdate > TimePerFrame && run) {
             receive_from_server();
             process_events();
             render(time, current_frame, current_frame_enemy);
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
+            if (!isAlive) {
+
+                view.get_view().reset(sf::FloatRect(0, 0, 1280, 720));
+                m_window.setView(view.get_view());
+                menuDeath(get_window(), m_objects[0]->kills_count);
+                run = false;
+            }
         }
+    }
+
+    if (!run) {
+        m_window.close();
     }
 
     return 0;
@@ -227,7 +249,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
-        if (obj->get_hp() > 0) {
+        if (obj->get_hp() > 0 || obj->object_name == n_player) {
             temp_obj.push_back(obj);
         }
     }
@@ -239,7 +261,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             sf::Vector2f(message.np_msg().x(), message.np_msg().y()), message.np_msg().hp()));
 
             if (!is_map) {
-                std::cout << message.np_msg().map_name();
+                //std::cout << message.np_msg().map_name();
                 this->m_level.GetMapName() = message.np_msg().map_name();
                 this->m_level.LoadFromFile("../../client/maps/" + message.np_msg().map_name());
                 if (is_creator) {
@@ -265,6 +287,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     if (this_player_id == message.upd_msg().id()) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
+                        if (message.upd_msg().hp() <= 0)
+                            isAlive = false;
                     }
                 }
             }
@@ -293,14 +317,18 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                                                             sf::Vector2f(message.u_bot_msg().x(),
                                                                          message.u_bot_msg().y()),
                                                                          message.u_bot_msg().hp()));
+
+            }
+            if (message.u_bot_msg().hp() <= 0) {
+                (m_objects[0]->kills_count)++;
             }
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),
                                                          sf::Vector2f(message.nb_msg().x(), message.nb_msg().y()), message.nb_msg().hp()));
+
             play_sound();
            // buffer.loadFromFile("../../client/sounds/pistol.wav");
             //sound.setBuffer(buffer);
-
             //sf::Sound sound;
             //sound.play();
 
@@ -341,7 +369,7 @@ void Client::apply_dir_b() { // устанавливаем тракеторию 
 }
 
 void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
-    if (all_objects[0].name == "Wall") {
+    //if (all_objects[0].name == "Wall") {
         for (auto obj: all_objects) {
             trans::UserToServerMessage message;
             auto *rect = new trans::UserToServerMessage_Rect;
@@ -350,17 +378,17 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             rect->set_width(obj.rect.width);
             rect->set_height(obj.rect.height);
 
-            message.set_type(trans::UserToServerMessage::Wall);
+            //message.set_type(trans::UserToServerMessage::Wall);
 
-//            if (obj.name == "Wall") {
-//                message.set_type(trans::UserToServerMessage::Wall);
-//            }
-//            if (obj.name == "lava") {
-//                message.set_type(trans::UserToServerMessage::Lava);
-//            }
-//            if (obj.name == "spike") {
-//                message.set_type(trans::UserToServerMessage::Spike);
-//            }
+            if (obj.name == "Wall") {
+                message.set_type(trans::UserToServerMessage::Wall);
+            }
+            if (obj.name == "lava") {
+                message.set_type(trans::UserToServerMessage::Lava);
+            }
+            if (obj.name == "spike") {
+                message.set_type(trans::UserToServerMessage::Spike);
+            }
 
             message.set_allocated_rect(rect);
 
@@ -370,7 +398,7 @@ void Client::send_obj_to_server(std::vector<TmxObject> &all_objects) {
             m_user->send_packet(packet);
             packet.clear();
         }
-    }
+   // }
 }
 
 void Client::choise_of_weapon() {
@@ -405,5 +433,16 @@ void Client::play_sound() {
 
     sound.setBuffer(buffer);
 
+    sound.setVolume(5);
     sound.play();
+    
 }
+
+void Client::set_config(const std::string &host, unsigned short port, const std::string &username) {
+    auto socket = std::make_unique<sf::TcpSocket>();
+    if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
+        throw std::runtime_error(std::strerror(errno));
+    }
+    m_user = std::make_shared<User>(username, std::move(socket));
+}
+

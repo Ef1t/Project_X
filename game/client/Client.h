@@ -27,7 +27,13 @@ using Objects = std::vector<ObjectPtr>;
 
 class Client {
 public:
-    Client(const std::string& host, unsigned short port, const std::string& username);
+    Client();
+
+    void set_config(const std::string& host, unsigned short port, const std::string& username);
+
+    //Client(const std::string& host, unsigned short port, const std::string& username);
+
+    sf::RenderWindow& get_window();
 
     void create_session(std::string map_name);
 
@@ -69,6 +75,7 @@ private:
     void play_sound();
 
 
+    bool isAlive;
 
     sf::SoundBuffer buffer;
     //buffer.loadFromFile("/home/yaroslav/X/Project_X/game/client/sounds/shoot.ogg");

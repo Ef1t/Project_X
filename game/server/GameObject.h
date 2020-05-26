@@ -21,7 +21,7 @@
 #define n_lava 4
 #define n_spike 5
 
-#define n_player_hp 1
+#define n_player_hp 100
 #define n_player_dmg 1
 
 #define n_enemy_hp 10

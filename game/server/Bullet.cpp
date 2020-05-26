@@ -4,21 +4,33 @@
 
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id) :
+Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id, short weap, short number = 0) :
         m_position(positon),
         m_velocity(bullet_velocity),
         GameObject(n_bullet, null_hp, n_player_dmg),
         b_dir(dir),
-        player_id(p_id){
+        player_id(p_id),
+        name_weapon(weap),
+        bullet_number(number){
+    if (name_weapon == pistolet) {
+        get_dmg() = pistolet_dmg;
+    }
+    if (name_weapon == drobovik) {
+        get_dmg() = drobovik_dmg;
+    }
+    if (name_weapon == aut) {
+        get_dmg() = aut_dmg;
+    }
 }
 
 void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
-
+//    std::cout << name_weapon << " WEAPON\n";
+//std::cout << bullet_number << " NUBMER\n";
 //    std:: cout << b_dir.up << " Up B-_dir in update\n";
 //    std:: cout << b_dir.down << " Do B-_dir in update\n";
 //    std:: cout << b_dir.right << " Le B-_dir in update\n";
 //    std:: cout << b_dir.left << " Ri B-_dir in update\n";
-
+if ((name_weapon == pistolet) || (name_weapon == aut)) {
     if (b_dir.up) {
         m_direction.y = -1;
     }
@@ -31,6 +43,62 @@ void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects)
     if (b_dir.right) {
         m_direction.x = 1;
     }
+} else if (name_weapon == drobovik) {
+    if(bullet_number == 1) {
+//        std::cout << "Bullet 1\n";
+        if (b_dir.up) {
+            m_direction.y = -1;
+            m_direction.x = 0.2;
+        }
+        if (b_dir.down) {
+            m_direction.y = 1;
+            m_direction.x = 0.2;
+        }
+        if (b_dir.left) {
+            m_direction.x = -1;
+            m_direction.y = 0.2;
+        }
+        if (b_dir.right) {
+            m_direction.x = 1;
+            m_direction.y = 0.2;
+        }
+    }
+
+    if(bullet_number == 2) {
+//        std::cout << "Bullet 2\n";
+        if (b_dir.up) {
+            m_direction.y = -1;
+            m_direction.x = -0.2;
+        }
+        if (b_dir.down) {
+            m_direction.y = 1;
+            m_direction.x = -0.2;
+        }
+        if (b_dir.left) {
+            m_direction.x = -1;
+            m_direction.y = -0.2;
+        }
+        if (b_dir.right) {
+            m_direction.x = 1;
+            m_direction.y = -0.2;
+        }
+    }
+    if (bullet_number == 0) {
+        if (b_dir.up) {
+            m_direction.y = -1;
+        }
+        if (b_dir.down) {
+            m_direction.y = 1;
+        }
+        if (b_dir.left) {
+            m_direction.x = -1;
+        }
+        if (b_dir.right) {
+            m_direction.x = 1;
+        }
+    }
+    
+}
 
     m_position += m_direction * (m_velocity * dt);
     //m_position.x += m_direction.x;
@@ -67,8 +135,8 @@ sf::FloatRect Bullet::get_rect() {
     float delta = 0;
 
     // размеры текстуры
-    float texture_heigh = 10;
-    float texture_width = 10;
+    float texture_heigh = 12;
+    float texture_width = 12;
 
     rect.top = m_position.y + delta;
     rect.left = m_position.x + delta;
@@ -76,6 +144,10 @@ sf::FloatRect Bullet::get_rect() {
     rect.width = texture_width - delta;
 
     return rect;
+}
+
+short Bullet::get_name_weapon() {
+    return name_weapon;
 }
 
 

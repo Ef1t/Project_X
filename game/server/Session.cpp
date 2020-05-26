@@ -11,9 +11,10 @@
 
 sf::Uint64 Session::next_id = 10;
 
+static int k = 0;
 
 Session::Session(std::string_view map_name)
-        : m_id(next_id++), m_users(), m_messages(), map_name(map_name) {
+        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0) {
 //    TmxLevel level;
 //    level.LoadFromFile("../../client/maps/" + this->map_name);
 //    auto objects = level.GetAllObjects("VSE");
@@ -34,11 +35,22 @@ Session::Session(std::string_view map_name)
 //        }
 //    }
 }
-unsigned int time_per_fire = 10; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire_pistol = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
+unsigned int time_per_fire_automat = 10;
+unsigned int time_per_fire_shotgun = 40;
 
 void Session::update(float dt) {
     int cycleID = 0;
     for (auto &m_user : m_users) {
+        if (time_per_fire_automat < 100 ) {
+            time_per_fire_automat++;
+        }
+        if (time_per_fire_pistol < 100 ) {
+            time_per_fire_pistol++;
+        }
+        if (time_per_fire_shotgun < 100 ) {
+            time_per_fire_shotgun++;
+        }
         sf::Packet packet;
 
         auto &user = m_user.first;
@@ -72,13 +84,28 @@ void Session::update(float dt) {
 
                     Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
                                              message.b_direction().right(), message.b_direction().down()};
+                    //std:: cout << message.weapon().pistol() << " Pistol\n";
 
                     //стрельба
-                    if (player->get_route().fire == 1 &&
-                        player->get_hp() > 0) { //если нажата клавижа space, создаем пулю
-                        if ((player->time_per_fire)++ > 10) {
-                            add_bullet(player, player->get_position().x, player->get_position().y, b_direction);
-                            player->time_per_fire = 0; //обнуляем счетчик после выстрела
+                    if (player->get_route().fire == 1 && (player->get_hp() > 0)) { //если нажата клавижа space, создаем пулю
+                        if (message.weapon().pistol()) {
+                            if (time_per_fire_pistol > 30) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet,0);
+                                time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
+                            }
+                        } else if (message.weapon().automat()) {
+                            if (time_per_fire_automat > 10) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
+                                time_per_fire_automat = 0; //обнуляем счетчик после выстрела
+                            }
+                        } else if (message.weapon().shotgun()) {
+                            if (time_per_fire_shotgun > 40) {
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,0);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,1);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,2);
+
+                                time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
+                            }
                         }
                     }
                 }
@@ -170,6 +197,9 @@ void Session::update(float dt) {
 
         if (player->m_name == n_player && player->get_hp() > 0) {
             player->update(dt * 10, m_objects);
+            if (player->get_hp() <= 0) {
+                remove_player();
+            }
 
             auto *direction = new trans::UpdatePlayerMessage::Direction;
             direction->set_up(player->get_route().up);
@@ -243,9 +273,13 @@ void Session::update(float dt) {
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
             server_message->set_allocated_ub_msg(update_message_bul);
         }
-
     }
-    int count_enemies = 3;
+
+    float coef = 1;
+    int start = 3;
+    if (get_players() > 1) {coef = 0.5;}
+    int count_enemies = round (start * coef * get_players()) + k;
+  
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -272,7 +306,9 @@ void Session::update(float dt) {
             add_enemy(x, y);
             y -= dist;
         }
+        k++;
     }
+
     notify_all();
 }
 
@@ -282,6 +318,18 @@ bool Session::is_end() {
 
 sf::Uint64 Session::get_id() const {
     return m_id;
+}
+
+void Session::add_player() {
+    m_players++;
+}
+
+void Session::remove_player() {
+    m_players--;
+}
+
+sf::Uint64 Session::get_players() {
+    return m_players;
 }
 
 void Session::add_enemy(float bot_x, float bot_y) {
@@ -312,7 +360,7 @@ void Session::add_user(UserPtr user) {
     auto player = std::make_shared<Player>();
 
     player->add_land_obj(m_land_objects);
-
+    add_player();
     //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {
         player->set_position({player->get_position().x + 10, player->get_position().y + 10});
@@ -337,9 +385,9 @@ void Session::add_user(UserPtr user) {
 
 }
 
-void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir) {
+void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number) {
     //функция аналогична с добавлением игрока за исключением того, что мы тут создаем вектор пуль, который автономно обрабатывается на сервере
-    auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir, player->get_id());
+    auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir, player->get_id(), weapon, number);
 
     m_bullets.push_back(bullet);
 

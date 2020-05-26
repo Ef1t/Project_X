@@ -18,7 +18,10 @@ Player::Player(const sf::Vector2f &position)
         , time_last_dgm(0)
         , time_last_land_dgm(0)
         , time_last_step(0)
-        , time_per_fire(10){}
+        , time_per_fire(10)
+        , time_per_fire_pistol (30)
+        , time_per_fire_automat(10)
+        , time_per_fire_shotgun(40){}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 

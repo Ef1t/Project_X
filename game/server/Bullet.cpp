@@ -67,8 +67,8 @@ sf::FloatRect Bullet::get_rect() {
     float delta = 0;
 
     // размеры текстуры
-    float texture_heigh = 10;
-    float texture_width = 10;
+    float texture_heigh = 12;
+    float texture_width = 12;
 
     rect.top = m_position.y + delta;
     rect.left = m_position.x + delta;

@@ -16,7 +16,7 @@
 
 class Enemy : public Object, Skin {
 public:
-        Enemy(sf::Uint64 id, const sf::Vector2f& position, bool state);
+        Enemy(sf::Uint64 id, const sf::Vector2f& position, int hp);
 
         void draw(sf::RenderWindow& window, float time, float& current_frame) override;
 
@@ -26,13 +26,16 @@ public:
 
         void set_direction(const Direction dir) override;
 
-        void set_state(bool state) override ;
+        void set_hp(int hp) override ;
+
+        void update_dir_enemy(float x, float y) override;
 
 
 
 private:
     //Skin m_actor;
-    sf::CircleShape shape;
+    Skin mr_enemy;
+
 public:
 
 };

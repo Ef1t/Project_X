@@ -67,8 +67,8 @@ void Server::accept_new_user() {
 
         switch (message.action()) {
             case trans::UserInitMessage::Create: {
-                SessionPtr session = std::make_shared<Session>();
-                session->get_map() = message.map_name();
+                SessionPtr session = std::make_shared<Session>(message.map_name());
+                //session->get_map() = message.map_name();
                 session->add_user(user);
 
                 m_sessions.push_back(session);
@@ -97,7 +97,6 @@ void Server::accept_new_user() {
                 }
 
                 (*session)->add_user(user);
-
 
                 break;
             }

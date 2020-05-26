@@ -19,6 +19,7 @@
 #include "Bullet.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Audio.hpp>
 
 #include <string>
 
@@ -26,7 +27,13 @@ using Objects = std::vector<ObjectPtr>;
 
 class Client {
 public:
-    Client(const std::string& host, unsigned short port, const std::string& username);
+    Client();
+
+    void set_config(const std::string& host, unsigned short port, const std::string& username);
+
+    //Client(const std::string& host, unsigned short port, const std::string& username);
+
+    sf::RenderWindow& get_window();
 
     void create_session(std::string map_name);
 
@@ -35,6 +42,8 @@ public:
     int run();
 
     void apply_dir_b();
+
+    void choise_of_weapon();
 
 private:
     UserPtr m_user;
@@ -47,18 +56,30 @@ private:
     View view;
     int this_player_id;
     bool is_creator;
+    FireDirection m_fire_dir;
+    Weapon m_weapon;
+    Weapon choise_weapon;
 
     void process_events();
 
     void receive_from_server();
 
-    void render(float time, float& dir);
+    void render(float time, float& dir, float& dir_en);
 
     void send_to_server();
 
     void apply_messages(const trans::ServerToUserVectorMessage& messages);
 
-    void send_obj_to_server(std::vector<TmxObject> all_objects);
+    void send_obj_to_server(std::vector<TmxObject> &all_objects);
+
+    void play_sound();
+
+
+    bool isAlive;
+
+    sf::SoundBuffer buffer;
+    //buffer.loadFromFile("/home/yaroslav/X/Project_X/game/client/sounds/shoot.ogg");
+    sf::Sound sound;
 
 };
 

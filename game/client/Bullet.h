@@ -7,6 +7,7 @@
 #include "messages/UserToServerMessage.h"
 #include "transition.pb.h"
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics.hpp>
 
 #include <memory>
 #include "Object.h"
@@ -26,7 +27,9 @@ public:
 
     void draw(sf::RenderWindow& window,  float time, float& current_frame) override ;
 
-    void set_state(bool state) override ;
+    void set_hp(int hp) override ;
+
+    void update_dir_enemy(float x, float y) override;
 
 private:
     sf::CircleShape shape;

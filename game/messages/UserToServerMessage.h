@@ -17,6 +17,19 @@ struct Direction {
     bool fire;
 };
 
+struct FireDirection {
+    bool f_up;
+    bool f_left;
+    bool f_right;
+    bool f_down;
+};
+
+struct Weapon {
+    bool pistol;
+    bool automat;
+    bool shotgun;
+};
+
 sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerMessage& message);

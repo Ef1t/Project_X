@@ -18,3 +18,7 @@ void View::set_view(float x, float y, float map_width, float map_height) {
 sf::View & View::get_view() {
     return view;
 }
+
+void View::set_view(sf::View sf_view) {
+    view = sf_view;
+}

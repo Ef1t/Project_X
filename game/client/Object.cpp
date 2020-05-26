@@ -4,11 +4,15 @@
 
 #include "Object.h"
 
-Object::Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, bool state)
+Object::Object(sf::Uint64 id, const sf::Vector2f& position, short object_name, int hp)
         : m_id(id)
         , m_position(position) ,
         object_name(object_name),
-        m_state(state){
+        m_hp(hp),
+        m_max_hp(hp){
+
+    hp_bar_green.setFillColor(sf::Color::Green);
+    hp_bar_red.setFillColor(sf::Color::Red);
 }
 
 /*Object::Object(const sf::Vector2f& position)
@@ -39,8 +43,8 @@ Direction Object::get_direction() {
     return m_dir;
 }
 
-bool Object::get_state() const {
-    return m_state;
+int Object::get_hp() const {
+    return m_hp;
 }
 
 

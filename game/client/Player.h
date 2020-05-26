@@ -34,6 +34,7 @@ public:
 private:
     std::string m_username;
     Skin m_actor;
+    float cur_frame_pl;
 
     sf::Texture m_skull_texture;
     sf::Texture m_hp_bar_texture;

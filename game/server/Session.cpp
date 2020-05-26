@@ -41,6 +41,15 @@ unsigned int time_per_fire_shotgun = 40;
 void Session::update(float dt) {
     int cycleID = 0;
     for (auto &m_user : m_users) {
+        if (time_per_fire_automat < 100 ) {
+            time_per_fire_automat++;
+        }
+        if (time_per_fire_pistol < 100 ) {
+            time_per_fire_pistol++;
+        }
+        if (time_per_fire_shotgun < 100 ) {
+            time_per_fire_shotgun++;
+        }
         sf::Packet packet;
 
         auto &user = m_user.first;
@@ -79,17 +88,17 @@ void Session::update(float dt) {
                     //стрельба
                     if (player->get_route().fire == 1 && (player->get_hp() > 0)) { //если нажата клавижа space, создаем пулю
                         if (message.weapon().pistol()) {
-                            if (time_per_fire_pistol++ > 30) {
+                            if (time_per_fire_pistol > 30) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet,0);
                                 time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().automat()) {
-                            if (time_per_fire_automat++ > 15) {
+                            if (time_per_fire_automat > 5) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
                                 time_per_fire_automat = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().shotgun()) {
-                            if (time_per_fire_shotgun++ > 40) {
+                            if (time_per_fire_shotgun > 40) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,0);
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,1);
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,2);

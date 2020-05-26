@@ -11,13 +11,15 @@
 #define aut 1
 #define drobovik 2
 
+#define pistolet_dmg 3
+#define aut_dmg 1
+#define drobovik_dmg 3
+
 #define bullet_velocity 450.0
 
 class Bullet: public GameObject, public Collision {
 public:
     Bullet(sf::Vector2f position, Direction dir, short p_id, short weap, short number);
-
-   explicit Bullet(short name);
 
     void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
 

@@ -26,8 +26,7 @@ Client::Client()
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
     view.get_view().reset(sf::FloatRect(0, 0, 640, 360));
     choise_weapon.pistol = 1;
-
-
+}
 //Client::Client(const std::string &host, unsigned short port, const std::string &username)
 //        : m_window(sf::VideoMode(640, 512), "HALF LIFE 3"), m_objects(), is_map(false), this_player_id(0),
 //          is_creator(false) {
@@ -155,7 +154,7 @@ void Client::process_events() {
     m_direction.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S) && m_window.hasFocus();
 
     m_weapon.pistol = sf::Keyboard::isKeyPressed(sf::Keyboard::Num1);
-    std:: cout << m_weapon.pistol << " PISTOL\n";
+    //std:: cout << m_weapon.pistol << " PISTOL\n";
     m_weapon.automat = sf::Keyboard::isKeyPressed(sf::Keyboard::Num2);
     m_weapon.shotgun = sf::Keyboard::isKeyPressed(sf::Keyboard::Num3);
 
@@ -166,13 +165,9 @@ void Client::process_events() {
     m_fire_dir.f_down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && m_window.hasFocus();
 
     m_direction.fire = 0;
-    if (m_fire_dir.f_up || m_fire_dir.f_left || m_fire_dir.f_right || m_fire_dir.f_down){
-    m_direction.fire = 1;
-
-
-   // sound.setBuffer(buffer);
-   // sound.play();
-    }//выстрел
+    if (m_fire_dir.f_up || m_fire_dir.f_left || m_fire_dir.f_right || m_fire_dir.f_down) {
+        m_direction.fire = 1;
+    }
     choise_of_weapon();
     apply_dir_b();
 }
@@ -229,7 +224,7 @@ void Client::send_to_server() {
 
     trans::UserToServerMessage_Weapon *weap_choise = new trans::UserToServerMessage_Weapon;
     weap_choise->set_pistol(choise_weapon.pistol);
-    std::cout << choise_weapon.pistol << " PISTOL_MESSAGE\n";
+    //std::cout << choise_weapon.pistol << " PISTOL_MESSAGE\n";
     weap_choise->set_automat(choise_weapon.automat);
     weap_choise->set_shotgun(choise_weapon.shotgun);
 
@@ -444,5 +439,9 @@ void Client::set_config(const std::string &host, unsigned short port, const std:
         throw std::runtime_error(std::strerror(errno));
     }
     m_user = std::make_shared<User>(username, std::move(socket));
+}
+
+sf::RenderWindow &Client::get_window() {
+    return m_window;
 }
 

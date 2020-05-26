@@ -100,8 +100,9 @@ int main(int ac, const char* av[]) {
     }
 
     sf::Music music;
-    music.openFromFile("../../client/music/Overworld.wav");
+    music.openFromFile("../../client/music/SuperMusic.wav");
     music.play();
+    music.setVolume(9);
 
     return client.run();
 }

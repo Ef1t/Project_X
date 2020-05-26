@@ -12,11 +12,20 @@ Bullet::Bullet(sf::Vector2f positon, Direction dir, short p_id, short weap, shor
         player_id(p_id),
         name_weapon(weap),
         bullet_number(number){
+    if (name_weapon == pistolet) {
+        get_dmg() = pistolet_dmg;
+    }
+    if (name_weapon == drobovik) {
+        get_dmg() = drobovik_dmg;
+    }
+    if (name_weapon == aut) {
+        get_dmg() = aut_dmg;
+    }
 }
 
 void Bullet::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
-    std::cout << name_weapon << " WEAPON\n";
-std::cout << bullet_number << " NUBMER\n";
+//    std::cout << name_weapon << " WEAPON\n";
+//std::cout << bullet_number << " NUBMER\n";
 //    std:: cout << b_dir.up << " Up B-_dir in update\n";
 //    std:: cout << b_dir.down << " Do B-_dir in update\n";
 //    std:: cout << b_dir.right << " Le B-_dir in update\n";
@@ -36,7 +45,7 @@ if ((name_weapon == pistolet) || (name_weapon == aut)) {
     }
 } else if (name_weapon == drobovik) {
     if(bullet_number == 1) {
-        std::cout << "Bullet 1\n";
+//        std::cout << "Bullet 1\n";
         if (b_dir.up) {
             m_direction.y = -1;
             m_direction.x = 0.2;
@@ -56,7 +65,7 @@ if ((name_weapon == pistolet) || (name_weapon == aut)) {
     }
 
     if(bullet_number == 2) {
-        std::cout << "Bullet 2\n";
+//        std::cout << "Bullet 2\n";
         if (b_dir.up) {
             m_direction.y = -1;
             m_direction.x = -0.2;

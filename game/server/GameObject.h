@@ -24,7 +24,7 @@
 #define n_player_hp 100
 #define n_player_dmg 1
 
-#define n_enemy_hp 1
+#define n_enemy_hp 10
 #define n_enemy_dmg 1
 
 #define n_lava_dmg 2

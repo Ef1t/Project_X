@@ -74,23 +74,26 @@ void Session::update(float dt) {
 
                     Direction b_direction = {message.b_direction().up(), message.b_direction().left(),
                                              message.b_direction().right(), message.b_direction().down()};
-                    std:: cout << message.weapon().pistol() << " Pistol\n";
+                    //std:: cout << message.weapon().pistol() << " Pistol\n";
 
                     //стрельба
                     if (player->get_route().fire == 1 && player->is_alive()) { //если нажата клавижа space, создаем пулю
                         if (message.weapon().pistol()) {
                             if (time_per_fire_pistol++ > 30) {
-                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, pistolet,0);
                                 time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().automat()) {
                             if (time_per_fire_automat++ > 15) {
-                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
                                 time_per_fire_automat = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().shotgun()) {
                             if (time_per_fire_shotgun++ > 40) {
-                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,0);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,1);
+                                add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,2);
+
                                 time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
                             }
                         }
@@ -253,7 +256,7 @@ void Session::update(float dt) {
         }
 
     }
-    int count_enemies = 3;
+    int count_enemies = 1;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -343,9 +346,9 @@ void Session::add_user(UserPtr user) {
 
 }
 
-void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon) {
+void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number) {
     //функция аналогична с добавлением игрока за исключением того, что мы тут создаем вектор пуль, который автономно обрабатывается на сервере
-    auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir, player->get_id());
+    auto bullet = std::make_shared<Bullet>(sf::Vector2(x + 25, y + 25), b_dir, player->get_id(), weapon, number);
 
     m_bullets.push_back(bullet);
 

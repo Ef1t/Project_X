@@ -34,6 +34,7 @@ public:
 private:
     std::string m_username;
     Skin m_actor;
+    float cur_frame_pl;
 
 public:
 

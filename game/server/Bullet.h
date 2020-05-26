@@ -15,7 +15,7 @@
 
 class Bullet: public GameObject, public Collision {
 public:
-    Bullet(sf::Vector2f position, Direction dir, short p_id, short weap);
+    Bullet(sf::Vector2f position, Direction dir, short p_id, short weap, short number);
 
    explicit Bullet(short name);
 
@@ -33,6 +33,7 @@ public:
 
     //void add_bullet();
 
+    short bullet_number;
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;

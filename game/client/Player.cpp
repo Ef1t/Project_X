@@ -9,6 +9,7 @@ Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& p
         : Object(id, position, n_player, hp)
         , m_username(username)
         , m_actor("../../images/pigcop_vest.png")
+        , cur_frame_pl(0)
         {
 }
 
@@ -26,7 +27,7 @@ void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << hp_bar_length * ((double)m_hp / m_max_hp) << std::endl;
     //std::cout << hp_bar_length  - hp_bar_green.getSize().x << std::endl;
 
-    this->go_texture(m_dir,time,current_frame,this->m_actor);
+    this->go_texture(m_dir,time,cur_frame_pl,this->m_actor);
     window.draw(m_actor.herosprite);
     window.draw(hp_bar_green);
     window.draw(hp_bar_red);

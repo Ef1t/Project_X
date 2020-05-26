@@ -30,6 +30,7 @@ Client::Client(const std::string &host, unsigned short port, const std::string &
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
     view.get_view().reset(sf::FloatRect(0, 0, 480, 384));
+    choise_weapon.pistol = 1;
 }
 
 void Client::create_session(std::string map_name) {
@@ -82,14 +83,15 @@ int Client::run() {
     sf::Clock clock;
     float current_frame = 0;  //хранит текущий кадр
     float current_frame_enemy = 0;  //хранит текущий кадр врага
-    float time = clock.getElapsedTime().asMicroseconds();
+    //float time = clock.getElapsedTime().asMicroseconds();
+    float time = 0.005;
     clock.restart();
     while (m_window.isOpen()) {
 
         // process_events();
 
         TimeSinceUpdate += clock.restart();
-        time = TimePerFrame.asSeconds();
+        //time = TimePerFrame.asSeconds();
         while (TimeSinceUpdate > TimePerFrame) {
             receive_from_server();
             process_events();
@@ -295,12 +297,12 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
         } else if (message.type() == trans::ServerToUserMessage::NewBullet) {
             m_objects.push_back(std::make_shared<Bullet>(message.nb_msg().id(),
                                                          sf::Vector2f(message.nb_msg().x(), message.nb_msg().y()), message.nb_msg().hp()));
-            //play_sound();
-            buffer.loadFromFile("../../client/sounds/pistol.wav");
-            sound.setBuffer(buffer);
+            play_sound();
+           // buffer.loadFromFile("../../client/sounds/pistol.wav");
+            //sound.setBuffer(buffer);
 
             //sf::Sound sound;
-            sound.play();
+            //sound.play();
 
 
         } else if (message.type() == trans::ServerToUserMessage::UpdateBullet) {
@@ -390,20 +392,18 @@ void Client::choise_of_weapon() {
 
 void Client::play_sound() {
     //sf::SoundBuffer buffer;
-    if(!buffer.loadFromFile("../../client/sounds/pistol.wav")) {
-        return;
+    if (choise_weapon.pistol) {
+        if(!buffer.loadFromFile("../../client/sounds/pistol.wav"))
+            return;
+    } else if (choise_weapon.automat) {
+        if(!buffer.loadFromFile("../../client/sounds/M4.ogg"))
+            return;
+    } else if (choise_weapon.shotgun) {
+        if(!buffer.loadFromFile("../../client/sounds/Shot.ogg"))
+            return;
     }
-    //sf::Sound sound;
+
+    sound.setBuffer(buffer);
+
     sound.play();
-
-   /* while (sound.getStatus() == sf::Sound::Playing)
-    {
-        // Leave some CPU time for other processes
-        sf::sleep(sf::milliseconds(100));
-
-        // Display the playing position
-        std::cout << "\rPlaying... " << sound.getPlayingOffset().asSeconds() << " sec        ";
-        std::cout << std::flush;
-    } */
-    std::cout << std::endl << std::endl;
 }

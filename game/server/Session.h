@@ -45,7 +45,7 @@ public:
 
     void add_enemy();
 
-    void add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon);
+    void add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number);
 
     void add_enemy(float bot_x, float bot_y);
 

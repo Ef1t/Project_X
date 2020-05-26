@@ -7,15 +7,19 @@
 #include <SFML/System/Vector2.hpp>
 #include "GameObject.h"
 #include "Collision.h"
+#define pistolet 0
+#define aut 1
+#define drobovik 2
 
+#define pistolet_dmg 3
+#define aut_dmg 1
+#define drobovik_dmg 3
 
 #define bullet_velocity 450.0
 
 class Bullet: public GameObject, public Collision {
 public:
-    Bullet(sf::Vector2f position, Direction dir, short p_id);
-
-   explicit Bullet(short name);
+    Bullet(sf::Vector2f position, Direction dir, short p_id, short weap, short number);
 
     void update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) override;
 
@@ -27,14 +31,18 @@ public:
 
     sf::FloatRect get_rect() override;
 
+    short get_name_weapon();
+
     //void add_bullet();
 
+    short bullet_number;
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;
     float m_velocity;
     Direction b_dir;  // траектория пули
     short player_id;
+    short name_weapon;
 
 };
 

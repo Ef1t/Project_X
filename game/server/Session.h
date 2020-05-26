@@ -24,6 +24,8 @@
 #define win_height 2560
 #define win_lenght 2560
 
+
+
 //using Users = std::map<UserPtr, PlayerPtr>;
 //using Bullets = std::map<UserPtr, BulletPtr>;
 
@@ -43,7 +45,7 @@ public:
 
     void add_enemy();
 
-    void add_bullet(PlayerPtr player, float x, float y, Direction b_dir);
+    void add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number);
 
     void add_enemy(float bot_x, float bot_y);
 

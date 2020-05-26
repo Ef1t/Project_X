@@ -21,7 +21,7 @@ std::string lobby_str;
 
 
 int main(int ac, const char* av[]) {
-    bool withMenu = false;  // To operate with arguments - set the value to false
+    bool withMenu = true;  // To operate with arguments - set the value to false
     if (!withMenu) {
         if (ac < 5) {
             usage();
@@ -70,7 +70,8 @@ int main(int ac, const char* av[]) {
 
     Client client;
     menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
-    //menuDeath(client.get_window());
+
+    //menuDeath(client.get_window(), 100);
     if (command_str == "exit") {
         client.get_window().close();
         return EXIT_SUCCESS;
@@ -99,8 +100,9 @@ int main(int ac, const char* av[]) {
     }
 
     sf::Music music;
-    music.openFromFile("../../client/music/Overworld.wav");
+    music.openFromFile("../../client/music/SuperMusic.wav");
     music.play();
+    music.setVolume(8);
 
     return client.run();
 }

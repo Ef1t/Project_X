@@ -9,11 +9,40 @@ Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& p
         : Object(id, position, n_player, hp)
         , m_username(username)
         , m_actor("../../images/pigcop_vest.png")
+        , cur_frame_pl(0)
         {
+    m_skull_texture.loadFromFile("../../client/inGameTextures/skull.png");
+    m_hp_bar_texture.loadFromFile("../../client/inGameTextures/hp_bar.png");
+    m_font.loadFromFile("../../client/menuTextures/font.ttf");
+    m_skull_sprite.setTexture(m_skull_texture);
+    m_hp_bar_sprite.setTexture(m_hp_bar_texture);
 }
 
 void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
+
+    sf::Text kills_text;
+    kills_text.setFont(m_font);
+    kills_text.setFillColor(sf::Color::Red);
+    kills_text.setString("X       " + std::to_string(kills_count));
+
+    sf::Text hp_text;
+    hp_text.setFont(m_font);
+    if ((double) m_hp / m_max_hp > 0.8)
+        hp_text.setFillColor(sf::Color::Green);
+    else if ((double) m_hp / m_max_hp > 0.35)
+        hp_text.setFillColor(sf::Color::Yellow);
+    else
+        hp_text.setFillColor(sf::Color::Red);
+
+
+    hp_text.setString(std::to_string(m_hp));
+
+    hp_text.setPosition(m_position.x + 290, m_position.y + 195);
+    m_hp_bar_sprite.setPosition(m_position.x + 260, m_position.y + 200);
+
+    kills_text.setPosition(m_position.x + 230, m_position.y - 120);
+    m_skull_sprite.setPosition(m_position.x + 250, m_position.y - 120);
 
 
     hp_bar_green.setPosition(m_position.x + 50 - hp_bar_length / 2, m_position.y - 20);
@@ -26,10 +55,15 @@ void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << hp_bar_length * ((double)m_hp / m_max_hp) << std::endl;
     //std::cout << hp_bar_length  - hp_bar_green.getSize().x << std::endl;
 
-    this->go_texture(m_dir,time,current_frame,this->m_actor);
+    this->go_texture(m_dir,time,cur_frame_pl,this->m_actor);
     window.draw(m_actor.herosprite);
     window.draw(hp_bar_green);
     window.draw(hp_bar_red);
+    window.draw(m_skull_sprite);
+    window.draw(kills_text);
+    window.draw(m_hp_bar_sprite);
+    window.draw(hp_text);
+
 }
 
 void Player::draw_stat(sf::RenderWindow& window) {

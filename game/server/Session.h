@@ -47,11 +47,16 @@ public:
 
     void add_enemy(float bot_x, float bot_y);
 
+    void add_player();
+    void remove_player();
+    sf::Uint64 get_players();
+
     std::string& get_map();
 
 private:
     static sf::Uint64 next_id;
     sf::Uint64 m_id;
+    sf::Uint64 m_players;
     Users m_users;
     //Bullets m_bullets;
     std::string map_name;

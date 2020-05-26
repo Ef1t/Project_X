@@ -21,7 +21,7 @@ std::string lobby_str;
 
 
 int main(int ac, const char* av[]) {
-    bool withMenu = true;  // To operate with arguments - set the value to false
+    bool withMenu = false;  // To operate with arguments - set the value to false
     if (!withMenu) {
         if (ac < 5) {
             usage();

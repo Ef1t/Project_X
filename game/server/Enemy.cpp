@@ -80,11 +80,11 @@ sf::FloatRect Enemy::get_rect() {
     sf::FloatRect rect;
 
     // смещение начала прямоугольника игрока от его позиции m_position
-    float delta = 15;
+    float delta = 0;
 
     // размеры текстуры
-    float texture_heigh = 50;
-    float texture_width = 50;
+    float texture_heigh = 73;
+    float texture_width = 40;
 
     rect.top = m_position.y + delta;
     rect.left = m_position.x + delta;

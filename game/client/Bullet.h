@@ -36,6 +36,8 @@ private:
     //sf::Vector2f m_position;
     std::string m_username;
 
+    sf::Texture bullet_texture;
+    sf::Sprite bullet_sprite;
 
 };
 

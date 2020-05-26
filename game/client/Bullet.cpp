@@ -9,6 +9,9 @@
 Bullet::Bullet(sf::Uint64 id, const sf::Vector2f& position, bool state)
        :  Object(id, position, n_bullet, state)
         , shape(6.f){
+
+    bullet_texture.loadFromFile("../../client/inGameTextures/bullet.png");
+    bullet_sprite.setTexture(bullet_texture);
 }
 
 
@@ -25,8 +28,10 @@ void Bullet::set_direction(const Direction dir) {
 }
 
 void Bullet::draw_stat(sf::RenderWindow &window) {
-    shape.setPosition(m_position);
-    window.draw(shape);
+    bullet_sprite.setPosition(m_position);
+    window.draw(bullet_sprite);
+    //shape.setPosition(m_position);
+    //window.draw(shape);
     /*sf::Image heroimage;
     heroimage.loadFromFile("../../images/bullet.png");
     sf::Texture herotexture;

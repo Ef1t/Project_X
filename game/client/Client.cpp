@@ -194,6 +194,8 @@ void Client::render(float time, float& dir, float& dir_en) {
         }
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
+            if (this_player_id == obj->get_id())
+                obj->draw_stat(m_window);
         }
         if (obj->object_name == n_bullet) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
             obj->draw_stat(m_window);

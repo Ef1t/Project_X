@@ -11,9 +11,10 @@
 
 sf::Uint64 Session::next_id = 10;
 
+static int k = 0;
 
 Session::Session(std::string_view map_name)
-        : m_id(next_id++), m_users(), m_messages(), map_name(map_name) {
+        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0) {
 //    TmxLevel level;
 //    level.LoadFromFile("../../client/maps/" + this->map_name);
 //    auto objects = level.GetAllObjects("VSE");
@@ -196,6 +197,9 @@ void Session::update(float dt) {
 
         if (player->m_name == n_player && player->get_hp() > 0) {
             player->update(dt * 10, m_objects);
+            if (player->get_hp() <= 0) {
+                remove_player();
+            }
 
             auto *direction = new trans::UpdatePlayerMessage::Direction;
             direction->set_up(player->get_route().up);
@@ -270,7 +274,12 @@ void Session::update(float dt) {
             server_message->set_allocated_ub_msg(update_message_bul);
         }
     }
-    int count_enemies = 4;
+
+    float coef = 1;
+    int start = 3;
+    if (get_players() > 1) {coef = 0.5;}
+    int count_enemies = round (start * coef * get_players()) + k;
+  
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;
@@ -297,7 +306,9 @@ void Session::update(float dt) {
             add_enemy(x, y);
             y -= dist;
         }
+        k++;
     }
+
     notify_all();
 }
 
@@ -307,6 +318,18 @@ bool Session::is_end() {
 
 sf::Uint64 Session::get_id() const {
     return m_id;
+}
+
+void Session::add_player() {
+    m_players++;
+}
+
+void Session::remove_player() {
+    m_players--;
+}
+
+sf::Uint64 Session::get_players() {
+    return m_players;
 }
 
 void Session::add_enemy(float bot_x, float bot_y) {
@@ -337,7 +360,7 @@ void Session::add_user(UserPtr user) {
     auto player = std::make_shared<Player>();
 
     player->add_land_obj(m_land_objects);
-
+    add_player();
     //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {
         player->set_position({player->get_position().x + 10, player->get_position().y + 10});

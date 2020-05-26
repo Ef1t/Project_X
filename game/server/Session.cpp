@@ -35,7 +35,7 @@ Session::Session(std::string_view map_name)
 //    }
 }
 unsigned int time_per_fire_pistol = 30; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
-unsigned int time_per_fire_automat = 5;
+unsigned int time_per_fire_automat = 10;
 unsigned int time_per_fire_shotgun = 40;
 
 void Session::update(float dt) {
@@ -93,7 +93,7 @@ void Session::update(float dt) {
                                 time_per_fire_pistol = 0; //обнуляем счетчик после выстрела
                             }
                         } else if (message.weapon().automat()) {
-                            if (time_per_fire_automat > 5) {
+                            if (time_per_fire_automat > 10) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
                                 time_per_fire_automat = 0; //обнуляем счетчик после выстрела
                             }
@@ -269,9 +269,8 @@ void Session::update(float dt) {
             server_message->set_type(trans::ServerToUserMessage::UpdateBullet);
             server_message->set_allocated_ub_msg(update_message_bul);
         }
-
     }
-    int count_enemies = 1;
+    int count_enemies = 4;
     while (m_enemies.size() < count_enemies) {
         float x = 50;
         float y = 50;

@@ -21,7 +21,7 @@ std::string lobby_str;
 
 
 int main(int ac, const char* av[]) {
-    bool withMenu = false;  // To operate with arguments - set the value to false
+    bool withMenu = true;  // To operate with arguments - set the value to false
     if (!withMenu) {
         if (ac < 5) {
             usage();
@@ -102,7 +102,7 @@ int main(int ac, const char* av[]) {
     sf::Music music;
     music.openFromFile("../../client/music/SuperMusic.wav");
     music.play();
-    music.setVolume(9);
+    music.setVolume(8);
 
     return client.run();
 }

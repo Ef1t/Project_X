@@ -428,7 +428,7 @@ void Client::play_sound() {
 
     sound.setBuffer(buffer);
 
-    sound.setVolume(5);
+    sound.setVolume(4);
     sound.play();
     
 }

@@ -96,12 +96,15 @@ void Server::accept_new_user() {
                         }
                 );
 
+                trans::NewPlayerMessage np_message;
                 if (session == m_sessions.end() || !(*session)->lobbyWait) {
-                    // TODO: send error message
+                    np_message.set_map_name("JOIN_ERR");
+                    packet.clear();
+                    packet << np_message;
+                    user->send_packet(packet);
                     break;
                 }
 
-                trans::NewPlayerMessage np_message;
                 int id = (*session)->add_user(user);
 
                 np_message.set_id(id);

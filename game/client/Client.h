@@ -37,7 +37,7 @@ public:
 
     void create_session(std::string map_name);
 
-    void join_to(sf::Uint64 session_id);
+    int join_to(sf::Uint64 session_id);
 
     int run();
 

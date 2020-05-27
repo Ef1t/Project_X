@@ -69,7 +69,9 @@ int main(int ac, const char* av[]) {
 
 
     Client client;
-    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    int join_error = 0;
+    start:
+    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str, join_error);
 
     //menuDeath(client.get_window(), 100);
     if (command_str == "exit") {
@@ -95,17 +97,20 @@ int main(int ac, const char* av[]) {
     } else if (command_str == "join") {
         //auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
         auto session_id = static_cast<sf::Uint64>(std::stoul(lobby_str));
-        client.join_to(session_id);
+        if (client.join_to(session_id)) {
+            join_error = 1;
+            goto start;
+        }
         menuLobby(client.get_window(), client);
     } else {
         usage();
         return -1;
     }
 
-    //sf::Music music;
-    //music.openFromFile("../../client/music/SuperMusic.wav");
-    //music.play();
-    //music.setVolume(8);
+    sf::Music music;
+    music.openFromFile("../../client/music/SuperMusic.wav");
+    music.play();
+    music.setVolume(8);
 
     return client.run();
 }

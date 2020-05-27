@@ -7,7 +7,7 @@
 
 
 
-void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str) {
+void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str, int join_error) {
     sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture,
             exitInitTexture, exitBloodTexture, backInitTexture, backBloodTexture, createInitTexture, createBloodTexture, joinLobbyInitTexture, joinLobbyBloodTexture;
 
@@ -72,12 +72,10 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     createInit.setPosition(650, 600);
     createBlood.setPosition(650, 600);
 
+
+
+
     start:
-    username_str.clear();
-    host_str.clear();
-    port_str.clear();
-    command_str.clear();
-    lobby_str.clear();
 
     bool newGameBloodDraw = false;
     bool joinBloodDraw = false;
@@ -87,6 +85,19 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     bool createMenu = false;
     bool joinMenu = false;
     bool exitMenu = false;
+
+    if (join_error) {
+        initMenu = false;
+        joinMenu = true;
+    }
+
+    username_str.clear();
+    host_str.clear();
+    port_str.clear();
+    command_str.clear();
+    lobby_str.clear();
+
+
     while (initMenu) {
         window.draw(menuBg);
 
@@ -207,6 +218,16 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     lobbyInputField.setFillColor(sf::Color::Black);
     lobbyInputField.setPosition(100, 550);
 
+
+    sf::Text joinErrorText;
+    joinErrorText.setFont(font);
+    joinErrorText.setString("Join Error");
+    joinErrorText.setCharacterSize(34);
+    joinErrorText.setFillColor(sf::Color::Red);
+    joinErrorText.setPosition(650, 550);
+
+
+
     sf::Text textUsername;
     textUsername.setFont(font);
     textUsername.setString("");
@@ -301,8 +322,10 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
                 }
 
                 else if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
-                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window))) {
+                    join_error = 0;
                     goto start;
+                }
 
                 if (sf::IntRect(usernameInputField.getPosition().x, usernameInputField.getPosition().y,
                                 usernameInputField.getSize().x, usernameInputField.getSize().y).contains(sf::Mouse::getPosition(window))) {
@@ -354,6 +377,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
         window.display();
     }
 
+    joinMenuLabel:
     while(joinMenu) {
         window.draw(menuBg);
 
@@ -490,6 +514,10 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             window.draw(backBlood);
         else
             window.draw(backInit);
+
+        if (join_error) {
+            window.draw(joinErrorText);
+        }
 
         window.display();
     }

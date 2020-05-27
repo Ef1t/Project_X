@@ -17,7 +17,7 @@
 #include "messages/ServerToUserMessage.h"
 
 
-void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str);
+void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str, int join_error);
 
 void menuDeath(sf::RenderWindow &window, int kills);
 

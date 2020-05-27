@@ -71,7 +71,7 @@ void Client::create_session(std::string map_name) {
     is_creator = true;
 }
 
-void Client::join_to(sf::Uint64 sess_id) {
+int Client::join_to(sf::Uint64 sess_id) {
     sf::Packet packet;
     {
         trans::UserInitMessage message;
@@ -94,9 +94,13 @@ void Client::join_to(sf::Uint64 sess_id) {
         }
 
         packet >> message;
+        if (message.map_name() == "JOIN_ERR")
+            return 1;
 
         this_player_id = message.id();
     }
+
+    return 0;
 }
 
 int Client::run() {
@@ -206,9 +210,10 @@ void Client::render(float time, float& dir, float& dir_en) {
         }
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
-            if (this_player_id == obj->get_id())
+            if (this_player_id == obj->get_id()) {
                 obj->kills_count = m_objects[0]->kills_count;
                 obj->draw_stat(m_window);
+            }
         }
         if (obj->object_name == n_bullet) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
             obj->draw_stat(m_window);

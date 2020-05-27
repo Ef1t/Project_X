@@ -90,19 +90,22 @@ int main(int ac, const char* av[]) {
         //auto map_name = std::string(av[5]);
         auto map_name = std::string("map.tmx");
         client.create_session(map_name);
+        menuLobby(client.get_window(), client);
+
     } else if (command_str == "join") {
         //auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
         auto session_id = static_cast<sf::Uint64>(std::stoul(lobby_str));
         client.join_to(session_id);
+        menuLobby(client.get_window(), client);
     } else {
         usage();
         return -1;
     }
 
-    sf::Music music;
-    music.openFromFile("../../client/music/SuperMusic.wav");
-    music.play();
-    music.setVolume(8);
+    //sf::Music music;
+    //music.openFromFile("../../client/music/SuperMusic.wav");
+    //music.play();
+    //music.setVolume(8);
 
     return client.run();
 }

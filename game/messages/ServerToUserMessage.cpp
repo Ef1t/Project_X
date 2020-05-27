@@ -23,6 +23,20 @@ sf::Packet& operator>>(sf::Packet& packet, trans::NewBulletMessage& message) {
 }
 
 
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserLobbyWaitingMessage& message) {
+    std::string code;
+    message.SerializeToString(&code);
+
+    return packet << code;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserLobbyWaitingMessage& message) {
+    std::string code;
+    packet >> code;
+    message.ParseFromString(code);
+
+    return packet;
+}
 
 
 

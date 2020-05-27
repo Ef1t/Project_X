@@ -14,7 +14,8 @@ sf::Uint64 Session::next_id = 10;
 static int k = 0;
 
 Session::Session(std::string_view map_name)
-        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0) {
+        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0),
+        lobbyWait(true){
 //    TmxLevel level;
 //    level.LoadFromFile("../../client/maps/" + this->map_name);
 //    auto objects = level.GetAllObjects("VSE");
@@ -426,5 +427,9 @@ void Session::notify_all() {
 
 std::string &Session::get_map() {
     return map_name;
+}
+
+Users Session::get_useres() {
+    return m_users;
 }
 

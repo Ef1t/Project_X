@@ -28,6 +28,14 @@ sf::Packet& operator<<(sf::Packet& packet, const NewBulletMessage& message);
 sf::Packet& operator>>(sf::Packet& packet, NewBulletMessage& message);
 
 
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserLobbyWaitingMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserLobbyWaitingMessage& message);
+
+
+
+
 struct UpdateBulletMessage {
     float x;
     float y;

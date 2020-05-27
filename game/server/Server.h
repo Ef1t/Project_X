@@ -30,6 +30,10 @@ private:
     sf::TcpListener m_listener;
 
     void accept_new_user();
+
+    void sendUsersConnected(std::shared_ptr<Session> sesion);
+
+    void receiveWaitingStatus(std::shared_ptr<Session> sesion);
 };
 
 

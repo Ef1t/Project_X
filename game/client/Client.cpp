@@ -302,6 +302,9 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     obj->set_hp(message.upd_msg().hp());
                     //std::cout << "this_player_id " << this_player_id << " message.upd_msg().id() " << message.upd_msg().id() << std::endl;
                     if (this_player_id == message.upd_msg().id()) {
+                        if (obj->m_name == "free") {
+                            obj->m_name = m_name;
+                        }
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
                         if (message.upd_msg().hp() <= 0)
@@ -460,6 +463,9 @@ void Client::set_config(const std::string &host, unsigned short port, const std:
     if (socket->connect(sf::IpAddress(host), port) != sf::Socket::Done) {
         throw std::runtime_error(std::strerror(errno));
     }
+
+    m_name = username;
+
     m_user = std::make_shared<User>(username, std::move(socket));
 }
 

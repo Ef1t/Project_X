@@ -50,6 +50,8 @@ public:
     bool is_creator;
 
     int session_id;
+
+    std::string m_name;
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
@@ -77,6 +79,7 @@ private:
     void send_obj_to_server(std::vector<TmxObject> &all_objects);
 
     void play_sound();
+
 
 
     bool isAlive;

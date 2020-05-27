@@ -55,11 +55,11 @@ public:
     int get_hp() const;
     short object_name;
     int kills_count;
+    std::string m_name;
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;
     Direction m_dir;
-    std::string m_name;
     int m_hp;
     int m_max_hp;
 

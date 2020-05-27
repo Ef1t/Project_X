@@ -45,6 +45,11 @@ public:
 
     void choise_of_weapon();
 
+    UserPtr get_user();
+
+    bool is_creator;
+
+    int session_id;
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
@@ -55,7 +60,6 @@ private:
     bool is_map;
     View view;
     int this_player_id;
-    bool is_creator;
     FireDirection m_fire_dir;
     Weapon m_weapon;
     Weapon choise_weapon;

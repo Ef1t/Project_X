@@ -34,6 +34,15 @@ sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerMessage& mes
 
 sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerMessage& message);
 
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::UserToServerLobbyWaitingMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::UserToServerLobbyWaitingMessage& message);
+
+
+
+
+
 struct UserToServerMessage {
     enum MessageType {
         Move = 0,

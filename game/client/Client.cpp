@@ -66,23 +66,25 @@ void Client::create_session(std::string map_name) {
         packet >> message;
 
         std::cout << "New session created. Session ID: " << message.session_id() << std::endl;
+        session_id = message.session_id();
 
     }
     is_creator = true;
 }
 
-void Client::join_to(sf::Uint64 session_id) {
+void Client::join_to(sf::Uint64 sess_id) {
     sf::Packet packet;
     {
         trans::UserInitMessage message;
         message.set_action(trans::UserInitMessage::Join);
         message.set_username(m_user->get_username());
-        message.set_session_id(session_id);
+        message.set_session_id(sess_id);
         packet << message;
 
         m_user->send_packet(packet);
 
-        std::cout << "Joined to session " << session_id << std::endl;
+        //std::cout << "Joined to session " << session_id << std::endl;
+        session_id = sess_id;
     }
 }
 
@@ -445,5 +447,9 @@ void Client::set_config(const std::string &host, unsigned short port, const std:
 
 sf::RenderWindow &Client::get_window() {
     return m_window;
+}
+
+UserPtr Client::get_user() {
+    return m_user;
 }
 

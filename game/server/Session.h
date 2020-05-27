@@ -53,7 +53,11 @@ public:
     void remove_player();
     sf::Uint64 get_players();
 
+    Users get_useres();
+
     std::string& get_map();
+
+    bool lobbyWait;
 
 private:
     static sf::Uint64 next_id;

@@ -66,6 +66,7 @@ message UserInitMessage {
     enum Action {
         Create = 0;
         Join = 1;
+        Go = 3;
     };
 
     Action action = 1;
@@ -140,6 +141,15 @@ message UpdateBulletMessage {
         bool right = 3;
         bool down = 4;
     };
+};
+
+message ServerToUserLobbyWaitingMessage {
+    string names = 1;
+    bool waitingIsOver = 2;
+};
+
+message UserToServerLobbyWaitingMessage {
+    bool waitingIsOver = 1;
 };
 
 message NewBotMessage {

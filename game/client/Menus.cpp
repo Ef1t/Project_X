@@ -215,25 +215,33 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::TextEntered) {
+            if (event.type == sf::Event::TextEntered && ((event.text.unicode >= 'A' && event.text.unicode <= 'Z') ||
+                    (event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= '0' && event.text.unicode <= '9') ||
+                    (event.text.unicode == '.') || (event.text.unicode == '\b'))) {
                 if (inUsernameInputField) {
-                    if (event.text.unicode == '\b')
-                        username_str.erase(username_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (username_str.length() > 0)
+                            username_str.erase(username_str.end() - 1);
+                    }
                     else
                         username_str += event.text.unicode;
                     textUsername.setString(username_str);
                 }
                 if (inHostInputField) {
-                    if (event.text.unicode == '\b')
-                        host_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (host_str.length() > 0)
+                            host_str.erase(host_str.end() - 1);
+                    }
                     else
                         host_str += event.text.unicode;
 
                     textHost.setString(host_str);
                 }
                 if (inPortInputField) {
-                    if (event.text.unicode == '\b')
-                        port_str.erase(port_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (port_str.length() > 0)
+                            port_str.erase(port_str.end() - 1);
+                    }
                     else
                         port_str += event.text.unicode;
                     textPort.setString(port_str);
@@ -302,32 +310,42 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::TextEntered) {
+            if (event.type == sf::Event::TextEntered && ((event.text.unicode >= 'A' && event.text.unicode <= 'Z') ||
+               (event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= '0' && event.text.unicode <= '9') ||
+               (event.text.unicode == '.') || (event.text.unicode == '\b'))) {
                 if (inUsernameInputField) {
-                    if (event.text.unicode == '\b')
-                        username_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (username_str.length() > 0)
+                            username_str.erase(username_str.end() - 1);
+                    }
                     else
                         username_str += event.text.unicode;
                     textUsername.setString(username_str);
                 }
                 if (inHostInputField) {
-                    if (event.text.unicode == '\b')
-                        host_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (host_str.length() > 0)
+                            host_str.erase(host_str.end() - 1);
+                    }
                     else
                         host_str += event.text.unicode;
                     textHost.setString(host_str);
                 }
                 if (inPortInputField) {
-                    if (event.text.unicode == '\b')
-                        port_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (port_str.length() > 0)
+                            port_str.erase(port_str.end() - 1);
+                    }
                     else
                         port_str += event.text.unicode;
                     textPort.setString(port_str);
                 }
 
                 if (inLobbyInputField) {
-                    if (event.text.unicode == '\b')
-                        lobby_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (lobby_str.length() > 0)
+                            lobby_str.erase(lobby_str.end() - 1);
+                    }
                     else
                         lobby_str += event.text.unicode;
                     textLobby.setString(lobby_str);

@@ -67,7 +67,6 @@ void Client::create_session(std::string map_name) {
 
         std::cout << "New session created. Session ID: " << message.session_id() << std::endl;
         session_id = message.session_id();
-
     }
     is_creator = true;
 }
@@ -85,6 +84,16 @@ void Client::join_to(sf::Uint64 sess_id) {
 
         //std::cout << "Joined to session " << session_id << std::endl;
         session_id = sess_id;
+    }
+
+    {
+        trans::NewPlayerMessage message;
+        while (m_user->receive_packet(packet) != sf::Socket::Done) {
+        }
+
+        packet >> message;
+
+        this_player_id = message.id();
     }
 }
 
@@ -246,6 +255,7 @@ void Client::send_to_server() {
 
 void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
+    std::cout << this_player_id << std::endl;
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
         if (obj->get_hp() > 0 || obj->object_name == n_player) {
@@ -283,6 +293,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     obj->set_direction(direction);
                     //obj->set_state(message.upd_msg().state());
                     obj->set_hp(message.upd_msg().hp());
+                    //std::cout << "this_player_id " << this_player_id << " message.upd_msg().id() " << message.upd_msg().id();
                     if (this_player_id == message.upd_msg().id()) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());

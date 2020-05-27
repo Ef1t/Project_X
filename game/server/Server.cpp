@@ -101,7 +101,13 @@ void Server::accept_new_user() {
                     break;
                 }
 
-                (*session)->add_user(user);
+                trans::NewPlayerMessage np_message;
+                int id = (*session)->add_user(user);
+
+                np_message.set_id(id);
+                packet.clear();
+                packet << np_message;
+                user->send_packet(packet);
 
                 break;
             }

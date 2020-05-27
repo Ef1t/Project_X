@@ -358,7 +358,7 @@ void Session::add_enemy(float bot_x, float bot_y) {
     server_message->set_type(trans::ServerToUserMessage::NewBot);
 }
 
-void Session::add_user(UserPtr user) {
+int Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
 
@@ -386,6 +386,7 @@ void Session::add_user(UserPtr user) {
     server_message->set_allocated_np_msg(new_player_message);
     server_message->set_type(trans::ServerToUserMessage::NewPlayer);
 
+    return player->get_id();
 }
 
 void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number) {

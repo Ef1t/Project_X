@@ -10,6 +10,9 @@
 
 #include <SFML/Network/TcpListener.hpp>
 
+#include "messages/ServerToUserMessage.h"
+#include "messages/UserToServerMessage.h"
+
 #include <memory>
 #include <string>
 #include <vector>

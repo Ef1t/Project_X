@@ -48,6 +48,7 @@ sf::Packet& operator>>(sf::Packet& packet, UpdateBulletMessage& message);
 
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct NewPlayerMessage {
     sf::Uint64 id;
@@ -94,6 +95,11 @@ sf::Packet& operator>>(sf::Packet& packet, ServerToUserMessage& message);
 sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserMessage& message);
+
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::NewPlayerMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::NewPlayerMessage& message);
 
 
 struct ServerToUserVectorMessage {

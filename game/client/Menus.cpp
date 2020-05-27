@@ -9,13 +9,15 @@
 
 void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str) {
     sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture,
-            exitInitTexture, exitBloodTexture;
+            exitInitTexture, exitBloodTexture, backInitTexture, backBloodTexture;
 
     sf::Music music;
     music.openFromFile("../../client/music/menuTheme.wav");
     music.setVolume(2);
     music.play();
 
+    backInitTexture.loadFromFile("../../client/menuTextures/backInit.png");
+    backBloodTexture.loadFromFile("../../client/menuTextures/backBlood.png");
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
     exitInitTexture.loadFromFile("../../client/menuTextures/exitInit.png");
     exitBloodTexture.loadFromFile("../../client/menuTextures/exitBlood.png");
@@ -35,6 +37,8 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     sf::Sprite goBlood(goBloodTexture);
     sf::Sprite exitInit(exitInitTexture);
     sf::Sprite exitBlood(exitBloodTexture);
+    sf::Sprite backInit(backInitTexture);
+    sf::Sprite backBlood(backBloodTexture);
 
     menuBg.setPosition(0, 0);
     newGameInit.setPosition(390, 100);
@@ -49,8 +53,19 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     exitInit.setPosition(390, 300);
     exitBlood.setPosition(390, 300);
 
+    backInit.setPosition(800, 600);
+    backBlood.setPosition(800, 600);
+
+    start:
+    username_str.clear();
+    host_str.clear();
+    port_str.clear();
+    command_str.clear();
+    lobby_str.clear();
+
     bool newGameBloodDraw = false;
     bool joinBloodDraw = false;
+    bool backBloodDraw = false;
     bool exitBloodDraw = false;
     bool initMenu = true;
     bool createMenu = false;
@@ -254,12 +269,25 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             else
                 goBloodDraw = false;
 
+            if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                 backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                backBloodDraw = true;
+            else
+                backBloodDraw = false;
+
+
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
                                 goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     createMenu = false;
                     joinMenu = false;
                 }
+
+                else if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                    goto start;
+
                 if (sf::IntRect(usernameInputField.getPosition().x, usernameInputField.getPosition().y,
                                 usernameInputField.getSize().x, usernameInputField.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     inUsernameInputField = true;
@@ -301,6 +329,11 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             window.draw(goBlood);
         else
             window.draw(goInit);
+
+        if(backBloodDraw)
+            window.draw(backBlood);
+        else
+            window.draw(backInit);
 
         window.display();
     }
@@ -359,10 +392,21 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             else
                 goBloodDraw = false;
 
+            if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                    backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                backBloodDraw = true;
+            else
+                backBloodDraw = false;
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
                                 goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
                     joinMenu = false;
+
+                else if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                    goto start;
+
                 else if (sf::IntRect(usernameInputField.getPosition().x, usernameInputField.getPosition().y,
                                      usernameInputField.getSize().x, usernameInputField.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     inUsernameInputField = true;
@@ -425,6 +469,11 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
             window.draw(goBlood);
         else
             window.draw(goInit);
+
+        if(backBloodDraw)
+            window.draw(backBlood);
+        else
+            window.draw(backInit);
 
         window.display();
     }

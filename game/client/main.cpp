@@ -21,7 +21,7 @@ std::string lobby_str;
 
 
 int main(int ac, const char* av[]) {
-    bool withMenu = false;  // To operate with arguments - set the value to false
+    bool withMenu = true;  // To operate with arguments - set the value to false
     if (!withMenu) {
         if (ac < 5) {
             usage();
@@ -69,7 +69,9 @@ int main(int ac, const char* av[]) {
 
 
     Client client;
-    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str);
+    int join_error = 0;
+    start:
+    menuInit(client.get_window(), username_str, host_str, port_str, command_str, lobby_str, join_error);
 
     //menuDeath(client.get_window(), 100);
     if (command_str == "exit") {
@@ -90,10 +92,16 @@ int main(int ac, const char* av[]) {
         //auto map_name = std::string(av[5]);
         auto map_name = std::string("map.tmx");
         client.create_session(map_name);
+        menuLobby(client.get_window(), client);
+
     } else if (command_str == "join") {
         //auto session_id = static_cast<sf::Uint64>(std::stoul(std::string(av[5])));
         auto session_id = static_cast<sf::Uint64>(std::stoul(lobby_str));
-        client.join_to(session_id);
+        if (client.join_to(session_id)) {
+            join_error = 1;
+            goto start;
+        }
+        menuLobby(client.get_window(), client);
     } else {
         usage();
         return -1;

@@ -7,15 +7,17 @@
 
 
 
-void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str) {
+void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& host_str, std::string& port_str, std::string& command_str, std::string& lobby_str, int join_error) {
     sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture,
-            exitInitTexture, exitBloodTexture;
+            exitInitTexture, exitBloodTexture, backInitTexture, backBloodTexture, createInitTexture, createBloodTexture, joinLobbyInitTexture, joinLobbyBloodTexture;
 
-    sf::Music music;
-    music.openFromFile("../../client/music/menuTheme.wav");
-    music.setVolume(2);
-    music.play();
+    //sf::Music music;
+    //music.openFromFile("../../client/music/menuTheme.wav");
+    //music.setVolume(2);
+    //music.play();
 
+    backInitTexture.loadFromFile("../../client/menuTextures/backInit.png");
+    backBloodTexture.loadFromFile("../../client/menuTextures/backBlood.png");
     menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
     exitInitTexture.loadFromFile("../../client/menuTextures/exitInit.png");
     exitBloodTexture.loadFromFile("../../client/menuTextures/exitBlood.png");
@@ -23,8 +25,12 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     newGameBloodTexture.loadFromFile("../../client/menuTextures/newGameBlood.png");
     joinInitTexture.loadFromFile("../../client/menuTextures/joinInit.png");
     joinBloodTexture.loadFromFile("../../client/menuTextures/joinBlood.png");
-    goInitTexture.loadFromFile("../../client/menuTextures/goInit.png");
-    goBloodTexture.loadFromFile("../../client/menuTextures/goBlood.png");
+
+    createInitTexture.loadFromFile("../../client/menuTextures/createInit.png");
+    createBloodTexture.loadFromFile("../../client/menuTextures/createBlood.png");
+
+    joinLobbyInitTexture.loadFromFile("../../client/menuTextures/joinLobbyInit.png");
+    joinLobbyBloodTexture.loadFromFile("../../client/menuTextures/joinLobbyBlood.png");
 
     sf::Sprite menuBg(menuBGTexture);
     sf::Sprite newGameInit(newGameInitTexture);
@@ -35,6 +41,14 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     sf::Sprite goBlood(goBloodTexture);
     sf::Sprite exitInit(exitInitTexture);
     sf::Sprite exitBlood(exitBloodTexture);
+    sf::Sprite backInit(backInitTexture);
+    sf::Sprite backBlood(backBloodTexture);
+
+    sf::Sprite createInit(createInitTexture);
+    sf::Sprite createBlood(createBloodTexture);
+
+    sf::Sprite joinLobbyInit(joinLobbyInitTexture);
+    sf::Sprite joinLobbyBlood(joinLobbyBloodTexture);
 
     menuBg.setPosition(0, 0);
     newGameInit.setPosition(390, 100);
@@ -49,13 +63,41 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     exitInit.setPosition(390, 300);
     exitBlood.setPosition(390, 300);
 
+    backInit.setPosition(1050, 610);
+    backBlood.setPosition(1050, 610);
+
+    joinLobbyInit.setPosition(650, 600);
+    joinLobbyBlood.setPosition(650, 600);
+
+    createInit.setPosition(650, 600);
+    createBlood.setPosition(650, 600);
+
+
+
+
+    start:
+
     bool newGameBloodDraw = false;
     bool joinBloodDraw = false;
+    bool backBloodDraw = false;
     bool exitBloodDraw = false;
     bool initMenu = true;
     bool createMenu = false;
     bool joinMenu = false;
     bool exitMenu = false;
+
+    if (join_error) {
+        initMenu = false;
+        joinMenu = true;
+    }
+
+    username_str.clear();
+    host_str.clear();
+    port_str.clear();
+    command_str.clear();
+    lobby_str.clear();
+
+
     while (initMenu) {
         window.draw(menuBg);
 
@@ -176,6 +218,16 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     lobbyInputField.setFillColor(sf::Color::Black);
     lobbyInputField.setPosition(100, 550);
 
+
+    sf::Text joinErrorText;
+    joinErrorText.setFont(font);
+    joinErrorText.setString("Join Error");
+    joinErrorText.setCharacterSize(34);
+    joinErrorText.setFillColor(sf::Color::Red);
+    joinErrorText.setPosition(650, 550);
+
+
+
     sf::Text textUsername;
     textUsername.setFont(font);
     textUsername.setString("");
@@ -215,43 +267,66 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::TextEntered) {
+            if (event.type == sf::Event::TextEntered && ((event.text.unicode >= 'A' && event.text.unicode <= 'Z') ||
+                    (event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= '0' && event.text.unicode <= '9') ||
+                    (event.text.unicode == '.') || (event.text.unicode == '\b'))) {
                 if (inUsernameInputField) {
-                    if (event.text.unicode == '\b')
-                        username_str.erase(username_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (username_str.length() > 0)
+                            username_str.erase(username_str.end() - 1);
+                    }
                     else
                         username_str += event.text.unicode;
                     textUsername.setString(username_str);
                 }
                 if (inHostInputField) {
-                    if (event.text.unicode == '\b')
-                        host_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (host_str.length() > 0)
+                            host_str.erase(host_str.end() - 1);
+                    }
                     else
                         host_str += event.text.unicode;
 
                     textHost.setString(host_str);
                 }
                 if (inPortInputField) {
-                    if (event.text.unicode == '\b')
-                        port_str.erase(port_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (port_str.length() > 0)
+                            port_str.erase(port_str.end() - 1);
+                    }
                     else
                         port_str += event.text.unicode;
                     textPort.setString(port_str);
                 }
             }
 
-            if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
-                            goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+            if (sf::IntRect(createBlood.getPosition().x, createBlood.getPosition().y,
+                            createBloodTexture.getSize().x, createBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
                 goBloodDraw = true;
             else
                 goBloodDraw = false;
 
+            if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                 backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                backBloodDraw = true;
+            else
+                backBloodDraw = false;
+
+
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
-                                goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window))) {
+                if (sf::IntRect(createBlood.getPosition().x, createBlood.getPosition().y,
+                                createBloodTexture.getSize().x, createBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     createMenu = false;
                     joinMenu = false;
                 }
+
+                else if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window))) {
+                    join_error = 0;
+                    goto start;
+                }
+
                 if (sf::IntRect(usernameInputField.getPosition().x, usernameInputField.getPosition().y,
                                 usernameInputField.getSize().x, usernameInputField.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     inUsernameInputField = true;
@@ -290,44 +365,60 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
         window.draw(textPort);
 
         if(goBloodDraw)
-            window.draw(goBlood);
+            window.draw(createBlood);
         else
-            window.draw(goInit);
+            window.draw(createInit);
+
+        if(backBloodDraw)
+            window.draw(backBlood);
+        else
+            window.draw(backInit);
 
         window.display();
     }
 
+    joinMenuLabel:
     while(joinMenu) {
         window.draw(menuBg);
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::TextEntered) {
+            if (event.type == sf::Event::TextEntered && ((event.text.unicode >= 'A' && event.text.unicode <= 'Z') ||
+               (event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= '0' && event.text.unicode <= '9') ||
+               (event.text.unicode == '.') || (event.text.unicode == '\b'))) {
                 if (inUsernameInputField) {
-                    if (event.text.unicode == '\b')
-                        username_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (username_str.length() > 0)
+                            username_str.erase(username_str.end() - 1);
+                    }
                     else
                         username_str += event.text.unicode;
                     textUsername.setString(username_str);
                 }
                 if (inHostInputField) {
-                    if (event.text.unicode == '\b')
-                        host_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (host_str.length() > 0)
+                            host_str.erase(host_str.end() - 1);
+                    }
                     else
                         host_str += event.text.unicode;
                     textHost.setString(host_str);
                 }
                 if (inPortInputField) {
-                    if (event.text.unicode == '\b')
-                        port_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (port_str.length() > 0)
+                            port_str.erase(port_str.end() - 1);
+                    }
                     else
                         port_str += event.text.unicode;
                     textPort.setString(port_str);
                 }
 
                 if (inLobbyInputField) {
-                    if (event.text.unicode == '\b')
-                        lobby_str.erase(host_str.end() - 1);
+                    if (event.text.unicode == '\b') {
+                        if (lobby_str.length() > 0)
+                            lobby_str.erase(lobby_str.end() - 1);
+                    }
                     else
                         lobby_str += event.text.unicode;
                     textLobby.setString(lobby_str);
@@ -335,16 +426,27 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
             }
 
-            if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
-                            goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+            if (sf::IntRect(joinLobbyInit.getPosition().x, joinLobbyInit.getPosition().y,
+                            joinLobbyInitTexture.getSize().x, joinLobbyInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
                 goBloodDraw = true;
             else
                 goBloodDraw = false;
 
+            if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                    backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                backBloodDraw = true;
+            else
+                backBloodDraw = false;
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                if (sf::IntRect(goBlood.getPosition().x, goBlood.getPosition().y,
-                                goBloodTexture.getSize().x, goBloodTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                if (sf::IntRect(joinLobbyInit.getPosition().x, joinLobbyInit.getPosition().y,
+                                joinLobbyInitTexture.getSize().x, joinLobbyInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
                     joinMenu = false;
+
+                else if (sf::IntRect(backInit.getPosition().x, backInit.getPosition().y,
+                                     backInitTexture.getSize().x, backInitTexture.getSize().y).contains(sf::Mouse::getPosition(window)))
+                    goto start;
+
                 else if (sf::IntRect(usernameInputField.getPosition().x, usernameInputField.getPosition().y,
                                      usernameInputField.getSize().x, usernameInputField.getSize().y).contains(sf::Mouse::getPosition(window))) {
                     inUsernameInputField = true;
@@ -404,14 +506,23 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
         window.draw(textLobby);
 
         if(goBloodDraw)
-            window.draw(goBlood);
+            window.draw(joinLobbyBlood);
         else
-            window.draw(goInit);
+            window.draw(joinLobbyInit);
+
+        if(backBloodDraw)
+            window.draw(backBlood);
+        else
+            window.draw(backInit);
+
+        if (join_error) {
+            window.draw(joinErrorText);
+        }
 
         window.display();
     }
 
-    music.stop();
+    //music.stop();
 }
 
 void menuDeath(sf::RenderWindow &window, int kills) {
@@ -483,6 +594,107 @@ void menuDeath(sf::RenderWindow &window, int kills) {
         window.draw(score);
         window.draw(score_text);
 
+        window.display();
+    }
+}
+
+
+void menuLobby(sf::RenderWindow &window, Client& client) {
+    sf::Packet packet;
+    sf::Texture menuBGTexture, goInitTexture, goBloodTexture, idBloodTexture, urLobbyIDTexture;
+
+    sf::Text users_text;
+    sf::Text id_text;
+    sf::Font font;
+    font.loadFromFile("../../client/menuTextures/font.ttf");
+    users_text.setFont(font);
+    id_text.setFont(font);
+
+    //score_text.setString("qwe");
+    users_text.setFillColor(sf::Color::Red);
+    id_text.setFillColor(sf::Color::Red);
+    users_text.setPosition(10, 5);
+    id_text.setPosition(665, 345);
+
+    id_text.setString(std::to_string(client.session_id));
+
+    urLobbyIDTexture.loadFromFile("../../client/menuTextures/idBlood.png");
+    sf::Sprite urLobbyID(urLobbyIDTexture);
+    urLobbyID.setPosition(500, 300);
+
+    menuBGTexture.loadFromFile("../../client/menuTextures/sandStorm.jpg");
+    sf::Sprite menuBG(menuBGTexture);
+    menuBG.setPosition(0, 0);
+
+    goBloodTexture.loadFromFile("../../client/menuTextures/goLobbyBlood.png");
+    sf::Sprite goBlood(goBloodTexture);
+    goBlood.setPosition(500, 600);
+
+    goInitTexture.loadFromFile("../../client/menuTextures/goLobbyInit.png");
+    sf::Sprite goInit(goInitTexture);
+    goInit.setPosition(500, 600);
+
+    bool lobbyMenu = true;
+    bool goBloodDraw = false;
+    bool isSended = false;
+
+
+    std::shared_ptr<User> usr = client.get_user();
+    while (lobbyMenu) {
+
+        trans::UserToServerLobbyWaitingMessage msg_end;
+        msg_end.set_waitingisover(false);
+        if (client.is_creator) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (sf::IntRect(goInit.getPosition().x, goInit.getPosition().y,
+                                goInit.getTextureRect().width, goInit.getTextureRect().height).contains(
+                        sf::Mouse::getPosition(window))) {
+                    goBloodDraw = true;
+                } else {
+                    goBloodDraw = false;
+                }
+
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    if (sf::IntRect(goInit.getPosition().x, goInit.getPosition().y,
+                                    goInit.getTextureRect().width, goInit.getTextureRect().height).contains(
+                            sf::Mouse::getPosition(window))) {
+                        msg_end.set_waitingisover(true);
+                    }
+                }
+            }
+        }
+
+        packet.clear();
+        packet << msg_end;
+        usr->send_packet(packet);
+
+        packet.clear();
+
+        while (usr->receive_packet(packet) != sf::Socket::Done) {
+        }
+
+        trans::ServerToUserLobbyWaitingMessage message;
+        packet >> message;
+        if (message.waitingisover()) {
+            std::cout << "WAITING IS OVER" << std::endl;
+            lobbyMenu = false;
+            continue;
+        }
+
+        users_text.setString(message.names());
+
+        window.draw(menuBG);
+        if (client.is_creator) {
+            if (goBloodDraw)
+                window.draw(goBlood);
+            else
+                window.draw(goInit);
+        }
+        window.draw(users_text);
+        window.draw(urLobbyID);
+        window.draw(id_text);
+        window.draw(users_text);
         window.display();
     }
 }

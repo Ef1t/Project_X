@@ -41,7 +41,7 @@ public:
 
     sf::Uint64 get_id() const;
 
-    void add_user(UserPtr user);
+    int add_user(UserPtr user);
 
     void add_enemy();
 
@@ -53,10 +53,14 @@ public:
     void remove_player();
     sf::Uint64 get_players();
 
+    Users get_useres();
+
     std::string& get_map();
 
-private:
+    bool lobbyWait;
+
     static sf::Uint64 next_id;
+private:
     sf::Uint64 m_id;
     sf::Uint64 m_players;
     Users m_users;

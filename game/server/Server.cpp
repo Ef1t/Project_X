@@ -41,7 +41,12 @@ Server::~Server() {
                 if ((*session)->is_end()) {
                     session = m_sessions.erase(session);
                 } else {
-                    (*session)->update(TimeSinceLastEvent.asSeconds());
+                    if ((*session)->lobbyWait) {
+                        receiveWaitingStatus(*session);
+                        sendUsersConnected(*session);
+                    } else {
+                        (*session)->update(TimeSinceLastEvent.asSeconds());
+                    }
                 }
             }
             TimeSinceLastEvent -= TimePerFrame;
@@ -91,15 +96,70 @@ void Server::accept_new_user() {
                         }
                 );
 
-                if (session == m_sessions.end()) {
-                    // TODO: send error message
+                trans::NewPlayerMessage np_message;
+                if (session == m_sessions.end() || !(*session)->lobbyWait) {
+                    np_message.set_map_name("JOIN_ERR");
+                    packet.clear();
+                    packet << np_message;
+                    user->send_packet(packet);
                     break;
                 }
 
-                (*session)->add_user(user);
+                int id = (*session)->add_user(user);
+
+                np_message.set_id(id);
+                packet.clear();
+                packet << np_message;
+                user->send_packet(packet);
 
                 break;
             }
         }
+    }
+
+//    for(auto session: m_sessions) {
+//        sf::Packet packet;
+//        trans::ServerToUserLobbyWaitingMessage msg;
+//        std::string names;
+//        if (session->lobbyWait) {
+//            for(auto user: session->get_useres()) {
+//                names += user.first->get_username() + "\n";
+//            }
+//            msg.set_names(names);
+//            packet << msg;
+//            for(auto user: session->get_useres()) {
+//                user.first->send_packet(packet);
+//            }
+//        }
+//    }
+}
+
+void Server::sendUsersConnected(std::shared_ptr<Session> session) {
+    trans::ServerToUserLobbyWaitingMessage message;
+    sf::Packet packet;
+    std::string names;
+    for (auto user: session->get_useres()) {
+        names += user.first->get_username() + " is in lobby!\n";
+    }
+    message.set_names(names);
+    message.set_waitingisover(!(session->lobbyWait));
+    packet << message;
+    int i = 0;
+    for (auto user: session->get_useres()) {
+        user.first->send_packet(packet);
+        i++;
+    }
+    //std::cout << "CURRENT AMOUNT OF USERS " << i << std::endl;
+}
+
+void Server::receiveWaitingStatus(std::shared_ptr<Session> session) {
+    trans::UserToServerLobbyWaitingMessage message;
+    sf::Packet packet;
+    //auto user = session->get_useres().begin()->first;
+    for (auto user : session->get_useres()) {
+        user.first->receive_packet(packet);
+        packet >> message;
+        if (message.waitingisover())
+            session->lobbyWait = false;
     }
 }

@@ -28,6 +28,14 @@ sf::Packet& operator<<(sf::Packet& packet, const NewBulletMessage& message);
 sf::Packet& operator>>(sf::Packet& packet, NewBulletMessage& message);
 
 
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserLobbyWaitingMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserLobbyWaitingMessage& message);
+
+
+
+
 struct UpdateBulletMessage {
     float x;
     float y;
@@ -37,6 +45,7 @@ struct UpdateBulletMessage {
 sf::Packet& operator<<(sf::Packet& packet, const UpdateBulletMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, UpdateBulletMessage& message);
+
 
 
 
@@ -86,6 +95,11 @@ sf::Packet& operator>>(sf::Packet& packet, ServerToUserMessage& message);
 sf::Packet& operator<<(sf::Packet& packet, const trans::ServerToUserMessage& message);
 
 sf::Packet& operator>>(sf::Packet& packet, trans::ServerToUserMessage& message);
+
+
+sf::Packet& operator<<(sf::Packet& packet, const trans::NewPlayerMessage& message);
+
+sf::Packet& operator>>(sf::Packet& packet, trans::NewPlayerMessage& message);
 
 
 struct ServerToUserVectorMessage {

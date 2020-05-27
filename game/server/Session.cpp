@@ -14,7 +14,8 @@ sf::Uint64 Session::next_id = 10;
 static int k = 0;
 
 Session::Session(std::string_view map_name)
-        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0) {
+        : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0),
+        lobbyWait(true){
 //    TmxLevel level;
 //    level.LoadFromFile("../../client/maps/" + this->map_name);
 //    auto objects = level.GetAllObjects("VSE");
@@ -357,7 +358,7 @@ void Session::add_enemy(float bot_x, float bot_y) {
     server_message->set_type(trans::ServerToUserMessage::NewBot);
 }
 
-void Session::add_user(UserPtr user) {
+int Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
 
@@ -385,6 +386,7 @@ void Session::add_user(UserPtr user) {
     server_message->set_allocated_np_msg(new_player_message);
     server_message->set_type(trans::ServerToUserMessage::NewPlayer);
 
+    return player->get_id();
 }
 
 void Session::add_bullet(PlayerPtr player, float x, float y, Direction b_dir, short weapon, short number) {
@@ -426,5 +428,9 @@ void Session::notify_all() {
 
 std::string &Session::get_map() {
     return map_name;
+}
+
+Users Session::get_useres() {
+    return m_users;
 }
 

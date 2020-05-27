@@ -86,6 +86,8 @@ void Client::join_to(sf::Uint64 sess_id) {
         session_id = sess_id;
     }
 
+    packet.clear();
+
     {
         trans::NewPlayerMessage message;
         while (m_user->receive_packet(packet) != sf::Socket::Done) {
@@ -120,7 +122,6 @@ int Client::run() {
             send_to_server();
             TimeSinceUpdate -= TimePerFrame;
             if (!isAlive) {
-
                 view.get_view().reset(sf::FloatRect(0, 0, 1280, 720));
                 m_window.setView(view.get_view());
                 menuDeath(get_window(), m_objects[0]->kills_count);
@@ -206,6 +207,7 @@ void Client::render(float time, float& dir, float& dir_en) {
         if (obj->object_name == n_player) {
             obj->draw(m_window, time, dir);
             if (this_player_id == obj->get_id())
+                obj->kills_count = m_objects[0]->kills_count;
                 obj->draw_stat(m_window);
         }
         if (obj->object_name == n_bullet) { //можно будет потом заменить, пусть пока останется (статическая отрисовка)
@@ -255,7 +257,7 @@ void Client::send_to_server() {
 
 void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
 
-    std::cout << this_player_id << std::endl;
+    //std::cout << this_player_id << std::endl;
     Objects temp_obj; //создаем временный вектор, чтобы обновить основной (очистить от "удаленных" пуль)
     for (auto obj : m_objects) {
         if (obj->get_hp() > 0 || obj->object_name == n_player) {
@@ -293,7 +295,7 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     obj->set_direction(direction);
                     //obj->set_state(message.upd_msg().state());
                     obj->set_hp(message.upd_msg().hp());
-                    //std::cout << "this_player_id " << this_player_id << " message.upd_msg().id() " << message.upd_msg().id();
+                    //std::cout << "this_player_id " << this_player_id << " message.upd_msg().id() " << message.upd_msg().id() << std::endl;
                     if (this_player_id == message.upd_msg().id()) {
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());

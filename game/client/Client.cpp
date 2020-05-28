@@ -209,9 +209,13 @@ void Client::render(float time, float& dir, float& dir_en) {
             obj->draw(m_window, time, dir_en);
         }
         if (obj->object_name == n_player) {
-            obj->draw(m_window, time, dir);
-            if (this_player_id == obj->get_id()) {
-                obj->kills_count = m_objects[0]->kills_count;
+            if (obj->get_hp()) {
+                obj->draw(m_window, time, dir);
+                if (this_player_id == obj->get_id()) {
+                    obj->kills_count = m_objects[0]->kills_count;
+                    obj->draw_stat(m_window);
+                }
+            } else {
                 obj->draw_stat(m_window);
             }
         }

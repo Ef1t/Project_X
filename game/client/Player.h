@@ -41,7 +41,9 @@ private:
     sf::Sprite m_skull_sprite;
     sf::Sprite m_hp_bar_sprite;
     sf::Font m_font;
-
+    sf::Image im;
+    sf::Texture death_t;
+    sf::Sprite death_s;
 public:
 
 };

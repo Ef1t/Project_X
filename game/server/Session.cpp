@@ -100,6 +100,7 @@ void Session::update(float dt) {
                             if (player->time_per_fire_automat > 10) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, aut,0);
                                 player->time_per_fire_automat = 0; //обнуляем счетчик после выстрела
+
                             }
                         } else if (message.weapon().shotgun()) {
                             if (player->time_per_fire_shotgun > 40) {
@@ -108,6 +109,7 @@ void Session::update(float dt) {
                                 add_bullet(player, player->get_position().x, player->get_position().y, b_direction, drobovik,2);
 
                                 player->time_per_fire_shotgun = 0; //обнуляем счетчик после выстрела
+
                             }
                         }
                     }
@@ -152,6 +154,9 @@ void Session::update(float dt) {
                         m_enemies[i]->movement(dt, player->get_position().x, player->get_position().y,
                         m_objects);
                     }
+
+
+
                     auto *update_message = new trans::UpdateBotMessage;
                     update_message->set_id(m_enemies[i]->get_id());
                     update_message->set_x(m_enemies[i]->get_position().x);
@@ -164,6 +169,10 @@ void Session::update(float dt) {
                     server_message->set_type(trans::ServerToUserMessage::UpdateBot);
                     server_message->set_allocated_u_bot_msg(update_message);
                 } else {
+
+
+
+
                     auto *update_message = new trans::UpdateBotMessage;
                     update_message->set_id(m_enemies[i]->get_id());
                     update_message->set_x(m_enemies[i]->get_position().x);

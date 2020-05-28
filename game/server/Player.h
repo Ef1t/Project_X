@@ -40,6 +40,8 @@ public:
     unsigned int time_per_fire_pistol; //коэффициент скоростельности (регулирует скорость стрельбы для одного оружия)
     unsigned int time_per_fire_automat;
     unsigned int time_per_fire_shotgun;
+
+
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_direction;

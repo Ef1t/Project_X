@@ -80,7 +80,7 @@ private:
 
     void play_sound();
 
-
+    void send_name_to_server();
 
     bool isAlive;
 

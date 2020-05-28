@@ -56,6 +56,7 @@ public:
     short object_name;
     int kills_count;
     std::string m_name;
+    bool name_init;
 protected:
     sf::Uint64 m_id;
     sf::Vector2f m_position;

@@ -16,12 +16,9 @@
 #include <iostream>
 #include <cstring>
 
-short ID = 5;
-
 Client::Client()
         : m_window (sf::VideoMode(1280, 720), "HL3", sf::Style::Titlebar | sf::Style::Close), m_objects(), is_map(false), this_player_id(0),
           is_creator(false), isAlive(true) {
-    std::cout << ID << '\n';
     //тут меняется область видимости камеры
     //NOTE: отношение строном области видимости должно совпадать с отшонешием сторон окна
     view.get_view().reset(sf::FloatRect(0, 0, 640, 360));
@@ -294,6 +291,11 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
             for (const auto obj: m_objects) {
                 if (obj->get_id() == message.upd_msg().id()) {
                     is_in = true;
+                    if ((obj->m_name == "free") && (this_player_id != message.upd_msg().id()) && (message.upd_msg().username().size() > 0) && !obj->name_init) {
+                        obj->m_name = message.upd_msg().username();
+                        obj->name_init = true;
+//                        std::cout << obj->m_name << " " << message.upd_msg().username() << std::endl;
+                    }
                     obj->set_position(sf::Vector2f(message.upd_msg().x(), message.upd_msg().y()));
                     Direction direction = {message.upd_msg().direction().up(), message.upd_msg().direction().left(),
                                            message.upd_msg().direction().right(), message.upd_msg().direction().down()};
@@ -304,6 +306,8 @@ void Client::apply_messages(const trans::ServerToUserVectorMessage &messages) {
                     if (this_player_id == message.upd_msg().id()) {
                         if (obj->m_name == "free") {
                             obj->m_name = m_name;
+//                            std::cout << obj->m_name << " " << message.upd_msg().username() << std::endl;
+                            send_name_to_server();
                         }
                         view.set_view(message.upd_msg().x(), message.upd_msg().y(), m_level.GetTilemapWidth(),
                                       m_level.GetTilemapHeight());
@@ -475,5 +479,16 @@ sf::RenderWindow &Client::get_window() {
 
 UserPtr Client::get_user() {
     return m_user;
+}
+
+void Client::send_name_to_server() {
+    trans::UserToServerMessage message;
+    message.set_username(m_name);
+    message.set_type(trans::UserToServerMessage::UserName);
+    sf::Packet packet;
+    packet << message;
+
+    m_user->send_packet(packet);
+    packet.clear();
 }
 

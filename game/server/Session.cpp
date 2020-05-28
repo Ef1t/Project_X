@@ -9,13 +9,13 @@
 #include "iostream"
 #include "Enemy.h"
 
-sf::Uint64 Session::next_id = 10;
+sf::Uint64 Session::next_id = 1;
 
 static int k = 0;
 
 Session::Session(std::string_view map_name)
         : m_id(next_id++), m_users(), m_messages(), map_name(map_name), m_players(0),
-        lobbyWait(true){
+        lobbyWait(true), fool_init(false) {
 //    TmxLevel level;
 //    level.LoadFromFile("../../client/maps/" + this->map_name);
 //    auto objects = level.GetAllObjects("VSE");
@@ -46,6 +46,10 @@ void Session::update(float dt) {
 
         sf::Packet packet;
 
+        if (m_land_objects.size() == 21) {
+            fool_init = true;
+        }
+
         auto &user = m_user.first;
         auto &player = m_user.second;
 
@@ -57,6 +61,11 @@ void Session::update(float dt) {
         }
         if (player->time_per_fire_shotgun < 100 ) {
             (player->time_per_fire_shotgun)++;
+        }
+
+        if (!player->initial && fool_init && !player->creator) {
+            player->add_land_obj(m_land_objects);
+            player->initial = true;
         }
 
         if (player->get_hp() > 0) {
@@ -122,6 +131,7 @@ void Session::update(float dt) {
                                                                message.rect().height(),
                                                                "Wall"));
                     player->add_land_obj(m_land_objects);
+                    player->creator = true;
                 }
                 if (message.type() == trans::UserToServerMessage::Lava) {
                     //std::cout << "LAVA " << std::endl;
@@ -138,6 +148,11 @@ void Session::update(float dt) {
                                                                      message.rect().width(),
                                                                      message.rect().height()));
                     player->add_land_obj(m_land_objects);
+                }
+                if (message.type() == trans::UserToServerMessage::UserName) {
+                    if (user->get_username() == message.username()) {
+                        player->username = message.username();
+                    }
                 }
             }
             user->receive_socket(socket);
@@ -206,7 +221,6 @@ void Session::update(float dt) {
     auto it = m_users.begin();
     for (int i = 0; it != m_users.end(); ++it, ++i) {
         auto &player = it->second;
-
         if (player->m_name == n_player && player->get_hp() > 0) {
             player->update(dt * 10, m_objects);
             if (player->get_hp() <= 0) {
@@ -225,6 +239,7 @@ void Session::update(float dt) {
             update_message->set_y(player->get_position().y);
             update_message->set_allocated_direction(direction);
             update_message->set_hp(player->get_hp());
+            update_message->set_username(player->username);
 
             auto server_message = m_messages.add_vec_messages();
             server_message->set_type(trans::ServerToUserMessage::UpdatePlayer);
@@ -371,7 +386,7 @@ int Session::add_user(UserPtr user) {
     std::cout << "NEW PLAYER!!!\n";
     auto player = std::make_shared<Player>();
 
-    player->add_land_obj(m_land_objects);
+    //player->add_land_obj(m_land_objects);
     add_player();
     //фикс баги с появлением в ком-то
     while (player->is_collide(m_objects, player->get_rect(), player->get_id())) {

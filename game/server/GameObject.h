@@ -66,6 +66,8 @@ public:
 
     short m_name;
 
+    std::string username;
+
 protected:
     uint64_t m_id;
     std::string name;

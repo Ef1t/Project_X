@@ -11,10 +11,10 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
     sf::Texture menuBGTexture, newGameInitTexture, newGameBloodTexture, joinInitTexture, joinBloodTexture, goInitTexture, goBloodTexture,
             exitInitTexture, exitBloodTexture, backInitTexture, backBloodTexture, createInitTexture, createBloodTexture, joinLobbyInitTexture, joinLobbyBloodTexture;
 
-    //sf::Music music;
-    //music.openFromFile("../../client/music/menuTheme.wav");
-    //music.setVolume(2);
-    //music.play();
+    sf::Music music;
+    music.openFromFile("../../client/music/menuTheme.wav");
+    music.setVolume(2);
+    music.play();
 
     backInitTexture.loadFromFile("../../client/menuTextures/backInit.png");
     backBloodTexture.loadFromFile("../../client/menuTextures/backBlood.png");

@@ -60,6 +60,9 @@ public:
     bool lobbyWait;
 
     static sf::Uint64 next_id;
+
+    bool fool_init;
+
 private:
     sf::Uint64 m_id;
     sf::Uint64 m_players;

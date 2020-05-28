@@ -27,20 +27,25 @@ void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
     //std::cout << "ID " << get_id() << " X " << m_position.x << " Y " << m_position.y << "\n";
 
 
-    hp_bar_green.setPosition(m_position.x + 50 - hp_bar_length / 2, m_position.y - 20);
+    hp_bar_green.setPosition(m_position.x + 45 - hp_bar_length / 2, m_position.y - 12);
     hp_bar_green.setSize(sf::Vector2f( hp_bar_length * ((double)m_hp / m_max_hp), 10));
 
-    hp_bar_red.setPosition(hp_bar_green.getPosition().x + hp_bar_green.getSize().x, m_position.y - 20);
+    hp_bar_red.setPosition(hp_bar_green.getPosition().x + hp_bar_green.getSize().x, m_position.y - 12);
     hp_bar_red.setSize(sf::Vector2f( hp_bar_length  - hp_bar_green.getSize().x, 10));
 
     //std::cout << m_hp << std::endl;
     //std::cout << hp_bar_length * ((double)m_hp / m_max_hp) << std::endl;
     //std::cout << hp_bar_length  - hp_bar_green.getSize().x << std::endl;
+    //std::cout << m_name << std::endl;
+    sf::Text name(m_name, m_font, 15);
+    name.setFillColor(sf::Color::Cyan);
+    name.setPosition(m_position.x - name.getLocalBounds().width / 2 + 45, m_position.y - 40);
 
     this->go_texture(m_dir,time,cur_frame_pl,this->m_actor);
     window.draw(m_actor.herosprite);
     window.draw(hp_bar_green);
     window.draw(hp_bar_red);
+    window.draw(name);
 
 }
 
@@ -69,6 +74,7 @@ void Player::draw_stat(sf::RenderWindow& window) {
     kills_text.setPosition(m_position.x + 230, m_position.y - 120);
     m_skull_sprite.setPosition(m_position.x + 250, m_position.y - 120);
 
+    window.draw(hp_text);
     window.draw(m_skull_sprite);
     window.draw(kills_text);
     window.draw(m_hp_bar_sprite);

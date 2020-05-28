@@ -22,7 +22,8 @@ Player::Player(const sf::Vector2f &position)
         , time_per_fire_pistol (30)
         , time_per_fire_automat(10)
         , time_per_fire_shotgun(40)
-        {}
+        , initial(false)
+        , creator(false) {}
 
 void Player::update(float dt, std::vector<std::shared_ptr<GameObject>> &objects) {
 

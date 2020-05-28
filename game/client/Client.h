@@ -50,6 +50,8 @@ public:
     bool is_creator;
 
     int session_id;
+
+    std::string m_name;
 private:
     UserPtr m_user;
     sf::RenderWindow m_window;
@@ -78,6 +80,7 @@ private:
 
     void play_sound();
 
+    void send_name_to_server();
 
     bool isAlive;
 

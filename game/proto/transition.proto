@@ -10,6 +10,7 @@ message UserToServerMessage {
         Wall = 2;
         Lava = 3;
         Spike = 4;
+        UserName = 5;
     };
 
     MessageType type = 1;
@@ -50,6 +51,8 @@ message UserToServerMessage {
     };
 
     Weapon weapon = 5;
+
+    string username = 6;
 
 };
 // End User to Server message
@@ -113,6 +116,7 @@ message UpdatePlayerMessage {
     };
 
     int32 hp = 7;
+    string username = 8;
 };
 
 //Bullet message

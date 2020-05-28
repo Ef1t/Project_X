@@ -10,7 +10,7 @@ Enemy::Enemy(sf::Uint64 id, const sf::Vector2f& position, int hp)
         , mr_enemy("../../images/monstr3.png") { }
 
 void Enemy::draw(sf::RenderWindow& window, float time, float& current_frame) {
-    hp_bar_green.setPosition(m_position.x + 50 - hp_bar_length / 2, m_position.y - 20);
+    hp_bar_green.setPosition(m_position.x + 25 - hp_bar_length / 2, m_position.y - 20);
     hp_bar_green.setSize(sf::Vector2f( hp_bar_length * ((double)m_hp / m_max_hp), 10));
 
     hp_bar_red.setPosition(hp_bar_green.getPosition().x + hp_bar_green.getSize().x, m_position.y - 20);

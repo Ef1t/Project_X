@@ -13,7 +13,7 @@ void menuInit(sf::RenderWindow &window, std::string& username_str, std::string& 
 
     sf::Music music;
     music.openFromFile("../../client/music/menuTheme.wav");
-    music.setVolume(2);
+    music.setVolume(1);
     music.play();
 
     backInitTexture.loadFromFile("../../client/menuTextures/backInit.png");

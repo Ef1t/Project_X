@@ -16,6 +16,11 @@ Player::Player(sf::Uint64 id, const std::string& username, const sf::Vector2f& p
     m_font.loadFromFile("../../client/menuTextures/font.ttf");
     m_skull_sprite.setTexture(m_skull_texture);
     m_hp_bar_sprite.setTexture(m_hp_bar_texture);
+
+    im.loadFromFile("../../images/pigcop_vest.png");
+    death_t.loadFromImage(im);
+    death_s.setTexture(death_t);
+
 }
 
 void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
@@ -45,6 +50,7 @@ void Player::draw(sf::RenderWindow& window, float time, float& current_frame) {
 }
 
 void Player::draw_stat(sf::RenderWindow& window) {
+    if(this->get_hp()) {
     sf::Text kills_text;
     kills_text.setFont(m_font);
     kills_text.setFillColor(sf::Color::Red);
@@ -72,6 +78,13 @@ void Player::draw_stat(sf::RenderWindow& window) {
     window.draw(m_skull_sprite);
     window.draw(kills_text);
     window.draw(m_hp_bar_sprite);
+    window.draw(hp_text);
+     } else {
+
+        death_s.setTextureRect(sf::IntRect(483, 578, 500, 400));
+        death_s.setPosition(m_position);
+        window.draw(death_s);
+    }
 }
 
 void Player::set_position(const sf::Vector2f& position) {

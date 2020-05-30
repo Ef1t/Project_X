@@ -86,7 +86,11 @@ int main(int ac, const char* av[]) {
     auto host = std::string(host_str);
     auto port = static_cast<unsigned short>(std::stoul(port_str));
 
-    client.set_config(host, port, username);
+    try {
+        client.set_config(host, port, username);
+    } catch (const std::exception& err) {
+        goto start;
+    }
 
     if (command_str == "create") {
         //auto map_name = std::string(av[5]);
@@ -110,7 +114,7 @@ int main(int ac, const char* av[]) {
     sf::Music music;
     music.openFromFile("../../client/music/SuperMusic.wav");
     music.play();
-    music.setVolume(8);
+    music.setVolume(3);
 
     return client.run();
 }
